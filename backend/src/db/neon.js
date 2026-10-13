@@ -7,16 +7,18 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
+const seedBlogs = require('./seedBlogs');
+
 let pool = null;
 let isConnected = false;
 
-// Fallback in-memory store if Neon DATABASE_URL is not yet provided in .env
+// Fallback in-memory store pre-populated with 3 premium SEO articles
 const memoryStore = {
   users: [
     { id: '1', username: 'admin', password: 'admin123', name: 'Super Admin', role: 'admin' },
     { id: '2', username: 'publisher', password: 'publish123', name: 'Blog Publisher', role: 'author' }
   ],
-  blogs: []
+  blogs: [...seedBlogs]
 };
 
 if (process.env.DATABASE_URL) {
@@ -76,6 +78,34 @@ async function initDb() {
         'INSERT INTO users (username, password, name, role) VALUES ($1, $2, $3, $4)',
         ['admin', 'admin123', 'Super Admin', 'admin']
       );
+    }
+
+    // Seed default featured blogs if table is empty
+    const blogCount = await client.query('SELECT count(*) FROM blogs');
+    if (parseInt(blogCount.rows[0].count, 10) === 0) {
+      for (const blog of seedBlogs) {
+        await client.query(`
+          INSERT INTO blogs (id, title, slug, category, excerpt, content, cover_image, image_size_kb, tags, published, featured, author, author_role, created_at)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+          ON CONFLICT (id) DO NOTHING
+        `, [
+          blog.id,
+          blog.title,
+          blog.slug,
+          blog.category,
+          blog.excerpt,
+          blog.content,
+          blog.coverImage,
+          blog.imageSizeKB,
+          JSON.stringify(blog.tags),
+          blog.published,
+          blog.featured,
+          blog.author,
+          blog.authorRole,
+          blog.createdAt
+        ]);
+      }
+      console.log('[Neon DB] Seeded 3 premium articles successfully!');
     }
 
     client.release();
