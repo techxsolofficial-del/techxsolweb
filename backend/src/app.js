@@ -21,42 +21,13 @@ app.use(cors());
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
-// Static frontend paths
-const frontendPaths = [
-  path.resolve(__dirname, '../../frontend'),
-  path.resolve(__dirname, '../frontend'),
-  path.resolve(process.cwd(), 'frontend'),
-  path.resolve(process.cwd())
-];
+// Serve built React frontend in local development
+const distPath = path.resolve(__dirname, '../../frontend/dist');
+const fs = require('fs');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+}
 
-frontendPaths.forEach(p => {
-  app.use(express.static(p));
-});
-
-// Explicit page handlers
-app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../../frontend/index.html'), (err) => {
-    if (err) res.sendFile(path.resolve(process.cwd(), 'frontend/index.html'));
-  });
-});
-
-app.get('/tools', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../../frontend/tools.html'), (err) => {
-    if (err) res.sendFile(path.resolve(process.cwd(), 'frontend/tools.html'));
-  });
-});
-
-app.get('/blog', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../../frontend/blog.html'), (err) => {
-    if (err) res.sendFile(path.resolve(process.cwd(), 'frontend/blog.html'));
-  });
-});
-
-app.get('/admin', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../../frontend/admin.html'), (err) => {
-    if (err) res.sendFile(path.resolve(process.cwd(), 'frontend/admin.html'));
-  });
-});
 
 // Initialize Neon Database schema
 db.initDb();
