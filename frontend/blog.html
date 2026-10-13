@@ -59,10 +59,10 @@
 
     .cat-pill:hover,
     .cat-pill.active {
-      background: var(--accent-cyan);
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-dark));
       color: #FFFFFF;
-      border-color: var(--accent-cyan);
-      box-shadow: 0 4px 12px rgba(0, 168, 232, 0.25);
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(0, 168, 232, 0.35);
     }
 
     .search-box {
@@ -288,11 +288,6 @@
   <section class="filter-bar">
     <div class="category-pills" id="categoryPills">
       <button class="cat-pill active" data-cat="All">All Topics</button>
-      <button class="cat-pill" data-cat="Full-Stack">Full-Stack</button>
-      <button class="cat-pill" data-cat="Mobile Apps">Mobile Apps</button>
-      <button class="cat-pill" data-cat="UI/UX Systems">UI/UX Systems</button>
-      <button class="cat-pill" data-cat="Cloud Architecture">Cloud Architecture</button>
-      <button class="cat-pill" data-cat="Tech Insights">Tech Insights</button>
     </div>
 
     <div class="search-box">
