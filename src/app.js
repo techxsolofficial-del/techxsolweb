@@ -21,15 +21,14 @@ app.use(cors());
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
-// Serve built React frontend in local development
-const distPath = path.resolve(__dirname, '../frontend/dist');
+// Serve frontend static files
 const publicPath = path.resolve(__dirname, '../public');
+const rootPath = path.resolve(__dirname, '..');
 const fs = require('fs');
 if (fs.existsSync(publicPath)) {
   app.use(express.static(publicPath));
-} else if (fs.existsSync(distPath)) {
-  app.use(express.static(distPath));
 }
+app.use(express.static(rootPath));
 
 
 // Initialize Neon Database schema
