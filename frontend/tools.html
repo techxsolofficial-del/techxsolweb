@@ -19,44 +19,264 @@
 
   <style>
     .tools-hero {
-      padding: 140px 24px 40px;
+      padding: 130px 24px 30px;
       text-align: center;
-      background: linear-gradient(180deg, #F0F9FF 0%, #FFFFFF 100%);
+      background: #FFFFFF;
       position: relative;
     }
 
-    .tools-nav-filter {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin: 30px auto 10px;
-      max-width: 900px;
+    .tools-control-container {
+      max-width: 1200px;
+      margin: 28px auto 0;
       padding: 0 16px;
     }
 
-    .tool-filter-btn {
-      padding: 10px 22px;
+    /* Search input bar matching Image 2 */
+    .tools-search-wrapper {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto 16px;
+    }
+
+    .tools-search-wrapper i {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94A3B8;
+      font-size: 15px;
+    }
+
+    .tools-search-input {
+      width: 100%;
+      padding: 14px 20px 14px 48px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      background: #FFFFFF;
+      font-size: 14.5px;
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s ease;
+      outline: none;
+    }
+
+    .tools-search-input:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px rgba(0, 168, 232, 0.15);
+    }
+
+    /* Category pills matching Image 2 */
+    .tools-category-pills {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .cat-pill {
+      padding: 8px 18px;
       border-radius: var(--radius-full);
       border: 1px solid var(--border-color);
       background: #FFFFFF;
       color: var(--text-muted);
       font-weight: 600;
-      font-size: 14px;
+      font-size: 13.5px;
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cat-pill:hover {
+      border-color: #CBD5E1;
+      color: var(--text-main);
+    }
+
+    .cat-pill.active {
+      background: #0F172A;
+      color: #FFFFFF;
+      border-color: #0F172A;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+    }
+
+    /* 3 boxes in 1 line grid matching Image 2 */
+    .tools-cards-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+      margin-bottom: 30px;
+    }
+
+    .tool-select-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px 22px;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: var(--shadow-sm);
+      text-align: left;
+    }
+
+    .tool-select-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-cyan);
+      box-shadow: var(--shadow-md);
+    }
+
+    .tool-select-card.active-card {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 2px var(--accent-cyan), var(--shadow-md);
+      background: #F8FAFC;
+    }
+
+    .card-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .card-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: transform 0.25s ease;
+    }
+
+    .tool-select-card:hover .card-icon-box {
+      transform: scale(1.08);
+    }
+
+    .card-badge-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-status {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .badge-status.hot {
+      background: rgba(239, 68, 68, 0.12);
+      color: #EF4444;
+    }
+
+    .badge-status.new {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10B981;
+    }
+
+    .badge-category-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748B;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      line-height: 1.35;
+      font-family: var(--font-heading);
+    }
+
+    .card-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+
+    .card-action-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      transition: all 0.2s ease;
+      margin-top: auto;
+    }
+
+    .tool-select-card:hover .card-action-link {
+      color: var(--accent-cyan);
+      gap: 9px;
+    }
+
+    /* Active Tool Navigation / Header Bar */
+    .active-tool-nav-bar {
+      max-width: 1100px;
+      margin: 0 auto 24px;
+      padding: 14px 20px;
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .back-btn {
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-color);
+      background: #F8FAFC;
+      color: var(--text-main);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      transition: all 0.2s ease;
     }
 
-    .tool-filter-btn:hover,
-    .tool-filter-btn.active {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-dark));
+    .back-btn:hover {
+      background: #0F172A;
       color: #FFFFFF;
-      border-color: transparent;
-      box-shadow: 0 4px 14px rgba(0, 168, 232, 0.3);
-      transform: translateY(-2px);
+      border-color: #0F172A;
+    }
+
+    .quick-nav-pill {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-color);
+      background: #FFFFFF;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .quick-nav-pill:hover,
+    .quick-nav-pill.active {
+      background: var(--accent-cyan);
+      color: #FFFFFF;
+      border-color: var(--accent-cyan);
     }
 
     .tool-workspace {
@@ -66,6 +286,7 @@
     }
 
     .tool-box {
+      display: none;
       background: #FFFFFF;
       border: 1px solid var(--border-color);
       border-radius: 20px;
@@ -436,34 +657,126 @@
     </div>
   </header>
 
-  <!-- Hero Section with Filter Bar -->
+  <!-- Hero Section with Search, Category Filter & 3-Box Grid -->
   <section class="tools-hero">
-    <div class="ambient-glow" style="top: 15%; left: 10%;"></div>
-    <div class="section-title" style="margin-bottom: 0;">
+    <div class="section-title" style="margin-bottom: 24px;">
       <span class="section-tag">Interactive Utilities Suite</span>
       <h2>Smart Developer & Academic Tools</h2>
       <p>Precision utilities engineered for instant calculation, digital counting, and academic GPA performance.</p>
     </div>
 
-    <!-- Quick Tool Selector Filter -->
-    <div class="tools-nav-filter">
-      <button class="tool-filter-btn active" onclick="filterToolView('all')">
-        <i class="fa-solid fa-shapes"></i> All Tools
-      </button>
-      <button class="tool-filter-btn" onclick="filterToolView('digit')">
-        <i class="fa-solid fa-calculator"></i> Digit & Calculator
-      </button>
-      <button class="tool-filter-btn" onclick="filterToolView('cgpa')">
-        <i class="fa-solid fa-graduation-cap"></i> CGPA & GPA Calculator
-      </button>
-      <button class="tool-filter-btn" onclick="filterToolView('percentage')">
-        <i class="fa-solid fa-percent"></i> Percentage & Marks
-      </button>
+    <div class="tools-control-container">
+      <!-- Search Input matching Image 2 -->
+      <div class="tools-search-wrapper">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="toolSearchInput" class="tools-search-input" placeholder="Search tools — e.g. CGPA, percentage, digit, calculator..." oninput="handleToolSearch()">
+      </div>
+
+      <!-- Categories matching Image 2 & user request -->
+      <div class="tools-category-pills">
+        <button class="cat-pill active" data-category="all" onclick="filterByCategory('all')">
+          All
+        </button>
+        <button class="cat-pill" data-category="student" onclick="filterByCategory('student')">
+          <i class="fa-solid fa-graduation-cap"></i> Student
+        </button>
+        <button class="cat-pill" data-category="productivity" onclick="filterByCategory('productivity')">
+          <i class="fa-solid fa-bolt"></i> Productivity
+        </button>
+        <button class="cat-pill" data-category="developer" onclick="filterByCategory('developer')">
+          <i class="fa-solid fa-code"></i> Developer & Math
+        </button>
+      </div>
+
+      <!-- 3 Boxes in 1 Line matching Image 2 -->
+      <div class="tools-cards-row" id="toolsCardsGrid">
+        <!-- Card 1 -->
+        <div class="tool-select-card" data-tool="digit" data-category="productivity developer" onclick="openSpecificTool('digit')">
+          <div class="card-top-row">
+            <div class="card-icon-box" style="background: rgba(0, 168, 232, 0.12); color: #00A8E8;">
+              <i class="fa-solid fa-calculator"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status hot">HOT</span>
+              <span class="badge-category-tag">PRODUCTIVITY</span>
+            </div>
+          </div>
+          <h3 class="card-title">Digit & Calculator</h3>
+          <p class="card-desc">Count numbers, analyze digit frequency in text, extract digits, or calculate with live history tracking.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="tool-select-card" data-tool="cgpa" data-category="student" onclick="openSpecificTool('cgpa')">
+          <div class="card-top-row">
+            <div class="card-icon-box" style="background: rgba(168, 85, 247, 0.12); color: #A855F7;">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status new">NEW</span>
+              <span class="badge-category-tag">STUDENT</span>
+            </div>
+          </div>
+          <h3 class="card-title">CGPA & GPA Calculator</h3>
+          <p class="card-desc">Calculate your semester GPA & cumulative CGPA across university credit hours based on standard 4.0 scales.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="tool-select-card" data-tool="percentage" data-category="student productivity developer" onclick="openSpecificTool('percentage')">
+          <div class="card-top-row">
+            <div class="card-icon-box" style="background: rgba(16, 185, 129, 0.12); color: #10B981;">
+              <i class="fa-solid fa-percent"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status new">NEW</span>
+              <span class="badge-category-tag">CALCULATION</span>
+            </div>
+          </div>
+          <h3 class="card-title">Percentage & Marks Calculator</h3>
+          <p class="card-desc">Convert exam marks to percentages & letter grades, find proportion ratios, and evaluate mark changes.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+      </div>
+
+      <div id="toolsNoResultsMsg" style="display: none; padding: 40px; text-align: center; color: var(--text-muted); font-size: 15px;">
+        <i class="fa-solid fa-circle-info" style="font-size: 24px; margin-bottom: 8px; display: block; color: var(--accent-cyan);"></i>
+        No tools match your search criteria. Try a different query or select "All".
+      </div>
     </div>
   </section>
 
   <!-- Tools Workspace -->
   <main class="tool-workspace">
+
+    <!-- Active Tool Navigation Bar (Shown when a tool is opened) -->
+    <div class="active-tool-nav-bar" id="activeToolNavBar" style="display: none;">
+      <button class="back-btn" onclick="backToAllTools()">
+        <i class="fa-solid fa-arrow-left"></i> Back to all tools
+      </button>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-weight: 700; font-size: 15px; color: var(--text-main);" id="activeToolTitleDisplay">
+          Active Tool
+        </span>
+        <span class="badge-status new" id="activeToolStatusDisplay" style="font-size: 11px;">OPEN</span>
+      </div>
+
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button onclick="openSpecificTool('digit')" class="quick-nav-pill" id="quickPill-digit">Digit Tool</button>
+        <button onclick="openSpecificTool('cgpa')" class="quick-nav-pill" id="quickPill-cgpa">CGPA Tool</button>
+        <button onclick="openSpecificTool('percentage')" class="quick-nav-pill" id="quickPill-percentage">Percentage Tool</button>
+      </div>
+    </div>
 
     <!-- TOOL 1: SMART DIGITAL & DIGIT CALCULATOR SUITE -->
     <section class="tool-box" id="digit-tool">
@@ -824,68 +1137,185 @@
   <script src="js/main.js"></script>
   <script>
     // ==========================================
-    // 1. TOOL SWITCHER & DIRECT URL HIGHLIGHTING
+    // 1. DYNAMIC TOOL SELECTOR, CATEGORIES & WORKSPACE
     // ==========================================
-    function filterToolView(targetTool) {
-      document.querySelectorAll('.tool-filter-btn').forEach(btn => btn.classList.remove('active'));
-      const toolBoxes = document.querySelectorAll('.tool-box');
-
-      if (targetTool === 'all') {
-        event && event.target && event.target.closest('.tool-filter-btn') && event.target.closest('.tool-filter-btn').classList.add('active');
-        toolBoxes.forEach(b => {
-          b.style.display = 'block';
-          b.classList.remove('focused-tool');
-        });
-        window.history.replaceState(null, null, 'tools.html');
-        return;
+    const TOOL_CONFIG = {
+      'digit': {
+        id: 'digit-tool',
+        name: 'Smart Digit & Number Analyzer',
+        category: 'Productivity'
+      },
+      'cgpa': {
+        id: 'cgpa-calculator',
+        name: 'University CGPA & GPA Calculator',
+        category: 'Student'
+      },
+      'percentage': {
+        id: 'percentage-calculator',
+        name: 'Percentage & Marks Calculator',
+        category: 'Calculation'
       }
+    };
 
-      // Map tool key to element id
+    function openSpecificTool(targetTool, shouldScroll = true) {
+      // Resolve shortcut key
       const idMap = {
-        'digit': 'digit-tool',
-        'cgpa': 'cgpa-calculator',
-        'percentage': 'percentage-calculator'
+        'digit': 'digit',
+        'digit-tool': 'digit',
+        'cgpa': 'cgpa',
+        'cgpa-calculator': 'cgpa',
+        'percentage': 'percentage',
+        'percentage-calculator': 'percentage'
       };
 
-      const targetId = idMap[targetTool] || targetTool;
-      const targetElem = document.getElementById(targetId);
+      const toolKey = idMap[targetTool] || 'digit';
+      const config = TOOL_CONFIG[toolKey];
+      if (!config) return;
 
-      toolBoxes.forEach(b => {
-        b.style.display = 'block';
+      // 1. Hide all tool boxes
+      document.querySelectorAll('.tool-box').forEach(b => {
+        b.style.display = 'none';
         b.classList.remove('focused-tool');
       });
 
+      // 2. Open ONLY the clicked tool
+      const targetElem = document.getElementById(config.id);
       if (targetElem) {
+        targetElem.style.display = 'block';
         targetElem.classList.add('focused-tool');
-        targetElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        window.history.replaceState(null, null, `tools.html?tool=${targetTool}#${targetId}`);
       }
 
-      const activeBtn = document.querySelector(`.tool-filter-btn[onclick*="'${targetTool}'"]`);
-      if (activeBtn) activeBtn.classList.add('active');
+      // 3. Highlight the clicked card in the 3-box grid
+      document.querySelectorAll('.tool-select-card').forEach(card => {
+        if (card.getAttribute('data-tool') === toolKey) {
+          card.classList.add('active-card');
+        } else {
+          card.classList.remove('active-card');
+        }
+      });
+
+      // 4. Update and show the active tool header bar
+      const navBar = document.getElementById('activeToolNavBar');
+      if (navBar) {
+        navBar.style.display = 'flex';
+      }
+
+      const titleDisplay = document.getElementById('activeToolTitleDisplay');
+      if (titleDisplay) {
+        titleDisplay.textContent = config.name;
+      }
+
+      // Update quick switch pills
+      document.querySelectorAll('.quick-nav-pill').forEach(pill => {
+        pill.classList.remove('active');
+      });
+      const activePill = document.getElementById(`quickPill-${toolKey}`);
+      if (activePill) activePill.classList.add('active');
+
+      // Update URL state
+      window.history.replaceState(null, null, `tools.html?tool=${toolKey}#${config.id}`);
+
+      // Smooth scroll into view
+      if (shouldScroll && targetElem) {
+        targetElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
-    // Check direct query or hash on load
+    function backToAllTools() {
+      // 1. Hide all tool boxes
+      document.querySelectorAll('.tool-box').forEach(b => {
+        b.style.display = 'none';
+        b.classList.remove('focused-tool');
+      });
+
+      // 2. Remove active card highlight
+      document.querySelectorAll('.tool-select-card').forEach(card => {
+        card.classList.remove('active-card');
+      });
+
+      // 3. Hide active tool header bar
+      const navBar = document.getElementById('activeToolNavBar');
+      if (navBar) {
+        navBar.style.display = 'none';
+      }
+
+      // Reset URL state
+      window.history.replaceState(null, null, 'tools.html');
+
+      // Scroll smoothly to the 3-box cards grid
+      const grid = document.getElementById('toolsCardsGrid');
+      if (grid) {
+        grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function filterByCategory(category) {
+      // Highlight category pill
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        if (btn.getAttribute('data-category') === category) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      // Filter the 3 tool cards in the row
+      const cards = document.querySelectorAll('.tool-select-card');
+      let visibleCount = 0;
+      cards.forEach(card => {
+        const cardCat = card.getAttribute('data-category') || '';
+        if (category === 'all' || cardCat.includes(category)) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      const noResults = document.getElementById('toolsNoResultsMsg');
+      if (noResults) {
+        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+    }
+
+    function handleToolSearch() {
+      const query = (document.getElementById('toolSearchInput').value || '').toLowerCase().trim();
+      const cards = document.querySelectorAll('.tool-select-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        if (!query || text.includes(query)) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      const noResults = document.getElementById('toolsNoResultsMsg');
+      if (noResults) {
+        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+    }
+
+    // Auto load on page ready
     window.addEventListener('DOMContentLoaded', () => {
+      // Initialize tool engines
+      initDigitTool();
+      initCgpaTool();
+      initPercentageTool();
+
+      // Check direct URL param or hash
       const params = new URLSearchParams(window.location.search);
       const toolParam = params.get('tool');
       const hash = window.location.hash.replace('#', '');
 
       if (toolParam) {
-        filterToolView(toolParam);
+        openSpecificTool(toolParam, false);
       } else if (hash) {
-        const idMapReverse = {
-          'digit-tool': 'digit',
-          'cgpa-calculator': 'cgpa',
-          'percentage-calculator': 'percentage'
-        };
-        filterToolView(idMapReverse[hash] || hash);
+        openSpecificTool(hash, false);
       }
-
-      // Initialize all tools
-      initDigitTool();
-      initCgpaTool();
-      initPercentageTool();
     });
 
     // ==========================================

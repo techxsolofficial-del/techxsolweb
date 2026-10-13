@@ -221,16 +221,9 @@ header {
   transition: all 0.3s ease;
 }
 
-/* Ambient Background Glow */
+/* Ambient Background Glow - Disabled to keep clean, simple background */
 .ambient-glow {
-  position: absolute;
-  width: 450px;
-  height: 450px;
-  background: radial-gradient(circle, rgba(0, 200, 255, 0.12) 0%, rgba(0, 168, 232, 0.04) 50%, transparent 70%);
-  filter: blur(50px);
-  pointer-events: none;
-  z-index: 0;
-  border-radius: 50%;
+  display: none !important;
 }
 
 /* Hero Section */
