@@ -171,7 +171,7 @@ const API = (() => {
           setSession(token, user);
           return { success: true, token, user };
         }
-        throw new Error('Invalid credentials. (Hint: admin / admin123 or author / author123)');
+        throw new Error('Invalid username or password.');
       }
     },
 

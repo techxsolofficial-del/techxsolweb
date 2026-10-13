@@ -201,7 +201,7 @@ async function loadFeaturedBlogs() {
       `;
 
       return `
-        <article class="blog-card reveal active">
+        <article class="blog-card reveal active" onclick="window.location.href='${blogUrl}'" style="cursor: pointer;">
           <div class="blog-image-wrap">
             <img src="${coverUrl}" alt="${blog.title}" loading="lazy">
             <span class="blog-badge-category">${blog.category || 'Tech'}</span>
@@ -216,7 +216,7 @@ async function loadFeaturedBlogs() {
             <p class="blog-excerpt">${blog.excerpt || 'Explore insightful analysis and modern technology perspectives.'}</p>
             <div class="blog-footer">
               ${footerLeftHtml}
-              <a href="${blogUrl}" class="blog-read-link">Read More <i class="fa-solid fa-arrow-right"></i></a>
+              <span class="blog-read-link">Read More <i class="fa-solid fa-arrow-right"></i></span>
             </div>
           </div>
         </article>

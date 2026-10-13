@@ -417,6 +417,7 @@
         allBlogs = (res && res.blogs) ? res.blogs : [];
         window.siteShowAuthorSetting = settings.showAuthor !== false;
         renderBlogs();
+        checkDirectArticleUrl();
       } catch (err) {
         console.warn('API fetch error:', err.message);
         renderEmptyState(container);
@@ -480,7 +481,7 @@
         `;
 
         return `
-          <article class="blog-card reveal active">
+          <article class="blog-card reveal active" onclick="openArticleModal('${blog.id}')" style="cursor: pointer;">
             <div class="blog-image-wrap">
               <img src="${coverUrl}" alt="${blog.title}" loading="lazy">
               <span class="blog-badge-category">${blog.category || 'Tech'}</span>
@@ -495,7 +496,7 @@
               <p class="blog-excerpt">${blog.excerpt || 'Read this post for full architectural details and code implementations.'}</p>
               <div class="blog-footer">
                 ${footerLeftHtml}
-                <button onclick="openArticleModal('${blog.id}')" class="blog-read-link" style="background: none; border: none; cursor: pointer;">
+                <button class="blog-read-link" style="background: none; border: none; cursor: pointer;">
                   Read Article <i class="fa-solid fa-arrow-right"></i>
                 </button>
               </div>
@@ -552,7 +553,7 @@
     }
 
     function openArticleModal(blogId) {
-      const blog = allBlogs.find(b => b.id === blogId);
+      const blog = allBlogs.find(b => b.id === blogId || b.slug === blogId);
       if (!blog) return;
 
       const modal = document.getElementById('articleModal');
@@ -603,11 +604,8 @@
     function checkDirectArticleUrl() {
       const params = new URLSearchParams(window.location.search);
       const blogId = params.get('id');
-      if (blogId) {
-        // Wait slightly for blogs to load
-        setTimeout(() => {
-          openArticleModal(blogId);
-        }, 500);
+      if (blogId && allBlogs.length > 0) {
+        openArticleModal(blogId);
       }
     }
 
