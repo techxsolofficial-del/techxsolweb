@@ -2,6 +2,11 @@
  * Tech X Sol - Vercel Serverless Entry Point
  */
 
-const app = require('../backend/src/app');
+let app;
+try {
+  app = require('../src/app');
+} catch (e) {
+  app = require('../backend/src/app');
+}
 
 module.exports = app;
