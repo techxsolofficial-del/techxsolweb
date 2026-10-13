@@ -61,12 +61,6 @@ function initHero3D() {
   orbitalRing.rotation.y = Math.PI / 6;
   mainGroup.add(orbitalRing);
 
-  // Glowing Satellite Node orbiting along the ring
-  const nodeGeo = new THREE.SphereGeometry(0.22, 16, 16);
-  const nodeMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8 });
-  const satNode = new THREE.Mesh(nodeGeo, nodeMat);
-  satNode.position.set(5.2, 0, 0);
-  orbitalRing.add(satNode);
 
   // Mouse Parallax tracking with smooth damping
   let targetRotX = 0;
