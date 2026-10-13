@@ -238,6 +238,49 @@
       justify-content: space-between;
     }
 
+    /* Toggle switch for settings */
+    .display-toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 52px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+    .display-toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #CBD5E1;
+      transition: .3s;
+      border-radius: 34px;
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .display-toggle-switch input:checked + .toggle-slider {
+      background-color: var(--accent-cyan);
+    }
+    .display-toggle-switch input:checked + .toggle-slider:before {
+      transform: translateX(24px);
+    }
+
     /* Form Styles */
     .form-grid-2 {
       display: grid;
@@ -572,6 +615,45 @@
           </a>
         </div>
       </div>
+
+      <!-- BLOG DISPLAY CONTROLS (Author vs Date Toggle) -->
+      <div class="admin-card">
+        <div class="card-title">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-sliders" style="color: var(--accent-cyan);"></i>
+            <span>Blog Card Footer Display Settings</span>
+          </div>
+          <span id="authorDisplayStatusBadge" class="admin-badge" style="background: rgba(0, 168, 232, 0.12); color: var(--accent-dark); font-size: 12px; padding: 6px 14px;">
+            <i class="fa-solid fa-user-check"></i> Author Names Active
+          </span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px; line-height: 1.6;">
+          Yahan se aap website ke blog cards (Homepage &amp; Blogs page) ke niche display hone wale footer ka switch control kar sakte hain. Jab aap is button se <strong>OFF</strong> karenge to author names (jaise <code style="background: #F1F5F9; padding: 2px 6px; border-radius: 4px; color: #0284C7; font-weight: 600;">[CH] CH.M.Ahmed</code>) chhapna band ho jayenge aur cards ke niche simple dates (jaise <code style="background: #F1F5F9; padding: 2px 6px; border-radius: 4px; color: #0284C7; font-weight: 600;">📅 Oct 13, 2026</code>) nazar aayengi.
+        </p>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 12px; padding: 20px 24px;">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <label class="display-toggle-switch">
+              <input type="checkbox" id="globalShowAuthorToggle" onchange="handleAuthorSettingChange(this.checked)" checked>
+              <span class="toggle-slider"></span>
+            </label>
+            <div>
+              <div id="authorSettingTitle" style="font-weight: 700; font-size: 15px; color: var(--text-main);">
+                Show Author Names on Blog Cards
+              </div>
+              <div id="authorSettingDesc" style="font-size: 13px; color: var(--text-muted); margin-top: 3px;">
+                Currently showing author badges &amp; names on cards. Click button or toggle to switch to Dates Only.
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button type="button" id="btnToggleAuthorSetting" onclick="toggleAuthorDisplaySetting()" class="btn-action-primary" style="padding: 10px 20px; font-size: 13.5px; display: inline-flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-calendar-days"></i> Switch to Dates Only (Turn Off Names)
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- TAB 2: BLOGS LIST & MANAGEMENT -->
@@ -579,9 +661,14 @@
       <div class="admin-card">
         <div class="card-title">
           <span>All Published & Draft Blogs</span>
-          <button onclick="switchTab('create')" class="btn-action-primary" style="font-size: 13.5px; padding: 8px 16px;">
-            <i class="fa-solid fa-plus"></i> New Blog
-          </button>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <button onclick="toggleAuthorDisplaySetting()" class="btn-action-secondary" id="blogsTabAuthorToggleBtn" style="font-size: 13px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px;" title="Click to toggle between Author Names and Dates Only">
+              <i class="fa-solid fa-sliders" style="color: var(--accent-cyan);"></i> Footer: <strong id="blogsTabAuthorStatusText" style="color: var(--accent-cyan);">Author Names</strong>
+            </button>
+            <button onclick="switchTab('create')" class="btn-action-primary" style="font-size: 13.5px; padding: 8px 16px;">
+              <i class="fa-solid fa-plus"></i> New Blog
+            </button>
+          </div>
         </div>
 
         <div class="table-responsive">
@@ -715,6 +802,13 @@
             <input type="checkbox" id="blogFeaturedCheck" style="width: 18px; height: 18px; accent-color: var(--accent-cyan);">
             <label for="blogFeaturedCheck" style="margin: 0; cursor: pointer; font-weight: 700;">
               Feature on Homepage (Top 3 Slots)
+            </label>
+          </div>
+
+          <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+            <input type="checkbox" id="blogShowAuthorCheck" checked style="width: 18px; height: 18px; accent-color: var(--accent-cyan);">
+            <label for="blogShowAuthorCheck" style="margin: 0; cursor: pointer; font-weight: 700;">
+              Show Author Name on this Card (Uncheck to show Date only)
             </label>
           </div>
 
@@ -854,6 +948,7 @@
 
       loadOverviewStats();
       loadBlogsTable();
+      loadAdminSettings();
       if (currentUser.role === 'admin') {
         loadUsersTable();
       }
@@ -924,6 +1019,92 @@
       } catch (e) {
         console.warn('Stats fetch:', e.message);
       }
+    }
+
+    // Global Blog Author Display Settings Controller
+    let globalShowAuthor = true;
+
+    async function loadAdminSettings() {
+      try {
+        const settings = await window.API.getSettings();
+        globalShowAuthor = settings.showAuthor !== false;
+        updateAuthorSettingUI(globalShowAuthor);
+      } catch (err) {
+        globalShowAuthor = window.API.getShowAuthorPreference();
+        updateAuthorSettingUI(globalShowAuthor);
+      }
+    }
+
+    function updateAuthorSettingUI(showAuthor) {
+      const toggle = document.getElementById('globalShowAuthorToggle');
+      if (toggle) toggle.checked = showAuthor;
+
+      const badge = document.getElementById('authorDisplayStatusBadge');
+      const title = document.getElementById('authorSettingTitle');
+      const desc = document.getElementById('authorSettingDesc');
+      const actionBtn = document.getElementById('btnToggleAuthorSetting');
+      const tabBtnText = document.getElementById('blogsTabAuthorStatusText');
+
+      if (showAuthor) {
+        if (badge) {
+          badge.style.background = 'rgba(0, 168, 232, 0.12)';
+          badge.style.color = 'var(--accent-dark)';
+          badge.innerHTML = '<i class="fa-solid fa-user-check"></i> Author Names Active';
+        }
+        if (title) title.textContent = 'Show Author Names on Blog Cards';
+        if (desc) desc.textContent = 'Currently showing author badges & names on website cards. Click button or toggle to switch to Dates Only.';
+        if (actionBtn) {
+          actionBtn.style.background = 'var(--accent-cyan)';
+          actionBtn.innerHTML = '<i class="fa-solid fa-calendar-days"></i> Switch to Dates Only (Turn Off Names)';
+        }
+        if (tabBtnText) tabBtnText.textContent = 'Author Names (ON)';
+      } else {
+        if (badge) {
+          badge.style.background = '#FEF3C7';
+          badge.style.color = '#B45309';
+          badge.innerHTML = '<i class="fa-regular fa-calendar-check"></i> Dates Only Active (Names Off)';
+        }
+        if (title) title.textContent = 'Show Dates Only (Author Names OFF)';
+        if (desc) desc.textContent = 'Author names are hidden! Blog cards show clean publication dates (e.g. "Oct 13, 2026").';
+        if (actionBtn) {
+          actionBtn.style.background = '#10B981';
+          actionBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Switch to Author Names (Turn On Names)';
+        }
+        if (tabBtnText) tabBtnText.textContent = 'Dates Only (OFF)';
+      }
+    }
+
+    async function handleAuthorSettingChange(isChecked) {
+      globalShowAuthor = isChecked;
+      updateAuthorSettingUI(globalShowAuthor);
+      try {
+        await window.API.updateSettings({ showAuthor: globalShowAuthor });
+        showToastNotification(globalShowAuthor ? 'Author names turned ON on blog cards!' : 'Author names turned OFF — Cards will now show simple dates!');
+      } catch (e) {
+        console.warn('Settings save warning:', e);
+      }
+    }
+
+    async function toggleAuthorDisplaySetting() {
+      const newState = !globalShowAuthor;
+      await handleAuthorSettingChange(newState);
+    }
+
+    function showToastNotification(msg) {
+      let toast = document.getElementById('adminToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'adminToast';
+        toast.style.cssText = 'position: fixed; bottom: 30px; right: 30px; z-index: 9999; background: #0F172A; color: #fff; padding: 14px 24px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 10px; transition: all 0.3s ease; transform: translateY(100px); opacity: 0;';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #00A8E8; font-size: 18px;"></i> ${msg}`;
+      toast.style.transform = 'translateY(0)';
+      toast.style.opacity = '1';
+      setTimeout(() => {
+        toast.style.transform = 'translateY(100px)';
+        toast.style.opacity = '0';
+      }, 3500);
     }
 
     // Blogs Table
@@ -1037,6 +1218,7 @@
       document.getElementById('blogTags').value = Array.isArray(blog.tags) ? blog.tags.join(', ') : (blog.tags || '');
       document.getElementById('blogStatusSelect').value = blog.published ? 'true' : 'false';
       document.getElementById('blogFeaturedCheck').checked = !!blog.featured;
+      document.getElementById('blogShowAuthorCheck').checked = blog.showAuthor !== false;
 
       document.getElementById('uploadedImageUrl').value = blog.coverImage || '';
       document.getElementById('uploadedImageSizeKB').value = blog.imageSizeKB || 0;
@@ -1197,7 +1379,8 @@
           imageSizeKB: imageSizeKB,
           tags: document.getElementById('blogTags').value,
           published: document.getElementById('blogStatusSelect').value === 'true',
-          featured: document.getElementById('blogFeaturedCheck').checked
+          featured: document.getElementById('blogFeaturedCheck').checked,
+          showAuthor: document.getElementById('blogShowAuthorCheck').checked
         };
 
         if (editId) {
@@ -1223,6 +1406,7 @@
       document.getElementById('editBlogId').value = '';
       document.getElementById('uploadedImageUrl').value = '';
       document.getElementById('uploadedImageSizeKB').value = '0';
+      document.getElementById('blogShowAuthorCheck').checked = true;
       document.getElementById('imageStatusIndicator').style.display = 'none';
       document.getElementById('imageLivePreviewWrap').style.display = 'none';
       document.getElementById('formCardHeader').textContent = 'Create & Publish Blog Article';

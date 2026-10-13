@@ -410,8 +410,12 @@
       </div>`;
 
       try {
-        const res = await window.API.getBlogs();
+        const [res, settings] = await Promise.all([
+          window.API.getBlogs(),
+          window.API.getSettings().catch(() => ({ showAuthor: true }))
+        ]);
         allBlogs = (res && res.blogs) ? res.blogs : [];
+        window.siteShowAuthorSetting = settings.showAuthor !== false;
         renderBlogs();
       } catch (err) {
         console.warn('API fetch error:', err.message);
@@ -440,6 +444,10 @@
         return;
       }
 
+      const globalShowAuthor = (typeof window.siteShowAuthorSetting === 'boolean') 
+        ? window.siteShowAuthorSetting 
+        : window.API.getShowAuthorPreference();
+
       container.innerHTML = filtered.map(blog => {
         const coverUrl = blog.coverImage 
           ? (blog.coverImage.startsWith('http') ? blog.coverImage : `${window.API.UPLOADS_BASE}${blog.coverImage}`)
@@ -451,6 +459,26 @@
           year: 'numeric'
         });
 
+        const showAuthorForThisCard = globalShowAuthor && (blog.showAuthor !== false);
+
+        const footerLeftHtml = showAuthorForThisCard ? `
+          <div class="blog-author">
+            <div class="author-avatar-tiny">${(blog.author || 'TX').substring(0, 2).toUpperCase()}</div>
+            <span>${blog.author || 'Tech X Sol'}</span>
+          </div>
+        ` : `
+          <div class="blog-date-footer">
+            <i class="fa-regular fa-calendar"></i>
+            <span>${dateStr}</span>
+          </div>
+        `;
+
+        const topMetaHtml = showAuthorForThisCard ? `
+          <span><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+        ` : `
+          <span><i class="fa-regular fa-clock"></i> 5 min read</span>
+        `;
+
         return `
           <article class="blog-card reveal active">
             <div class="blog-image-wrap">
@@ -460,16 +488,13 @@
             </div>
             <div class="blog-content">
               <div class="blog-meta">
-                <span><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+                ${topMetaHtml}
                 ${blog.imageSizeKB ? `<span><i class="fa-solid fa-image"></i> ${blog.imageSizeKB}KB</span>` : ''}
               </div>
               <h3 class="blog-title">${blog.title}</h3>
               <p class="blog-excerpt">${blog.excerpt || 'Read this post for full architectural details and code implementations.'}</p>
               <div class="blog-footer">
-                <div class="blog-author">
-                  <div class="author-avatar-tiny">${(blog.author || 'TX').substring(0, 2).toUpperCase()}</div>
-                  <span>${blog.author || 'Tech X Sol'}</span>
-                </div>
+                ${footerLeftHtml}
                 <button onclick="openArticleModal('${blog.id}')" class="blog-read-link" style="background: none; border: none; cursor: pointer;">
                   Read Article <i class="fa-solid fa-arrow-right"></i>
                 </button>
@@ -556,6 +581,15 @@
       document.getElementById('modalAuthorAvatar').textContent = (blog.author || 'TX').substring(0, 2).toUpperCase();
       document.getElementById('modalAuthorRole').textContent = blog.authorRole === 'admin' ? 'Super Admin' : 'Blog Publisher';
 
+      const globalShowAuthor = (typeof window.siteShowAuthorSetting === 'boolean') 
+        ? window.siteShowAuthorSetting 
+        : window.API.getShowAuthorPreference();
+      const showAuthorForThis = globalShowAuthor && (blog.showAuthor !== false);
+      const modalAuthorSection = document.getElementById('modalAuthorAvatar') ? document.getElementById('modalAuthorAvatar').closest('.blog-author') : null;
+      if (modalAuthorSection) {
+        modalAuthorSection.style.display = showAuthorForThis ? 'flex' : 'none';
+      }
+
       const tagsWrap = document.getElementById('modalTags');
       if (Array.isArray(blog.tags) && blog.tags.length) {
         tagsWrap.innerHTML = blog.tags.map(t => `<span class="service-tag">#${t}</span>`).join('');
@@ -576,6 +610,17 @@
         }, 500);
       }
     }
+
+    // Listen to real-time setting changes across tabs
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'txs_settings') {
+        try {
+          const s = JSON.parse(e.newValue);
+          window.siteShowAuthorSetting = s.showAuthor !== false;
+          renderBlogs();
+        } catch {}
+      }
+    });
   </script>
 </body>
 </html>

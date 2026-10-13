@@ -152,13 +152,21 @@ async function loadFeaturedBlogs() {
   };
 
   try {
-    const res = await window.API.getBlogs({ featured: 'true', limit: 3 });
+    const [res, settings] = await Promise.all([
+      window.API.getBlogs({ featured: 'true', limit: 3 }),
+      window.API.getSettings().catch(() => ({ showAuthor: true }))
+    ]);
     const blogs = (res && res.blogs) ? res.blogs : [];
+    window.siteShowAuthorSetting = settings.showAuthor !== false;
 
     if (blogs.length === 0) {
       renderEmptyBlogs();
       return;
     }
+
+    const globalShowAuthor = (typeof window.siteShowAuthorSetting === 'boolean')
+      ? window.siteShowAuthorSetting
+      : window.API.getShowAuthorPreference();
 
     container.innerHTML = blogs.map(blog => {
       const coverUrl = blog.coverImage 
@@ -172,6 +180,25 @@ async function loadFeaturedBlogs() {
       });
 
       const blogUrl = `blog.html?id=${blog.id}`;
+      const showAuthorForThisCard = globalShowAuthor && (blog.showAuthor !== false);
+
+      const footerLeftHtml = showAuthorForThisCard ? `
+        <div class="blog-author">
+          <div class="author-avatar-tiny">${(blog.author || 'TXS').substring(0, 2).toUpperCase()}</div>
+          <span>${blog.author || 'Tech X Sol'}</span>
+        </div>
+      ` : `
+        <div class="blog-date-footer">
+          <i class="fa-regular fa-calendar"></i>
+          <span>${dateStr}</span>
+        </div>
+      `;
+
+      const topMetaHtml = showAuthorForThisCard ? `
+        <span><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+      ` : `
+        <span><i class="fa-regular fa-clock"></i> 5 min read</span>
+      `;
 
       return `
         <article class="blog-card reveal active">
@@ -182,16 +209,13 @@ async function loadFeaturedBlogs() {
           </div>
           <div class="blog-content">
             <div class="blog-meta">
-              <span><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+              ${topMetaHtml}
               ${blog.imageSizeKB ? `<span><i class="fa-solid fa-image"></i> ${blog.imageSizeKB}KB</span>` : ''}
             </div>
             <h3 class="blog-title">${blog.title}</h3>
             <p class="blog-excerpt">${blog.excerpt || 'Explore insightful analysis and modern technology perspectives.'}</p>
             <div class="blog-footer">
-              <div class="blog-author">
-                <div class="author-avatar-tiny">${(blog.author || 'TXS').substring(0, 2).toUpperCase()}</div>
-                <span>${blog.author || 'Tech X Sol'}</span>
-              </div>
+              ${footerLeftHtml}
               <a href="${blogUrl}" class="blog-read-link">Read More <i class="fa-solid fa-arrow-right"></i></a>
             </div>
           </div>
@@ -211,3 +235,14 @@ async function loadHomepageTools() {
   if (!container) return;
   // Preserves pre-rendered 3 core tools (Digit Tool, CGPA Calculator, Percentage Calculator)
 }
+
+// Listen to real-time settings change across tabs
+window.addEventListener('storage', (e) => {
+  if (e.key === 'txs_settings') {
+    try {
+      const s = JSON.parse(e.newValue);
+      window.siteShowAuthorSetting = s.showAuthor !== false;
+      loadFeaturedBlogs();
+    } catch {}
+  }
+});

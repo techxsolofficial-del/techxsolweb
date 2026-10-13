@@ -423,6 +423,59 @@ const API = (() => {
           }
         };
       }
+    },
+
+    // Settings (Display preferences & System controls)
+    async getSettings() {
+      try {
+        const res = await request('/settings', { method: 'GET', headers: getHeaders() });
+        if (res && res.settings) {
+          localStorage.setItem('txs_settings', JSON.stringify(res.settings));
+          return res.settings;
+        }
+      } catch (e) {
+        // Fallback to cached
+      }
+      const cached = localStorage.getItem('txs_settings');
+      if (cached) {
+        try { return JSON.parse(cached); } catch {}
+      }
+      return { showAuthor: true };
+    },
+
+    async updateSettings(settings) {
+      let current = {};
+      const cached = localStorage.getItem('txs_settings');
+      if (cached) {
+        try { current = JSON.parse(cached); } catch {}
+      }
+      const updated = { ...current, ...settings };
+      localStorage.setItem('txs_settings', JSON.stringify(updated));
+      try {
+        const res = await request('/settings', {
+          method: 'POST',
+          headers: getHeaders(),
+          body: JSON.stringify(updated)
+        });
+        if (res && res.settings) {
+          localStorage.setItem('txs_settings', JSON.stringify(res.settings));
+          return res.settings;
+        }
+      } catch (e) {
+        console.warn('Backend settings update warning:', e.message);
+      }
+      return updated;
+    },
+
+    getShowAuthorPreference() {
+      const cached = localStorage.getItem('txs_settings');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (typeof parsed.showAuthor === 'boolean') return parsed.showAuthor;
+        } catch {}
+      }
+      return true;
     }
   };
 })();

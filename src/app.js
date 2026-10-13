@@ -67,6 +67,49 @@ app.delete('/api/blogs/:id', authMiddleware, blogController.deleteBlog);
 // Stats Overview
 app.get('/api/stats', blogController.getStats);
 
+// Settings (Blog display preferences & Admin settings)
+app.get('/api/settings', async (req, res) => {
+  try {
+    if (db.getIsConnected()) {
+      const result = await db.query('SELECT value FROM site_settings WHERE key = $1', ['general']);
+      if (result && result.rows.length > 0) {
+        return res.json({ success: true, settings: result.rows[0].value });
+      }
+    }
+    return res.json({
+      success: true,
+      settings: (db.memoryStore && db.memoryStore.settings) ? db.memoryStore.settings : { showAuthor: true }
+    });
+  } catch (err) {
+    return res.json({
+      success: true,
+      settings: (db.memoryStore && db.memoryStore.settings) ? db.memoryStore.settings : { showAuthor: true }
+    });
+  }
+});
+
+app.post('/api/settings', async (req, res) => {
+  try {
+    const payload = req.body || {};
+    if (!db.memoryStore.settings) {
+      db.memoryStore.settings = { showAuthor: true };
+    }
+    db.memoryStore.settings = { ...db.memoryStore.settings, ...payload };
+
+    if (db.getIsConnected()) {
+      await db.query(`
+        INSERT INTO site_settings (key, value, updated_at)
+        VALUES ('general', $1, CURRENT_TIMESTAMP)
+        ON CONFLICT (key) DO UPDATE SET value = $1, updated_at = CURRENT_TIMESTAMP
+      `, [JSON.stringify(db.memoryStore.settings)]);
+    }
+
+    return res.json({ success: true, settings: db.memoryStore.settings });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Interactive Tools Metadata
 app.get('/api/tools', (req, res) => {
   res.json({

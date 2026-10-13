@@ -18,7 +18,10 @@ const memoryStore = {
     { id: '1', username: 'admin', password: 'admin123', name: 'Super Admin', role: 'admin' },
     { id: '2', username: 'publisher', password: 'publish123', name: 'Blog Publisher', role: 'author' }
   ],
-  blogs: [...seedBlogs]
+  blogs: [...seedBlogs],
+  settings: {
+    showAuthor: true
+  }
 };
 
 if (process.env.DATABASE_URL) {
@@ -67,6 +70,12 @@ async function initDb() {
         author VARCHAR(100) DEFAULT 'Tech X Sol',
         author_role VARCHAR(50) DEFAULT 'admin',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS site_settings (
+        key VARCHAR(100) PRIMARY KEY,
+        value JSONB NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);

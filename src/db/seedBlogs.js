@@ -172,3 +172,4 @@ const SEED_BLOGS = [
 ];
 
 module.exports = SEED_BLOGS;
+
