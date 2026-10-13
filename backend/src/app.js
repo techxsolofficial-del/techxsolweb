@@ -23,8 +23,11 @@ app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
 // Serve built React frontend in local development
 const distPath = path.resolve(__dirname, '../../frontend/dist');
+const publicPath = path.resolve(__dirname, '../../public');
 const fs = require('fs');
-if (fs.existsSync(distPath)) {
+if (fs.existsSync(publicPath)) {
+  app.use(express.static(publicPath));
+} else if (fs.existsSync(distPath)) {
   app.use(express.static(distPath));
 }
 
