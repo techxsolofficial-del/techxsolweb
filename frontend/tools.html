@@ -27,6 +27,8 @@
 
   <!-- QRCode Library for QR Generator -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- jsPDF Library for Image to PDF Converter -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <!-- Global Stylesheet -->
   <link rel="stylesheet" href="css/styles.css">
@@ -953,6 +955,179 @@
       padding: 14px 16px;
       background: #F0F2F5;
     }
+
+    /* How to Use This Tool Guide Card */
+    .tool-guide-card {
+      margin-top: 28px;
+      padding: 22px 24px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(0, 168, 232, 0.04), rgba(0, 119, 182, 0.06));
+      border: 1px solid rgba(0, 168, 232, 0.18);
+    }
+    .tool-guide-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .tool-guide-header i {
+      color: var(--accent-cyan);
+      font-size: 18px;
+    }
+    .tool-guide-header h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 0;
+      color: var(--text-main);
+    }
+    .tool-guide-steps {
+      margin: 0;
+      padding-left: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .tool-guide-steps li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .tool-guide-step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .tool-guide-steps li strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    /* Diff Checker Component */
+    .diff-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .diff-output-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 18px;
+      min-height: 160px;
+      font-family: monospace;
+      font-size: 13.5px;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .diff-ins {
+      background: rgba(16, 185, 129, 0.2);
+      color: #065F46;
+      text-decoration: none;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .diff-del {
+      background: rgba(239, 68, 68, 0.2);
+      color: #991B1B;
+      text-decoration: line-through;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    /* Image to PDF Dropzone */
+    .pdf-dropzone {
+      border: 2px dashed rgba(0, 168, 232, 0.4);
+      background: rgba(0, 168, 232, 0.02);
+      border-radius: 14px;
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .pdf-dropzone:hover {
+      border-color: var(--accent-cyan);
+      background: rgba(0, 168, 232, 0.06);
+    }
+    .pdf-thumbs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .pdf-thumb-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      position: relative;
+    }
+    .pdf-thumb-card img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    /* Social Bio Progress Bars */
+    .bio-platform-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .bio-prog-bar-bg {
+      height: 8px;
+      background: #E2E8F0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .bio-prog-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-cyan);
+      border-radius: 4px;
+      transition: width 0.2s ease, background-color 0.2s ease;
+    }
+
+    /* Password Generator Entropy Meter */
+    .pw-strength-bar {
+      height: 8px;
+      background: #E2E8F0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+    .pw-strength-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 4px;
+      transition: width 0.25s ease, background-color 0.25s ease;
+    }
+
+    @media (max-width: 768px) {
+      .diff-container {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1003,13 +1178,19 @@
         <input type="text" id="toolSearchInput" class="tools-search-input" placeholder="Search tools — e.g. CGPA, percentage, digit, calculator..." oninput="handleToolSearch()">
       </div>
 
-      <!-- Categories matching Image 2 & user request -->
+      <!-- Categories matching user request -->
       <div class="tools-category-pills">
         <button class="cat-pill active" data-category="all" onclick="filterByCategory('all')">
           All
         </button>
         <button class="cat-pill" data-category="student" onclick="filterByCategory('student')">
           <i class="fa-solid fa-graduation-cap"></i> Student & Academic
+        </button>
+        <button class="cat-pill" data-category="marketing" onclick="filterByCategory('marketing')">
+          <i class="fa-solid fa-bullhorn"></i> Social Media & Marketing
+        </button>
+        <button class="cat-pill" data-category="business" onclick="filterByCategory('business')">
+          <i class="fa-solid fa-briefcase"></i> Business & Freelance
         </button>
         <button class="cat-pill" data-category="productivity" onclick="filterByCategory('productivity')">
           <i class="fa-solid fa-bolt"></i> Productivity & Writing
@@ -1267,6 +1448,253 @@
             <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
           </div>
         </div>
+
+        <!-- Card 14: University Merit & Aggregate Calculator -->
+        <div class="tool-select-card" data-tool="merit-calculator" data-category="student" onclick="openSpecificTool('merit-calculator')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-calculator"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">ADMISSIONS</span>
+              <span class="badge-category-tag">STUDENT</span>
+            </div>
+          </div>
+          <h3 class="card-title">Merit & Aggregate Calculator</h3>
+          <p class="card-desc">Calculate university entry aggregate for MDCAT, ECAT, NUST, FAST, COMSATS, GIKI with custom formula weightages.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 15: Attendance & Bunk Planner -->
+        <div class="tool-select-card" data-tool="attendance-calculator" data-category="student productivity" onclick="openSpecificTool('attendance-calculator')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-clipboard-user"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">ESSENTIAL</span>
+              <span class="badge-category-tag">STUDENT</span>
+            </div>
+          </div>
+          <h3 class="card-title">Attendance & Bunk Planner</h3>
+          <p class="card-desc">Check how many classes you can safely bunk or how many you must attend to maintain 75% or 80% attendance.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 16: Citation & Bibliography Generator -->
+        <div class="tool-select-card" data-tool="citation-generator" data-category="student productivity" onclick="openSpecificTool('citation-generator')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-quote-right"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">ACADEMIC</span>
+              <span class="badge-category-tag">WRITING</span>
+            </div>
+          </div>
+          <h3 class="card-title">Citation & Bibliography Generator</h3>
+          <p class="card-desc">Generate instant APA 7th, MLA 9, and Harvard references for website articles, textbooks, and journal papers.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 17: Text Diff & Comparison Checker -->
+        <div class="tool-select-card" data-tool="text-diff" data-category="student productivity" onclick="openSpecificTool('text-diff')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-code-compare"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">PRO</span>
+              <span class="badge-category-tag">WRITING</span>
+            </div>
+          </div>
+          <h3 class="card-title">Text Diff & Compare Tool</h3>
+          <p class="card-desc">Compare two essay drafts or assignments side by side with real-time green added and red deleted text highlights.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 18: Instant Image to PDF Converter -->
+        <div class="tool-select-card" data-tool="image-to-pdf" data-category="student productivity" onclick="openSpecificTool('image-to-pdf')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-file-pdf"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">100% PRIVATE</span>
+              <span class="badge-category-tag">PRODUCTIVITY</span>
+            </div>
+          </div>
+          <h3 class="card-title">Image to PDF Converter</h3>
+          <p class="card-desc">Convert JPG and PNG photos into a clean downloadable multi-page PDF document completely in your browser.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 19: UTM Campaign Link Builder -->
+        <div class="tool-select-card" data-tool="utm-builder" data-category="marketing developer" onclick="openSpecificTool('utm-builder')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-bullhorn"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">MARKETING</span>
+              <span class="badge-category-tag">ANALYTICS</span>
+            </div>
+          </div>
+          <h3 class="card-title">UTM Campaign Link Builder</h3>
+          <p class="card-desc">Generate trackable URLs with campaign source, medium, and name parameters for Google Analytics and Meta ads.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 20: Social Media Bio & Character Counter -->
+        <div class="tool-select-card" data-tool="social-bio-counter" data-category="marketing productivity" onclick="openSpecificTool('social-bio-counter')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-brands fa-hashtag"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">SOCIAL</span>
+              <span class="badge-category-tag">MARKETING</span>
+            </div>
+          </div>
+          <h3 class="card-title">Social Bio & Character Counter</h3>
+          <p class="card-desc">Track real-time character limits across Twitter / X (280), Instagram Bio (150), TikTok (80), and LinkedIn (3000).</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 21: YouTube Title & Tag Generator -->
+        <div class="tool-select-card" data-tool="youtube-tag-generator" data-category="marketing" onclick="openSpecificTool('youtube-tag-generator')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-brands fa-youtube"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">YOUTUBE</span>
+              <span class="badge-category-tag">MARKETING</span>
+            </div>
+          </div>
+          <h3 class="card-title">YouTube Title & Tag Generator</h3>
+          <p class="card-desc">Generate high-CTR video title ideas and formatted comma-separated SEO tags for instant YouTube Studio upload.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 22: Trending Hashtag Generator -->
+        <div class="tool-select-card" data-tool="hashtag-generator" data-category="marketing" onclick="openSpecificTool('hashtag-generator')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-tags"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">VIRAL</span>
+              <span class="badge-category-tag">MARKETING</span>
+            </div>
+          </div>
+          <h3 class="card-title">Trending Hashtag Generator</h3>
+          <p class="card-desc">Discover high-engagement hashtags for Instagram Reels, TikTok, and YouTube Shorts with 1-click batch copy.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 23: Freelance Hourly Rate Calculator -->
+        <div class="tool-select-card" data-tool="freelance-rate-calculator" data-category="business" onclick="openSpecificTool('freelance-rate-calculator')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-coins"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">FREELANCE</span>
+              <span class="badge-category-tag">BUSINESS</span>
+            </div>
+          </div>
+          <h3 class="card-title">Freelance Hourly Rate Calculator</h3>
+          <p class="card-desc">Calculate your minimum and target hourly pricing based on monthly bills, overhead costs, billable hours, and taxes.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 24: Loan & Installment (EMI) Calculator -->
+        <div class="tool-select-card" data-tool="loan-calculator" data-category="business" onclick="openSpecificTool('loan-calculator')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-hand-holding-dollar"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">FINANCE</span>
+              <span class="badge-category-tag">BUSINESS</span>
+            </div>
+          </div>
+          <h3 class="card-title">Loan & EMI Calculator</h3>
+          <p class="card-desc">Calculate monthly installments, total interest/markup, and comprehensive payment schedules for loans and financing.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 25: Strong Password Generator & Security Audit -->
+        <div class="tool-select-card" data-tool="password-generator" data-category="productivity developer" onclick="openSpecificTool('password-generator')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">SECURITY</span>
+              <span class="badge-category-tag">PRODUCTIVITY</span>
+            </div>
+          </div>
+          <h3 class="card-title">Strong Password Generator</h3>
+          <p class="card-desc">Create unhackable passwords with custom lengths, symbols, numbers, and real-time brute-force crack time audit.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 26: Unit & Data Storage Converter -->
+        <div class="tool-select-card" data-tool="unit-data-converter" data-category="productivity student" onclick="openSpecificTool('unit-data-converter')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-right-left"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">CONVERTER</span>
+              <span class="badge-category-tag">PRODUCTIVITY</span>
+            </div>
+          </div>
+          <h3 class="card-title">Unit & Data Storage Converter</h3>
+          <p class="card-desc">Convert Bytes, KB, MB, GB, TB, PB, internet Mbps to MB/s transfer rates, length, and weight instantly.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
       </div>
 
       <div id="toolsNoResultsMsg" style="display: none; padding: 40px; text-align: center; color: var(--text-muted); font-size: 15px;">
@@ -1306,6 +1734,19 @@
         <button onclick="openSpecificTool('og-preview')" class="quick-nav-pill" id="quickPill-og-preview">Social Preview</button>
         <button onclick="openSpecificTool('ai-prompt-generator')" class="quick-nav-pill" id="quickPill-ai-prompt-generator">AI Prompts</button>
         <button onclick="openSpecificTool('slug-generator')" class="quick-nav-pill" id="quickPill-slug-generator">Slug & Meta</button>
+        <button onclick="openSpecificTool('merit-calculator')" class="quick-nav-pill" id="quickPill-merit-calculator">Merit Calculator</button>
+        <button onclick="openSpecificTool('attendance-calculator')" class="quick-nav-pill" id="quickPill-attendance-calculator">Attendance Planner</button>
+        <button onclick="openSpecificTool('citation-generator')" class="quick-nav-pill" id="quickPill-citation-generator">Citation Generator</button>
+        <button onclick="openSpecificTool('text-diff')" class="quick-nav-pill" id="quickPill-text-diff">Text Diff</button>
+        <button onclick="openSpecificTool('image-to-pdf')" class="quick-nav-pill" id="quickPill-image-to-pdf">Image to PDF</button>
+        <button onclick="openSpecificTool('utm-builder')" class="quick-nav-pill" id="quickPill-utm-builder">UTM Builder</button>
+        <button onclick="openSpecificTool('social-bio-counter')" class="quick-nav-pill" id="quickPill-social-bio-counter">Social Bio Limits</button>
+        <button onclick="openSpecificTool('youtube-tag-generator')" class="quick-nav-pill" id="quickPill-youtube-tag-generator">YouTube Tags</button>
+        <button onclick="openSpecificTool('hashtag-generator')" class="quick-nav-pill" id="quickPill-hashtag-generator">Hashtags</button>
+        <button onclick="openSpecificTool('freelance-rate-calculator')" class="quick-nav-pill" id="quickPill-freelance-rate-calculator">Freelance Rate</button>
+        <button onclick="openSpecificTool('loan-calculator')" class="quick-nav-pill" id="quickPill-loan-calculator">Loan & EMI</button>
+        <button onclick="openSpecificTool('password-generator')" class="quick-nav-pill" id="quickPill-password-generator">Password Gen</button>
+        <button onclick="openSpecificTool('unit-data-converter')" class="quick-nav-pill" id="quickPill-unit-data-converter">Unit Converter</button>
       </div>
     </div>
 
@@ -1425,6 +1866,20 @@
           <i class="fa-regular fa-keyboard"></i> Tip: You can also use your keyboard numpad directly!
         </p>
       </div>
+    
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Type or paste any text, invoice, or sequence of numbers into the analyzer input field.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Review live digit counts, distinct numbers, and the 0–9 frequency breakdown.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Click "Extract Digits Only" to filter out all letters and copy just the numbers.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Switch to the "Digital Calculator" tab for quick on-screen math with evaluation history.</span></li>
+        </ul>
+      </div>
     </section>
 
     <!-- TOOL 2: SEMESTER CGPA & GPA CALCULATOR -->
@@ -1510,6 +1965,20 @@
             <strong style="color: #38BDF8; font-size: 18px; margin-left: 6px;" id="displayCumulativeCgpa">--</strong>
           </div>
         </div>
+      </div>
+    
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Enter course titles, credit hours, and selected letter grades for your semester.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Click "+ Add Course" to add more rows to your semester calculation table.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Instantly view your semester GPA and cumulative CGPA on the standard 4.0 scale.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Click "Download Transcript Summary" or copy your results to share with academic advisors.</span></li>
+        </ul>
       </div>
     </section>
 
@@ -1630,6 +2099,20 @@
 
         </div>
       </div>
+    
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Enter your obtained marks and total maximum marks into the input fields.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Instantly view your exact percentage, letter grade, and division / honors classification.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Check marks lost and examine how many points were needed for the next grade bracket.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Switch to "Quick Percentage Ratios" for percentage change and proportion calculations.</span></li>
+        </ul>
+      </div>
     </section>
 
     <!-- TOOL 4: GRADE & FINAL EXAM CALCULATOR -->
@@ -1724,6 +2207,20 @@
           </div>
         </div>
       </div>
+    
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Enter your current course grade percentage and your desired target grade.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Input the percentage weight assigned to your final exam (e.g. 30% or 40%).</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> View the exact score required on the final exam with actionable preparation feedback.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Switch to "Weighted Course Grade" to compute your overall average across quizzes, labs, and midterms.</span></li>
+        </ul>
+      </div>
     </section>
 
     <!-- TOOL 5: STUDY TIMETABLE GENERATOR -->
@@ -1792,6 +2289,20 @@
           <!-- Rendered via JS -->
         </table>
       </div>
+    
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Enter your enrolled subjects separated by commas (e.g. Calculus, Data Structures).</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Choose your daily study hours (2, 4, 6, or 8 hours) and preferred focus time window.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Click "Generate Weekly Routine" to build a balanced schedule with spaced repetition.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Click "Print / Save PDF" to print your timetable or "Copy Text Summary" to save on your phone.</span></li>
+        </ul>
+      </div>
     </section>
 
     <!-- TOOL 6: EXAM COUNTDOWN & TRACKER -->
@@ -1841,6 +2352,20 @@
       <!-- Countdown Cards Grid -->
       <div class="exam-cards-grid" id="examCardsContainer">
         <!-- Rendered via JS -->
+      </div>
+    
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Enter your upcoming exam title, course code, and exam hall/room location.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Pick the scheduled exam date and time from the datetime picker.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Click "Set Countdown" to start live ticking timers tracking Days, Hours, Minutes, and Seconds.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Check color-coded urgency badges that notify you when an exam is entering final revision hours.</span></li>
+        </ul>
       </div>
     </section>
 
@@ -1915,6 +2440,20 @@
           <span style="font-size: 13px; color: var(--text-muted);">Type text above to see keyword frequencies.</span>
         </div>
       </div>
+    
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Paste or type your essay, article, or assignment text into the main editor.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Check real-time counts for words, characters (with and without spaces), sentences, and paragraphs.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Review estimated reading time and speaking presentation duration.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Use the case converter buttons to switch to UPPERCASE, lowercase, Title Case, or clean extra spaces.</span></li>
+        </ul>
+      </div>
     </section>
 
     <!-- TOOL 8: TYPING SPEED TEST -->
@@ -1982,6 +2521,20 @@
         <button onclick="initTypingTest()" class="btn-action-primary">
           <i class="fa-solid fa-redo"></i> Try Another Test
         </button>
+      </div>
+    
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Choose your preferred difficulty (Easy, Medium, Code Syntax) and test timer (30s or 60s).</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Click the typing input box and start typing — the timer begins on your very first keystroke.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Correct letters glow green, while mistakes highlight in red with instant backspace correction.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> View your final Words Per Minute (WPM), accuracy score, and typing speed rank.</span></li>
+        </ul>
       </div>
     </section>
 
@@ -2075,6 +2628,20 @@
           Next <i class="fa-solid fa-arrow-right"></i>
         </button>
       </div>
+    
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Choose a subject deck (CS Fundamentals, Web Development) or create custom flashcards.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Click anywhere on the 3D card or press the card to flip between concept and answer.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Use the "Mastered" and "Needs Review" buttons to test active recall and track your progress.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Click "+ Add Card" to add custom revision questions that save directly in your browser.</span></li>
+        </ul>
+      </div>
     </section>
 
     <!-- TOOL 10: CUSTOM QR CODE GENERATOR -->
@@ -2135,6 +2702,20 @@
             </button>
           </div>
         </div>
+      </div>
+    
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Select your QR data type: Website URL, Plain Text, WhatsApp direct chat, or Wi-Fi quick connect.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Enter your destination content and customize the foreground and background colors.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Preview your generated high-resolution QR code rendered instantly on screen.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Click "Download PNG" to save a crisp, scannable image for flyers, slides, or business cards.</span></li>
+        </ul>
       </div>
     </section>
 
@@ -2245,6 +2826,20 @@
           </div>
         </div>
       </div>
+    
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Enter your page title, meta description, target canonical URL, and preview image link.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Check character counters to make sure your title (<=60) and description (<=160) fit search limits.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Switch between preview tabs to see live cards on Google Search, Facebook, Twitter/X, and LinkedIn.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Verify your branding presentation before publishing blog posts or landing pages.</span></li>
+        </ul>
+      </div>
     </section>
 
     <!-- TOOL 12: AI PROMPT GENERATOR -->
@@ -2309,6 +2904,20 @@
           </div>
         </div>
       </div>
+    
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Choose your use case: Coding, Academic Thesis, SEO Blog Writing, or Business Pitch.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Customize the AI persona role and enter your specific task details and output constraints.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Click "Generate AI Prompt" to create a structured, role-engineered system prompt.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Click "Copy Prompt" and paste directly into ChatGPT, Claude, or Gemini for elite results.</span></li>
+        </ul>
+      </div>
     </section>
 
     <!-- TOOL 13: SEO SLUG & META TAG GENERATOR -->
@@ -2366,6 +2975,1074 @@
             <i class="fa-solid fa-copy"></i> Copy All HTML Meta Tags
           </button>
         </div>
+      </div>
+    
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Type or paste your article title or headline into the title input field.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Toggle English stop words filtering to keep your URL short, clean, and search-friendly.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Copy your clean SEO slug with a single click (e.g. how-powerful-is-chatgpt).</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Click "Copy All HTML Meta Tags" to copy the complete <head> snippet with Open Graph & Twitter Cards.</span></li>
+        </ul>
+      </div>
+    </section>
+
+  
+    <!-- TOOL 14: UNIVERSITY MERIT & AGGREGATE CALCULATOR -->
+    <section class="tool-box" id="merit-calculator">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-calculator"></i></div>
+        <div>
+          <h3>University Merit & Aggregate Calculator</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Calculate your university entry aggregate for MDCAT, ECAT, NUST NET, FAST, COMSATS, GIKI with custom formula weightages.
+          </p>
+        </div>
+      </div>
+
+      <!-- Presets -->
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;">
+        <button onclick="setMeritPreset('mdcat')" class="quick-nav-pill active" id="meritPreset-mdcat">MDCAT Medical (10-40-50)</button>
+        <button onclick="setMeritPreset('ecat')" class="quick-nav-pill" id="meritPreset-ecat">ECAT / UET (25-45-30)</button>
+        <button onclick="setMeritPreset('nust')" class="quick-nav-pill" id="meritPreset-nust">NUST NET (10-15-75)</button>
+        <button onclick="setMeritPreset('fast')" class="quick-nav-pill" id="meritPreset-fast">FAST / COMSATS (50-50)</button>
+        <button onclick="setMeritPreset('custom')" class="quick-nav-pill" id="meritPreset-custom">Custom Weights</button>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <h4 style="margin-bottom: 14px; font-size: 16px;">Academic Score Inputs</h4>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Matric / O-Level Marks</label>
+              <input type="number" id="meritMatricObt" class="form-control" value="1020" placeholder="Obtained" oninput="calculateMeritAggregate()">
+            </div>
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Matric Total Marks</label>
+              <input type="number" id="meritMatricTot" class="form-control" value="1100" placeholder="Total" oninput="calculateMeritAggregate()">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">FSc / A-Level Marks</label>
+              <input type="number" id="meritInterObt" class="form-control" value="475" placeholder="Obtained" oninput="calculateMeritAggregate()">
+            </div>
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">FSc Total Marks</label>
+              <input type="number" id="meritInterTot" class="form-control" value="550" placeholder="Total" oninput="calculateMeritAggregate()">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Entry Test Marks</label>
+              <input type="number" id="meritTestObt" class="form-control" value="172" placeholder="Obtained" oninput="calculateMeritAggregate()">
+            </div>
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Entry Test Total</label>
+              <input type="number" id="meritTestTot" class="form-control" value="200" placeholder="Total" oninput="calculateMeritAggregate()">
+            </div>
+          </div>
+
+          <h4 style="margin-bottom: 10px; font-size: 14.5px;">Formula Weightage (%)</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <div>
+              <label style="font-size: 12px; font-weight: 600;">Matric %</label>
+              <input type="number" id="meritMatricWeight" class="form-control" value="10" oninput="calculateMeritAggregate()">
+            </div>
+            <div>
+              <label style="font-size: 12px; font-weight: 600;">FSc %</label>
+              <input type="number" id="meritInterWeight" class="form-control" value="40" oninput="calculateMeritAggregate()">
+            </div>
+            <div>
+              <label style="font-size: 12px; font-weight: 600;">Test %</label>
+              <input type="number" id="meritTestWeight" class="form-control" value="50" oninput="calculateMeritAggregate()">
+            </div>
+          </div>
+          <div id="meritWeightTotalNotice" style="font-size: 12px; color: #10B981; margin-top: 6px; font-weight: 600;">Total Weight: 100%</div>
+        </div>
+
+        <div class="tool-panel-card" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+          <span class="tool-stat-badge" style="margin: 0 auto 12px;"><i class="fa-solid fa-award"></i> FINAL AGGREGATE</span>
+          <div style="font-size: 48px; font-weight: 800; color: var(--accent-cyan); font-family: 'Space Grotesk', monospace;" id="meritAggregateScore">
+            86.82%
+          </div>
+          <div style="height: 10px; background: #E2E8F0; border-radius: 5px; overflow: hidden; margin: 16px auto; width: 85%;">
+            <div id="meritAggregateMeter" style="height: 100%; width: 86.82%; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-dark)); border-radius: 5px;"></div>
+          </div>
+          <p id="meritAggregateStatus" style="font-weight: 600; font-size: 15px; color: var(--text-main); margin: 6px 0;">
+            Competitive Merit Range! High probability of admission in premier programs.
+          </p>
+          <div style="background: rgba(0, 168, 232, 0.08); border-radius: 10px; padding: 12px; font-size: 13px; color: var(--text-muted); margin-top: 10px;" id="meritBreakdownText">
+            Matric: 9.27% • FSc: 34.55% • Test: 43.00%
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Select your target university formula preset (MDCAT, ECAT, NUST, FAST) or choose Custom Weights.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Enter your obtained and total maximum marks for Matric / SSC and Intermediate / FSc.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Enter your entry test score and test maximum marks.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Instantly view your final aggregate percentage, merit meter bar, and detailed weight breakdown.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TOOL 15: ATTENDANCE & BUNK PLANNER -->
+    <section class="tool-box" id="attendance-calculator">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-clipboard-user"></i></div>
+        <div>
+          <h3>Attendance & Bunk Planner</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Check how many classes you can safely bunk or how many you must attend to maintain your 75% or 80% college requirement.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <h4 style="margin-bottom: 14px; font-size: 16px;">Semester Attendance Status</h4>
+          
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 13px; font-weight: 600;">Total Classes Conducted So Far</label>
+            <input type="number" id="attTotalInput" class="form-control" value="40" min="1" oninput="calculateAttendance()">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 13px; font-weight: 600;">Classes Attended</label>
+            <input type="number" id="attAttendedInput" class="form-control" value="34" min="0" oninput="calculateAttendance()">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 18px;">
+            <div style="display: flex; justify-content: space-between;">
+              <label style="font-size: 13px; font-weight: 600;">Target Attendance Requirement (%)</label>
+              <strong id="attTargetDisplay" style="color: var(--accent-cyan);">75%</strong>
+            </div>
+            <input type="range" id="attTargetInput" min="50" max="95" value="75" style="width: 100%; cursor: pointer;" oninput="document.getElementById('attTargetDisplay').textContent = this.value + '%'; calculateAttendance();">
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+            <button onclick="setAttTargetPreset(75)" class="quick-nav-pill">75% Standard</button>
+            <button onclick="setAttTargetPreset(80)" class="quick-nav-pill">80% Strict</button>
+            <button onclick="setAttTargetPreset(85)" class="quick-nav-pill">85% Honors</button>
+          </div>
+        </div>
+
+        <div class="tool-panel-card" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+          <span class="tool-stat-badge" style="margin: 0 auto 10px;" id="attStatusBadge">ATTENDANCE HEALTHY</span>
+          <div style="font-size: 48px; font-weight: 800; color: #10B981; font-family: 'Space Grotesk', monospace;" id="attCurrentPercent">
+            85.0%
+          </div>
+          <div style="height: 10px; background: #E2E8F0; border-radius: 5px; overflow: hidden; margin: 14px auto; width: 85%;">
+            <div id="attMeterBar" style="height: 100%; width: 85%; background: #10B981; border-radius: 5px;"></div>
+          </div>
+          <h3 id="attResultHeadline" style="font-size: 20px; margin-bottom: 6px; color: var(--text-main);">
+            You can safely bunk 5 more classes!
+          </h3>
+          <p id="attResultDetail" style="color: var(--text-muted); font-size: 13.5px; margin: 0;">
+            Missing 5 classes will leave you at 75.6% attendance, safely above your 75% target threshold.
+          </p>
+        </div>
+      </div>
+
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Enter the total number of lectures or lab sessions conducted so far in your course.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Enter the number of classes you have personally attended.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Select your institution's minimum attendance threshold (standard 75% or 80%).</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Instantly check how many upcoming classes you can safely bunk, or how many you must attend to catch up.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TOOL 16: CITATION & BIBLIOGRAPHY GENERATOR -->
+    <section class="tool-box" id="citation-generator">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-quote-right"></i></div>
+        <div>
+          <h3>Citation & Bibliography Generator</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Generate accurate APA 7th, MLA 9th, and Harvard references for website articles, textbooks, and journal publications.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-subtabs">
+        <button class="subtab-btn active" onclick="switchCiteSource('web')"><i class="fa-solid fa-globe"></i> Website Article</button>
+        <button class="subtab-btn" onclick="switchCiteSource('book')"><i class="fa-solid fa-book"></i> Book / Textbook</button>
+        <button class="subtab-btn" onclick="switchCiteSource('journal')"><i class="fa-solid fa-newspaper"></i> Journal Paper</button>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h4 style="font-size: 15px;">Source Information</h4>
+            <div style="display: flex; gap: 6px;">
+              <button onclick="setCiteStyle('apa')" class="quick-nav-pill active" id="citeStyle-apa">APA 7th</button>
+              <button onclick="setCiteStyle('mla')" class="quick-nav-pill" id="citeStyle-mla">MLA 9th</button>
+              <button onclick="setCiteStyle('harvard')" class="quick-nav-pill" id="citeStyle-harvard">Harvard</button>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Author Last Name</label>
+              <input type="text" id="citeAuthorLast" class="form-control" value="Smith" oninput="generateCitation()">
+            </div>
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Author First Name / Initial</label>
+              <input type="text" id="citeAuthorFirst" class="form-control" value="John" oninput="generateCitation()">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 12.5px; font-weight: 600;">Title of Work</label>
+            <input type="text" id="citeTitle" class="form-control" value="Modern Artificial Intelligence and Software Architecture" oninput="generateCitation()">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;" id="citeSourceLabel">Website Name</label>
+              <input type="text" id="citeSource" class="form-control" value="Tech X Sol Research" oninput="generateCitation()">
+            </div>
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Publication Year</label>
+              <input type="number" id="citeYear" class="form-control" value="2026" oninput="generateCitation()">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 12.5px; font-weight: 600;">URL / DOI / Link</label>
+            <input type="text" id="citeUrl" class="form-control" value="https://www.techxsol.online/blogs" oninput="generateCitation()">
+          </div>
+
+          <button onclick="generateCitation()" class="btn-action-primary" style="width: 100%; justify-content: center;">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Update Citation
+          </button>
+        </div>
+
+        <div class="tool-panel-card" style="display: flex; flex-direction: column;">
+          <h4 style="margin-bottom: 12px; font-size: 15px;">Full Bibliographic Reference</h4>
+          <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: 10px; padding: 14px; font-size: 14px; line-height: 1.6; color: var(--text-main); margin-bottom: 14px; min-height: 80px;" id="citeFullReference">
+            Smith, J. (2026). Modern Artificial Intelligence and Software Architecture. Tech X Sol Research. https://www.techxsol.online/blogs
+          </div>
+          <button onclick="copyCitation('full')" class="btn-action-primary" style="margin-bottom: 18px;">
+            <i class="fa-solid fa-copy"></i> Copy Full Reference
+          </button>
+
+          <h4 style="margin-bottom: 8px; font-size: 14.5px;">In-Text Parenthetical Citation</h4>
+          <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 14px; font-size: 14px; font-weight: 600; color: var(--accent-cyan); display: flex; justify-content: space-between; align-items: center;">
+            <span id="citeInTextReference">(Smith, 2026)</span>
+            <button onclick="copyCitation('intext')" class="quick-nav-pill" style="margin: 0;">Copy In-Text</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Select your reference source type (Website Article, Book, or Journal Paper).</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Choose your required academic citation style: APA 7th Edition, MLA 9th, or Harvard.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Fill in the author's name, title, publisher/site, and publication year.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Click "Copy Full Reference" to paste straight into your bibliography, and copy the in-text citation for your essay.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TOOL 17: TEXT DIFF & COMPARISON CHECKER -->
+    <section class="tool-box" id="text-diff">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-code-compare"></i></div>
+        <div>
+          <h3>Text Diff & Comparison Checker</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Compare two versions of an essay, code snippet, or document side by side with real-time green additions and red deletions.
+          </p>
+        </div>
+      </div>
+
+      <div class="diff-container">
+        <div>
+          <label style="font-size: 13px; font-weight: 700; display: block; margin-bottom: 6px;">Original Text Draft (Before):</label>
+          <textarea id="diffOriginalText" class="form-control" style="height: 150px; font-size: 13.5px;" placeholder="Paste original text here..." oninput="runTextDiff()">Tech X Sol offers digital transformation, web applications, and custom software for clients in 2025.</textarea>
+        </div>
+        <div>
+          <label style="font-size: 13px; font-weight: 700; display: block; margin-bottom: 6px;">Revised / New Version (After):</label>
+          <textarea id="diffNewText" class="form-control" style="height: 150px; font-size: 13.5px;" placeholder="Paste modified text here..." oninput="runTextDiff()">Tech X Sol provides digital transformation, high-performance web applications, AI tools, and enterprise systems for businesses in 2026.</textarea>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
+        <button onclick="runTextDiff()" class="btn-action-primary"><i class="fa-solid fa-magnifying-glass"></i> Compare Differences</button>
+        <button onclick="swapDiffTexts()" class="btn-action-secondary"><i class="fa-solid fa-right-left"></i> Swap Boxes</button>
+        <button onclick="clearDiffTexts()" class="btn-action-secondary" style="color: var(--danger);"><i class="fa-solid fa-trash-can"></i> Clear</button>
+      </div>
+
+      <div class="tool-panel-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <h4 style="font-size: 15px;">Visual Difference Breakdown:</h4>
+          <div style="display: flex; gap: 10px; font-size: 12.5px;">
+            <span style="color: #065F46; font-weight: 700;" id="diffAddedCount">+3 Additions</span>
+            <span style="color: #991B1B; font-weight: 700;" id="diffRemovedCount">-2 Removals</span>
+            <span style="color: var(--accent-cyan); font-weight: 700;" id="diffSimilarityScore">Similarity: 78%</span>
+          </div>
+        </div>
+        <div class="diff-output-box" id="diffOutputDisplay">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Paste your original draft in the left box and your revised draft in the right box.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Click "Compare Differences" to run the real-time word-by-word visual comparison engine.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Deleted phrases are highlighted in red strikethrough; newly added phrases are highlighted in green.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Review your total change count and similarity percentage to check revisions.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TOOL 18: INSTANT IMAGE TO PDF CONVERTER -->
+    <section class="tool-box" id="image-to-pdf">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-file-pdf"></i></div>
+        <div>
+          <h3>Instant Image to PDF Converter</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Convert JPG, PNG, and WebP images into a clean multi-page PDF document completely in your browser without uploading to any server.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <div class="pdf-dropzone" onclick="document.getElementById('pdfFileInput').click()">
+            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 36px; color: var(--accent-cyan); margin-bottom: 10px; display: block;"></i>
+            <h4 style="font-size: 16px; margin-bottom: 4px;">Choose Images or Drag & Drop</h4>
+            <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Supports JPG, PNG, WebP (Multiple images allowed)</p>
+            <input type="file" id="pdfFileInput" multiple accept="image/*" style="display: none;" onchange="handlePdfImageUpload(event)">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Page Orientation</label>
+              <select id="pdfOrientationSelect" class="form-control">
+                <option value="p" selected>Portrait (Standard)</option>
+                <option value="l">Landscape (Wide)</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Page Margins</label>
+              <select id="pdfMarginSelect" class="form-control">
+                <option value="10" selected>Standard Margin (10mm)</option>
+                <option value="0">No Margin (Full Bleed)</option>
+                <option value="20">Wide Margin (20mm)</option>
+              </select>
+            </div>
+          </div>
+
+          <button onclick="generatePdfFromImages()" class="btn-action-primary" style="width: 100%; justify-content: center; margin-top: 16px;">
+            <i class="fa-solid fa-file-arrow-down"></i> Download PDF Document
+          </button>
+        </div>
+
+        <div class="tool-panel-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h4 style="font-size: 15px;">Selected Pages (<span id="pdfImageCount">0</span>)</h4>
+            <button onclick="clearPdfImages()" class="quick-nav-pill" style="color: var(--danger);"><i class="fa-solid fa-trash-can"></i> Clear All</button>
+          </div>
+
+          <div id="pdfThumbsContainer" class="pdf-thumbs-grid">
+            <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-muted); font-size: 13.5px;">
+              No images uploaded yet. Select images on the left to preview pages here.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Click the dropzone or drag and drop your JPG, PNG, or WebP images.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Preview your pages and remove any unwanted images using the trash icon.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Choose page orientation (Portrait or Landscape) and preferred margin size.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Click "Download PDF Document" to generate and save your merged PDF document instantly.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TOOL 19: UTM CAMPAIGN LINK BUILDER -->
+    <section class="tool-box" id="utm-builder">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-bullhorn"></i></div>
+        <div>
+          <h3>UTM Campaign Link Builder</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Generate clean, trackable marketing URLs with campaign source, medium, and name parameters for Google Analytics and Meta ads.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <h4 style="margin-bottom: 14px; font-size: 16px;">Campaign Parameters</h4>
+          
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 12.5px; font-weight: 600;">Website Target URL *</label>
+            <input type="text" id="utmUrlInput" class="form-control" value="https://www.techxsol.online/tools" placeholder="https://..." oninput="buildUtmUrl()">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Campaign Source * (utm_source)</label>
+              <input type="text" id="utmSourceInput" class="form-control" value="facebook" placeholder="e.g. google, facebook, newsletter" oninput="buildUtmUrl()">
+            </div>
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Campaign Medium * (utm_medium)</label>
+              <input type="text" id="utmMediumInput" class="form-control" value="cpc" placeholder="e.g. cpc, email, banner, social" oninput="buildUtmUrl()">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 12.5px; font-weight: 600;">Campaign Name * (utm_campaign)</label>
+            <input type="text" id="utmNameInput" class="form-control" value="spring_launch_2026" placeholder="e.g. black_friday, product_launch" oninput="buildUtmUrl()">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Campaign Term (utm_term)</label>
+              <input type="text" id="utmTermInput" class="form-control" placeholder="e.g. student_tools" oninput="buildUtmUrl()">
+            </div>
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Campaign Content (utm_content)</label>
+              <input type="text" id="utmContentInput" class="form-control" placeholder="e.g. hero_banner_btn" oninput="buildUtmUrl()">
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-panel-card" style="display: flex; flex-direction: column;">
+          <h4 style="margin-bottom: 12px; font-size: 15px;">Generated Trackable Link</h4>
+          <textarea id="utmOutputArea" class="form-control" style="flex-grow: 1; min-height: 120px; font-family: monospace; font-size: 13px; line-height: 1.6; word-break: break-all; background: #0F172A; color: #38BDF8; padding: 14px;" readonly></textarea>
+          
+          <div style="display: flex; gap: 10px; margin-top: 14px;">
+            <button onclick="copyUtmUrl()" class="btn-action-primary" style="flex: 1; justify-content: center;">
+              <i class="fa-solid fa-copy"></i> Copy UTM Link
+            </button>
+            <button onclick="openUtmUrl()" class="btn-action-secondary">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> Test Link
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Enter the landing page URL on your website where visitors should be directed.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Fill in Campaign Source (e.g. google, facebook) and Campaign Medium (e.g. cpc, email).</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Enter your Campaign Name to distinguish your analytics results in Google Analytics.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Click "Copy UTM Link" to paste into your ad copy, social bio, or email newsletters.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TOOL 20: SOCIAL MEDIA BIO & CHARACTER COUNTER -->
+    <section class="tool-box" id="social-bio-counter">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-brands fa-hashtag"></i></div>
+        <div>
+          <h3>Social Media Bio & Character Limits Counter</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Real-time character counters and progress bars for Twitter / X, Instagram Bio, TikTok, and LinkedIn posts with warning alerts.
+          </p>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 18px;">
+        <textarea id="socialBioTextarea" class="form-control" style="width: 100%; height: 140px; font-size: 15px; padding: 14px; line-height: 1.6;" placeholder="Type or paste your social post, thread, or profile bio here..." oninput="handleSocialBioInput()">Tech X Sol | Empowering digital growth with high-performance web applications, AI prompt engineering, and custom software systems. Explore our free student & developer tools suite today! #Tech #Innovation</textarea>
+      </div>
+
+      <!-- Quick Metrics Strip -->
+      <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 18px;">
+        <div><strong>Characters:</strong> <span id="bioCharTotal" style="color: var(--accent-cyan); font-weight: 700;">0</span></div>
+        <div><strong>Words:</strong> <span id="bioWordTotal" style="color: var(--accent-cyan); font-weight: 700;">0</span></div>
+        <div><strong>Hashtags (#):</strong> <span id="bioHashtagTotal" style="color: #10B981; font-weight: 700;">0</span></div>
+        <div><strong>Mentions (@):</strong> <span id="bioMentionTotal" style="color: #6366F1; font-weight: 700;">0</span></div>
+        <button onclick="copySocialBioText()" class="quick-nav-pill" style="margin-left: auto;"><i class="fa-solid fa-copy"></i> Copy Text</button>
+      </div>
+
+      <!-- Platform Limit Tiles -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+        <!-- Twitter / X (280) -->
+        <div class="bio-platform-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; font-size: 14px;"><i class="fa-brands fa-x-twitter"></i> Twitter / X Tweet</span>
+            <span id="twCountBadge" style="font-weight: 700; font-size: 13px;">0 / 280</span>
+          </div>
+          <div class="bio-prog-bar-bg"><div id="twBarFill" class="bio-prog-bar-fill"></div></div>
+          <span style="font-size: 12px; color: var(--text-muted);" id="twStatusText">280 chars left</span>
+        </div>
+
+        <!-- Instagram Bio (150) -->
+        <div class="bio-platform-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; font-size: 14px;"><i class="fa-brands fa-instagram" style="color: #E1306C;"></i> Instagram Bio</span>
+            <span id="igCountBadge" style="font-weight: 700; font-size: 13px;">0 / 150</span>
+          </div>
+          <div class="bio-prog-bar-bg"><div id="igBarFill" class="bio-prog-bar-fill"></div></div>
+          <span style="font-size: 12px; color: var(--text-muted);" id="igStatusText">150 chars left</span>
+        </div>
+
+        <!-- TikTok Bio (80) -->
+        <div class="bio-platform-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; font-size: 14px;"><i class="fa-brands fa-tiktok"></i> TikTok Bio</span>
+            <span id="ttCountBadge" style="font-weight: 700; font-size: 13px;">0 / 80</span>
+          </div>
+          <div class="bio-prog-bar-bg"><div id="ttBarFill" class="bio-prog-bar-fill"></div></div>
+          <span style="font-size: 12px; color: var(--text-muted);" id="ttStatusText">80 chars left</span>
+        </div>
+
+        <!-- LinkedIn Post (3000) -->
+        <div class="bio-platform-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; font-size: 14px;"><i class="fa-brands fa-linkedin" style="color: #0A66C2;"></i> LinkedIn Post</span>
+            <span id="liCountBadge" style="font-weight: 700; font-size: 13px;">0 / 3000</span>
+          </div>
+          <div class="bio-prog-bar-bg"><div id="liBarFill" class="bio-prog-bar-fill"></div></div>
+          <span style="font-size: 12px; color: var(--text-muted);" id="liStatusText">3000 chars left</span>
+        </div>
+      </div>
+
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Type or paste your bio, caption, or thread text into the main editor.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Check character count progress bars for Twitter, Instagram, TikTok, and LinkedIn in real time.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Progress bars turn yellow when approaching maximum limits and red if the platform limit is exceeded.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Use the quick metrics strip to count hashtags (#), mentions (@), and copy clean text with 1 click.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TOOL 21: YOUTUBE TITLE & TAG GENERATOR -->
+    <section class="tool-box" id="youtube-tag-generator">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-brands fa-youtube"></i></div>
+        <div>
+          <h3>YouTube Title & SEO Tag Generator</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Generate high-CTR clickable video title formulas and formatted comma-separated SEO tags for instant YouTube Studio upload.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <h4 style="margin-bottom: 14px; font-size: 16px;">Video Topic & Niche</h4>
+          
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 13px; font-weight: 600;">Main Video Topic / Keyword</label>
+            <input type="text" id="ytTopicInput" class="form-control" value="learn web development full course 2026" placeholder="e.g. how to start freelancing, python tutorial" oninput="generateYtIdeas()">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 18px;">
+            <label style="font-size: 13px; font-weight: 600;">Video Category / Style</label>
+            <select id="ytCategorySelect" class="form-control" onchange="generateYtIdeas()">
+              <option value="tutorial" selected>Tutorial / Educational Guide</option>
+              <option value="tech">Tech Review & Breakdown</option>
+              <option value="business">Business & Freelancing Tips</option>
+              <option value="gaming">Gaming & Entertainment</option>
+              <option value="vlog">Storytelling & Experience</option>
+            </select>
+          </div>
+
+          <button onclick="generateYtIdeas()" class="btn-action-primary" style="width: 100%; justify-content: center;">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Titles & Tags
+          </button>
+        </div>
+
+        <div class="tool-panel-card">
+          <h4 style="margin-bottom: 10px; font-size: 15px;">High-CTR Video Title Variations</h4>
+          <div id="ytTitlesContainer" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px;">
+            <!-- Titles loaded by JS -->
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h4 style="font-size: 14.5px; margin: 0;">Comma-Separated Video Tags</h4>
+            <span style="font-size: 12px; color: var(--text-muted);" id="ytTagCharCount">0 / 500 chars</span>
+          </div>
+          <textarea id="ytTagsArea" class="form-control" style="height: 100px; font-size: 13px; font-family: monospace; line-height: 1.5; resize: none;" readonly></textarea>
+          <button onclick="copyYtTags()" class="btn-action-primary" style="margin-top: 10px;">
+            <i class="fa-solid fa-copy"></i> Copy All Tags for YouTube Studio
+          </button>
+        </div>
+      </div>
+
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Enter your main video topic, keyword, or lesson subject into the input box.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Select your video category (Tutorial, Tech Review, Business, or Vlog).</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Browse high-CTR title formulas and click any title to copy it for your video.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Click "Copy All Tags for YouTube Studio" to paste directly into your video upload tags field.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TOOL 22: TRENDING HASHTAG GENERATOR -->
+    <section class="tool-box" id="hashtag-generator">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-tags"></i></div>
+        <div>
+          <h3>Trending Hashtag Generator</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Discover high-engagement hashtags for Instagram Reels, TikTok, and YouTube Shorts with 1-click batch copy.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <h4 style="margin-bottom: 14px; font-size: 16px;">Hashtag Parameters</h4>
+          
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 13px; font-weight: 600;">Niche / Core Keyword</label>
+            <input type="text" id="htKeywordInput" class="form-control" value="artificial intelligence" placeholder="e.g. web development, fitness, travel" oninput="generateHashtags()">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 13px; font-weight: 600;">Platform Target</label>
+            <select id="htPlatformSelect" class="form-control" onchange="generateHashtags()">
+              <option value="instagram" selected>Instagram (Up to 30 tags)</option>
+              <option value="tiktok">TikTok (5 to 8 focused tags)</option>
+              <option value="youtube">YouTube Shorts (3 to 5 tags)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 18px;">
+            <label style="font-size: 13px; font-weight: 600;">Reach Strategy</label>
+            <select id="htStrategySelect" class="form-control" onchange="generateHashtags()">
+              <option value="mixed" selected>Balanced (Broad + Niche Mix)</option>
+              <option value="viral">High-Reach Viral Tags</option>
+              <option value="niche">Targeted Micro-Community Tags</option>
+            </select>
+          </div>
+
+          <button onclick="generateHashtags()" class="btn-action-primary" style="width: 100%; justify-content: center;">
+            <i class="fa-solid fa-arrows-rotate"></i> Refresh Hashtags
+          </button>
+        </div>
+
+        <div class="tool-panel-card" style="display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h4 style="font-size: 15px;">Generated Hashtag Pool (<span id="htTotalCount">0</span>)</h4>
+            <span class="tool-stat-badge">ENGAGEMENT READY</span>
+          </div>
+
+          <div id="htChipsContainer" style="display: flex; flex-wrap: wrap; gap: 8px; flex-grow: 1; align-content: flex-start; max-height: 220px; overflow-y: auto; padding: 4px;">
+            <!-- Hashtags loaded by JS -->
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 16px;">
+            <button onclick="copyAllHashtags()" class="btn-action-primary" style="flex: 1; justify-content: center;">
+              <i class="fa-solid fa-copy"></i> Copy All Hashtags
+            </button>
+            <button onclick="copyRandomHashtags(10)" class="btn-action-secondary">
+              Copy Top 10
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Enter your content theme or keyword (e.g. artificial intelligence, web design, fitness).</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Choose your target platform: Instagram (up to 30), TikTok (5-8), or YouTube Shorts.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Select your strategy: High-Reach Viral or Balanced Niche mix.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Click "Copy All Hashtags" to paste directly into your caption or post comments.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TOOL 23: FREELANCE HOURLY RATE CALCULATOR -->
+    <section class="tool-box" id="freelance-rate-calculator">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-coins"></i></div>
+        <div>
+          <h3>Freelance Hourly Rate Calculator</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Calculate your minimum and target hourly pricing based on monthly bills, overhead costs, billable hours, and taxes.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <h4 style="margin-bottom: 14px; font-size: 16px;">Financial & Work Parameters</h4>
+          
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 12.5px; font-weight: 600;">Desired Monthly Net Take-Home ($ or PKR)</label>
+            <input type="number" id="frIncomeInput" class="form-control" value="2500" placeholder="e.g. 2500" oninput="calculateFreelanceRate()">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 12.5px; font-weight: 600;">Annual Business Expenses & Software ($ or PKR)</label>
+            <input type="number" id="frExpensesInput" class="form-control" value="3000" placeholder="e.g. 3000" oninput="calculateFreelanceRate()">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Billable Hours / Week</label>
+              <input type="number" id="frBillableHoursInput" class="form-control" value="25" min="5" max="60" oninput="calculateFreelanceRate()">
+            </div>
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Annual Vacation (Weeks)</label>
+              <input type="number" id="frVacationWeeksInput" class="form-control" value="4" min="0" max="20" oninput="calculateFreelanceRate()">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 12.5px; font-weight: 600;">Tax & Buffer Percentage (%)</label>
+            <input type="number" id="frTaxPercentInput" class="form-control" value="15" min="0" max="50" oninput="calculateFreelanceRate()">
+          </div>
+        </div>
+
+        <div class="tool-panel-card" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+          <span class="tool-stat-badge" style="margin: 0 auto 10px;">RECOMMENDED RATE</span>
+          <div style="font-size: 48px; font-weight: 800; color: #10B981; font-family: 'Space Grotesk', monospace;" id="frTargetRate">
+            $32.00 / hr
+          </div>
+          <p id="frRateSummary" style="font-size: 14.5px; font-weight: 600; color: var(--text-main); margin: 8px 0;">
+            Minimum Break-Even: <span id="frMinRate" style="color: var(--accent-cyan);">$24.00 / hr</span>
+          </p>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px;">
+            <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px;">
+              <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Standard Day Rate</div>
+              <div style="font-size: 18px; font-weight: 800; color: var(--text-main);" id="frDayRate">$256</div>
+            </div>
+            <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px;">
+              <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Annual Gross Revenue</div>
+              <div style="font-size: 18px; font-weight: 800; color: var(--text-main);" id="frGrossRevenue">$38,400</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Enter your monthly net take-home income goal and annual software / equipment overhead costs.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Set your realistic billable hours per week (20-30 hours is standard to allow time for admin work).</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Input planned vacation weeks and local income tax percentage buffer.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Review your minimum break-even rate, recommended client hourly rate, and full-day rate.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TOOL 24: LOAN & INSTALLMENT (EMI) CALCULATOR -->
+    <section class="tool-box" id="loan-calculator">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+        <div>
+          <h3>Loan & Installment (EMI) Calculator</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Calculate monthly installments, total interest/markup, and comprehensive payment schedules for loans and financing.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <h4 style="margin-bottom: 14px; font-size: 16px;">Financing Parameters</h4>
+          
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 13px; font-weight: 600;">Loan Principal Amount</label>
+            <input type="number" id="loanPrincipalInput" class="form-control" value="500000" placeholder="e.g. 500000" oninput="calculateLoanEmi()">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 13px; font-weight: 600;">Annual Interest / Markup Rate (%)</label>
+            <input type="number" id="loanRateInput" class="form-control" value="12" step="0.1" placeholder="e.g. 12" oninput="calculateLoanEmi()">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 18px;">
+            <div>
+              <label style="font-size: 13px; font-weight: 600;">Loan Tenure Duration</label>
+              <input type="number" id="loanTenureInput" class="form-control" value="3" min="1" oninput="calculateLoanEmi()">
+            </div>
+            <div>
+              <label style="font-size: 13px; font-weight: 600;">Unit</label>
+              <select id="loanTenureType" class="form-control" onchange="calculateLoanEmi()">
+                <option value="years" selected>Years</option>
+                <option value="months">Months</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+            <button onclick="setLoanExample(100000, 10, 1)" class="quick-nav-pill">Personal (100k, 1 yr)</button>
+            <button onclick="setLoanExample(1500000, 14, 3)" class="quick-nav-pill">Car (1.5M, 3 yr)</button>
+            <button onclick="setLoanExample(5000000, 12, 10)" class="quick-nav-pill">Home (5M, 10 yr)</button>
+          </div>
+        </div>
+
+        <div class="tool-panel-card" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+          <span class="tool-stat-badge" style="margin: 0 auto 10px;">MONTHLY INSTALLMENT (EMI)</span>
+          <div style="font-size: 46px; font-weight: 800; color: var(--accent-cyan); font-family: 'Space Grotesk', monospace;" id="loanMonthlyEmi">
+            16,607
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+            <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px;">
+              <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Total Interest / Markup</div>
+              <div style="font-size: 18px; font-weight: 800; color: #EF4444;" id="loanTotalInterest">97,858</div>
+            </div>
+            <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px;">
+              <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Total Payable Amount</div>
+              <div style="font-size: 18px; font-weight: 800; color: #10B981;" id="loanTotalPayment">597,858</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 14px; font-size: 13px; color: var(--text-muted);" id="loanSummaryNote">
+            Principal represents 83.6% and Total Interest represents 16.4% of your total payments.
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Enter the total loan principal amount you wish to borrow.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Input the annual interest or bank markup rate percentage.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Choose your loan repayment duration in years or months.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> View your exact monthly installment (EMI), total markup cost, and total payable amount.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TOOL 25: STRONG PASSWORD GENERATOR & SECURITY AUDIT -->
+    <section class="tool-box" id="password-generator">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <div>
+          <h3>Strong Password Generator & Security Audit</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Create unhackable passwords with custom lengths, symbols, numbers, and real-time brute-force crack time audit.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label style="font-size: 13px; font-weight: 700;">Password Length:</label>
+            <strong id="pwLengthDisplay" style="color: var(--accent-cyan); font-size: 16px;">16 chars</strong>
+          </div>
+          <input type="range" id="pwLengthSlider" min="8" max="48" value="16" style="width: 100%; cursor: pointer; margin-bottom: 18px;" oninput="document.getElementById('pwLengthDisplay').textContent = this.value + ' chars'; generatePassword();">
+
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+              <input type="checkbox" id="pwIncUpper" checked onchange="generatePassword()">
+              <span>Include Uppercase Letters (A-Z)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+              <input type="checkbox" id="pwIncLower" checked onchange="generatePassword()">
+              <span>Include Lowercase Letters (a-z)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+              <input type="checkbox" id="pwIncNumbers" checked onchange="generatePassword()">
+              <span>Include Numbers (0-9)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+              <input type="checkbox" id="pwIncSymbols" checked onchange="generatePassword()">
+              <span>Include Special Symbols (!@#$%^&*...)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+              <input type="checkbox" id="pwExcAmbiguous" onchange="generatePassword()">
+              <span>Exclude Ambiguous Characters (l, 1, I, O, 0)</span>
+            </label>
+          </div>
+
+          <button onclick="generatePassword()" class="btn-action-primary" style="width: 100%; justify-content: center;">
+            <i class="fa-solid fa-arrows-rotate"></i> Regenerate Password
+          </button>
+        </div>
+
+        <div class="tool-panel-card" style="display: flex; flex-direction: column; justify-content: center;">
+          <h4 style="font-size: 14.5px; margin-bottom: 10px;">Generated Secure Password</h4>
+          <div style="background: #0F172A; border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+            <code id="pwDisplay" style="font-size: 17px; font-weight: 700; color: #38BDF8; font-family: monospace; word-break: break-all;">
+              v9#K2$mP8!xQ4@wL
+            </code>
+            <button onclick="copyPassword()" class="quick-nav-pill" style="margin-left: 10px; flex-shrink: 0;">
+              <i class="fa-solid fa-copy"></i> Copy
+            </button>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; font-size: 12.5px;">
+              <span>Entropy Strength:</span>
+              <strong id="pwStrengthLabel" style="color: #10B981;">Very Strong (95 bits)</strong>
+            </div>
+            <div class="pw-strength-bar">
+              <div id="pwStrengthFill" class="pw-strength-fill" style="width: 95%; background-color: #10B981;"></div>
+            </div>
+          </div>
+
+          <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 10px; padding: 14px; text-align: center;">
+            <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">ESTIMATED CRACK TIME</div>
+            <div style="font-size: 20px; font-weight: 800; color: #065F46; margin-top: 4px;" id="pwCrackTime">
+              340 Million Centuries
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Drag the length slider to set password length (16+ characters recommended for high security).</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Toggle character rules: uppercase, lowercase, numbers, and special symbols.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Optionally check "Exclude Ambiguous" to avoid lookalike characters like l, 1, O, 0.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Review your brute-force crack time audit and click "Copy" to use your secure password.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TOOL 26: UNIT & DATA STORAGE CONVERTER -->
+    <section class="tool-box" id="unit-data-converter">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-right-left"></i></div>
+        <div>
+          <h3>Unit & Data Storage Converter</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Convert Bytes, KB, MB, GB, TB, PB, internet Mbps to MB/s transfer rates, length, and weight instantly.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-subtabs">
+        <button class="subtab-btn active" onclick="switchUnitCategory('storage')"><i class="fa-solid fa-hard-drive"></i> Data Storage</button>
+        <button class="subtab-btn" onclick="switchUnitCategory('speed')"><i class="fa-solid fa-gauge-high"></i> Transfer Speed</button>
+        <button class="subtab-btn" onclick="switchUnitCategory('length')"><i class="fa-solid fa-ruler"></i> Length & Distance</button>
+        <button class="subtab-btn" onclick="switchUnitCategory('weight')"><i class="fa-solid fa-weight-hanging"></i> Weight & Mass</button>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <h4 style="margin-bottom: 14px; font-size: 16px;">Conversion Inputs</h4>
+          
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 13px; font-weight: 600;">Value to Convert</label>
+            <input type="number" id="unitInputValue" class="form-control" value="1024" oninput="convertUnits()">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">From</label>
+              <select id="unitFromSelect" class="form-control" onchange="convertUnits()">
+                <!-- Loaded via JS -->
+              </select>
+            </div>
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">To</label>
+              <select id="unitToSelect" class="form-control" onchange="convertUnits()">
+                <!-- Loaded via JS -->
+              </select>
+            </div>
+          </div>
+
+          <button onclick="swapUnits()" class="btn-action-secondary" style="width: 100%; justify-content: center;">
+            <i class="fa-solid fa-right-left"></i> Swap Units
+          </button>
+        </div>
+
+        <div class="tool-panel-card" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+          <span class="tool-stat-badge" style="margin: 0 auto 10px;">CONVERTED RESULT</span>
+          <div style="font-size: 42px; font-weight: 800; color: var(--accent-cyan); font-family: 'Space Grotesk', monospace;" id="unitOutputResult">
+            1 GB
+          </div>
+          <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; font-size: 13.5px; color: var(--text-muted); margin-top: 14px;" id="unitFormulaText">
+            Formula: 1024 MB ÷ 1024 = 1 GB
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Use Guide -->
+      <div class="tool-guide-card">
+        <div class="tool-guide-header">
+          <i class="fa-solid fa-circle-question"></i>
+          <h4>How to Use This Tool</h4>
+        </div>
+        <ul class="tool-guide-steps">
+          <li><span class="tool-guide-step-num">1</span> <span><strong>Step 1:</strong> Select your conversion category: Data Storage, Transfer Speed, Length, or Weight.</span></li>
+          <li><span class="tool-guide-step-num">2</span> <span><strong>Step 2:</strong> Type your number in the value input box.</span></li>
+          <li><span class="tool-guide-step-num">3</span> <span><strong>Step 3:</strong> Select your "From" unit and "To" destination unit from the dropdowns.</span></li>
+          <li><span class="tool-guide-step-num">4</span> <span><strong>Step 4:</strong> Instantly view the converted result and the mathematical conversion formula.</span></li>
+        </ul>
       </div>
     </section>
 
@@ -2485,6 +4162,84 @@
         slug: 'slug-generator',
         name: 'SEO Slug & Meta Tag Generator',
         category: 'Developer'
+      },
+      'merit-calculator': {
+        id: 'merit-calculator',
+        slug: 'merit-calculator',
+        name: 'University Merit & Aggregate Calculator',
+        category: 'Student'
+      },
+      'attendance-calculator': {
+        id: 'attendance-calculator',
+        slug: 'attendance-calculator',
+        name: 'Attendance & Bunk Planner',
+        category: 'Student'
+      },
+      'citation-generator': {
+        id: 'citation-generator',
+        slug: 'citation-generator',
+        name: 'Citation & Bibliography Generator',
+        category: 'Student'
+      },
+      'text-diff': {
+        id: 'text-diff',
+        slug: 'text-diff',
+        name: 'Text Diff & Comparison Checker',
+        category: 'Productivity'
+      },
+      'image-to-pdf': {
+        id: 'image-to-pdf',
+        slug: 'image-to-pdf',
+        name: 'Instant Image to PDF Converter',
+        category: 'Productivity'
+      },
+      'utm-builder': {
+        id: 'utm-builder',
+        slug: 'utm-builder',
+        name: 'UTM Campaign Link Builder',
+        category: 'Marketing'
+      },
+      'social-bio-counter': {
+        id: 'social-bio-counter',
+        slug: 'social-bio-counter',
+        name: 'Social Media Bio & Character Counter',
+        category: 'Marketing'
+      },
+      'youtube-tag-generator': {
+        id: 'youtube-tag-generator',
+        slug: 'youtube-tag-generator',
+        name: 'YouTube Title & SEO Tag Generator',
+        category: 'Marketing'
+      },
+      'hashtag-generator': {
+        id: 'hashtag-generator',
+        slug: 'hashtag-generator',
+        name: 'Trending Hashtag Generator',
+        category: 'Marketing'
+      },
+      'freelance-rate-calculator': {
+        id: 'freelance-rate-calculator',
+        slug: 'freelance-rate-calculator',
+        name: 'Freelance Hourly Rate Calculator',
+        category: 'Business'
+      },
+      'loan-calculator': {
+        id: 'loan-calculator',
+        slug: 'loan-calculator',
+        name: 'Loan & Installment (EMI) Calculator',
+        category: 'Business'
+      },
+      'password-generator': {
+        id: 'password-generator',
+        slug: 'password-generator',
+        name: 'Strong Password Generator & Security Audit',
+        category: 'Productivity'
+      },
+      'unit-data-converter': {
+        id: 'unit-data-converter',
+        slug: 'unit-data-converter',
+        name: 'Unit & Data Storage Converter',
+        category: 'Productivity'
       }
     };
 
@@ -2517,7 +4272,44 @@
         'ai-prompt-generator': 'ai-prompt-generator',
         'prompt-generator': 'ai-prompt-generator',
         'slug-generator': 'slug-generator',
-        'meta-tag-generator': 'slug-generator'
+        'meta-tag-generator': 'slug-generator',
+        'merit': 'merit-calculator',
+        'merit-calculator': 'merit-calculator',
+        'aggregate': 'merit-calculator',
+        'attendance': 'attendance-calculator',
+        'attendance-calculator': 'attendance-calculator',
+        'bunk': 'attendance-calculator',
+        'bunk-planner': 'attendance-calculator',
+        'citation': 'citation-generator',
+        'citation-generator': 'citation-generator',
+        'bibliography': 'citation-generator',
+        'text-diff': 'text-diff',
+        'diff': 'text-diff',
+        'image-to-pdf': 'image-to-pdf',
+        'pdf': 'image-to-pdf',
+        'pdf-converter': 'image-to-pdf',
+        'utm': 'utm-builder',
+        'utm-builder': 'utm-builder',
+        'social-bio': 'social-bio-counter',
+        'social-bio-counter': 'social-bio-counter',
+        'bio-counter': 'social-bio-counter',
+        'youtube': 'youtube-tag-generator',
+        'youtube-tag-generator': 'youtube-tag-generator',
+        'youtube-tags': 'youtube-tag-generator',
+        'hashtag': 'hashtag-generator',
+        'hashtag-generator': 'hashtag-generator',
+        'hashtags': 'hashtag-generator',
+        'freelance': 'freelance-rate-calculator',
+        'freelance-rate': 'freelance-rate-calculator',
+        'freelance-rate-calculator': 'freelance-rate-calculator',
+        'loan': 'loan-calculator',
+        'loan-calculator': 'loan-calculator',
+        'emi': 'loan-calculator',
+        'password': 'password-generator',
+        'password-generator': 'password-generator',
+        'unit': 'unit-data-converter',
+        'unit-converter': 'unit-data-converter',
+        'unit-data-converter': 'unit-data-converter'
       };
 
       const toolKey = idMap[targetTool] || 'digit';
@@ -2612,8 +4404,10 @@
       }
     }
 
+        let currentCategoryFilter = 'all';
+
     function filterByCategory(category) {
-      // Highlight category pill
+      currentCategoryFilter = category;
       document.querySelectorAll('.cat-pill').forEach(btn => {
         if (btn.getAttribute('data-category') === category) {
           btn.classList.add('active');
@@ -2621,34 +4415,25 @@
           btn.classList.remove('active');
         }
       });
-
-      // Filter the 3 tool cards in the row
-      const cards = document.querySelectorAll('.tool-select-card');
-      let visibleCount = 0;
-      cards.forEach(card => {
-        const cardCat = card.getAttribute('data-category') || '';
-        if (category === 'all' || cardCat.includes(category)) {
-          card.style.display = 'flex';
-          visibleCount++;
-        } else {
-          card.style.display = 'none';
-        }
-      });
-
-      const noResults = document.getElementById('toolsNoResultsMsg');
-      if (noResults) {
-        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-      }
+      applyToolsFiltering();
     }
 
     function handleToolSearch() {
-      const query = (document.getElementById('toolSearchInput').value || '').toLowerCase().trim();
+      applyToolsFiltering();
+    }
+
+    function applyToolsFiltering() {
+      const query = (document.getElementById('toolSearchInput')?.value || '').toLowerCase().trim();
       const cards = document.querySelectorAll('.tool-select-card');
       let visibleCount = 0;
 
       cards.forEach(card => {
         const text = card.textContent.toLowerCase();
-        if (!query || text.includes(query)) {
+        const cardCat = card.getAttribute('data-category') || '';
+        const matchesCategory = (currentCategoryFilter === 'all' || cardCat.includes(currentCategoryFilter));
+        const matchesQuery = (!query || text.includes(query));
+
+        if (matchesCategory && matchesQuery) {
           card.style.display = 'flex';
           visibleCount++;
         } else {
@@ -2700,6 +4485,19 @@
       initOgPreview();
       initAiPromptGenerator();
       initSlugGenerator();
+      initMeritCalculator();
+      initAttendanceCalculator();
+      initCitationGenerator();
+      initTextDiff();
+      initImageToPdf();
+      initUtmBuilder();
+      initSocialBioCounter();
+      initYoutubeTagGenerator();
+      initHashtagGenerator();
+      initFreelanceRateCalculator();
+      initLoanCalculator();
+      initPasswordGenerator();
+      initUnitDataConverter();
 
       const tool = getToolFromUrl();
       if (tool) {
@@ -4320,6 +6118,930 @@ Your primary task is to: ${task}
         showToolToast('HTML <head> meta tags copied to clipboard!');
       });
     }
+
+    // ==========================================
+    // 15. TOOL 14: UNIVERSITY MERIT CALCULATOR
+    // ==========================================
+    const meritPresets = {
+      mdcat: { matric: 10, inter: 40, test: 50, testTot: 200 },
+      ecat: { matric: 25, inter: 45, test: 30, testTot: 400 },
+      nust: { matric: 10, inter: 15, test: 75, testTot: 200 },
+      fast: { matric: 0, inter: 50, test: 50, testTot: 100 },
+      custom: { matric: 10, inter: 40, test: 50, testTot: 200 }
+    };
+
+    function initMeritCalculator() {
+      calculateMeritAggregate();
+    }
+
+    function setMeritPreset(type) {
+      document.querySelectorAll('#merit-calculator .quick-nav-pill').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`meritPreset-${type}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const preset = meritPresets[type] || meritPresets.mdcat;
+      document.getElementById('meritMatricWeight').value = preset.matric;
+      document.getElementById('meritInterWeight').value = preset.inter;
+      document.getElementById('meritTestWeight').value = preset.test;
+      document.getElementById('meritTestTot').value = preset.testTot;
+      calculateMeritAggregate();
+    }
+
+    function calculateMeritAggregate() {
+      const mObt = parseFloat(document.getElementById('meritMatricObt')?.value) || 0;
+      const mTot = parseFloat(document.getElementById('meritMatricTot')?.value) || 1100;
+      const iObt = parseFloat(document.getElementById('meritInterObt')?.value) || 0;
+      const iTot = parseFloat(document.getElementById('meritInterTot')?.value) || 550;
+      const tObt = parseFloat(document.getElementById('meritTestObt')?.value) || 0;
+      const tTot = parseFloat(document.getElementById('meritTestTot')?.value) || 200;
+
+      const mW = parseFloat(document.getElementById('meritMatricWeight')?.value) || 0;
+      const iW = parseFloat(document.getElementById('meritInterWeight')?.value) || 0;
+      const tW = parseFloat(document.getElementById('meritTestWeight')?.value) || 0;
+
+      const totalWeight = mW + iW + tW;
+      const notice = document.getElementById('meritWeightTotalNotice');
+      if (notice) {
+        notice.textContent = `Total Weight: ${totalWeight}%`;
+        notice.style.color = totalWeight === 100 ? '#10B981' : '#EF4444';
+      }
+
+      const mShare = mTot > 0 ? (mObt / mTot) * mW : 0;
+      const iShare = iTot > 0 ? (iObt / iTot) * iW : 0;
+      const tShare = tTot > 0 ? (tObt / tTot) * tW : 0;
+
+      const aggregate = mShare + iShare + tShare;
+      const rounded = aggregate.toFixed(2);
+
+      const scoreEl = document.getElementById('meritAggregateScore');
+      const meterEl = document.getElementById('meritAggregateMeter');
+      const statusEl = document.getElementById('meritAggregateStatus');
+      const breakdownEl = document.getElementById('meritBreakdownText');
+
+      if (scoreEl) scoreEl.textContent = `${rounded}%`;
+      if (meterEl) meterEl.style.width = `${Math.min(100, aggregate)}%`;
+
+      if (statusEl) {
+        if (aggregate >= 85) statusEl.textContent = 'High Merit Bracket! High probability of admission in top programs.';
+        else if (aggregate >= 75) statusEl.textContent = 'Solid Competitive Range. Eligible for prominent engineering/CS degrees.';
+        else if (aggregate >= 60) statusEl.textContent = 'Moderate Merit Range. Check previous closing merit lists for quota seats.';
+        else statusEl.textContent = 'Below typical admission cutoff. Consider preparing for upcoming re-test cycles.';
+      }
+
+      if (breakdownEl) {
+        breakdownEl.textContent = `Matric Share: ${mShare.toFixed(2)}% • FSc Share: ${iShare.toFixed(2)}% • Test Share: ${tShare.toFixed(2)}%`;
+      }
+    }
+
+    // ==========================================
+    // 16. TOOL 15: ATTENDANCE & BUNK PLANNER
+    // ==========================================
+    function initAttendanceCalculator() {
+      calculateAttendance();
+    }
+
+    function setAttTargetPreset(val) {
+      const slider = document.getElementById('attTargetInput');
+      const display = document.getElementById('attTargetDisplay');
+      if (slider) slider.value = val;
+      if (display) display.textContent = val + '%';
+      calculateAttendance();
+    }
+
+    function calculateAttendance() {
+      const total = parseInt(document.getElementById('attTotalInput')?.value, 10) || 0;
+      const attended = parseInt(document.getElementById('attAttendedInput')?.value, 10) || 0;
+      const target = parseFloat(document.getElementById('attTargetInput')?.value) || 75;
+
+      const currentEl = document.getElementById('attCurrentPercent');
+      const meterEl = document.getElementById('attMeterBar');
+      const badgeEl = document.getElementById('attStatusBadge');
+      const headEl = document.getElementById('attResultHeadline');
+      const detailEl = document.getElementById('attResultDetail');
+
+      if (!currentEl || total <= 0) return;
+
+      const currentPercent = (attended / total) * 100;
+      currentEl.textContent = `${currentPercent.toFixed(1)}%`;
+      if (meterEl) meterEl.style.width = `${Math.min(100, currentPercent)}%`;
+
+      const targetFrac = target / 100;
+
+      if (currentPercent >= target) {
+        // Safe to bunk
+        const maxTotalPossible = Math.floor(attended / targetFrac);
+        const safeBunks = Math.max(0, maxTotalPossible - total);
+
+        if (badgeEl) {
+          badgeEl.textContent = 'ATTENDANCE SAFE';
+          badgeEl.style.background = 'rgba(16, 185, 129, 0.15)';
+          badgeEl.style.color = '#065F46';
+        }
+        if (currentEl) currentEl.style.color = '#10B981';
+        if (meterEl) meterEl.style.background = '#10B981';
+
+        if (headEl) headEl.textContent = safeBunks > 0 ? `You can safely bunk ${safeBunks} more classes!` : 'You are right on the edge of your target threshold!';
+        if (detailEl) {
+          const nextPercent = ((attended / (total + safeBunks)) * 100).toFixed(1);
+          detailEl.textContent = safeBunks > 0 
+            ? `Bunking ${safeBunks} classes will leave your attendance at ${nextPercent}%, securely meeting your ${target}% requirement.`
+            : `Do not miss the upcoming class to avoid dropping below your required ${target}%.`;
+        }
+      } else {
+        // Deficit: must attend
+        const needed = Math.ceil((targetFrac * total - attended) / (1 - targetFrac));
+
+        if (badgeEl) {
+          badgeEl.textContent = 'ATTENDANCE DEFICIT';
+          badgeEl.style.background = 'rgba(239, 68, 68, 0.15)';
+          badgeEl.style.color = '#991B1B';
+        }
+        if (currentEl) currentEl.style.color = '#EF4444';
+        if (meterEl) meterEl.style.background = '#EF4444';
+
+        if (headEl) headEl.textContent = `You must attend ${needed} consecutive classes!`;
+        if (detailEl) {
+          const recoveredPercent = (((attended + needed) / (total + needed)) * 100).toFixed(1);
+          detailEl.textContent = `Attending the next ${needed} classes consecutively without missing will lift your attendance to ${recoveredPercent}%.`;
+        }
+      }
+    }
+
+    // ==========================================
+    // 17. TOOL 16: CITATION & BIBLIOGRAPHY GENERATOR
+    // ==========================================
+    let currentCiteSource = 'web';
+    let currentCiteStyle = 'apa';
+
+    function initCitationGenerator() {
+      generateCitation();
+    }
+
+    function switchCiteSource(src) {
+      currentCiteSource = src;
+      const tabs = document.querySelectorAll('#citation-generator .subtab-btn');
+      tabs.forEach((t, i) => {
+        if ((src === 'web' && i === 0) || (src === 'book' && i === 1) || (src === 'journal' && i === 2)) {
+          t.classList.add('active');
+        } else {
+          t.classList.remove('active');
+        }
+      });
+
+      const label = document.getElementById('citeSourceLabel');
+      if (label) {
+        if (src === 'web') label.textContent = 'Website Name';
+        else if (src === 'book') label.textContent = 'Publisher Name';
+        else label.textContent = 'Journal Title & Volume';
+      }
+      generateCitation();
+    }
+
+    function setCiteStyle(style) {
+      currentCiteStyle = style;
+      document.querySelectorAll('#citation-generator .quick-nav-pill').forEach(b => b.classList.remove('active'));
+      const btn = document.getElementById(`citeStyle-${style}`);
+      if (btn) btn.classList.add('active');
+      generateCitation();
+    }
+
+    function generateCitation() {
+      const last = document.getElementById('citeAuthorLast')?.value.trim() || 'Author';
+      const first = document.getElementById('citeAuthorFirst')?.value.trim() || 'A.';
+      const title = document.getElementById('citeTitle')?.value.trim() || 'Title of Document';
+      const source = document.getElementById('citeSource')?.value.trim() || 'Publisher';
+      const year = document.getElementById('citeYear')?.value.trim() || '2026';
+      const url = document.getElementById('citeUrl')?.value.trim() || 'https://www.techxsol.online';
+
+      let full = '';
+      let intext = `(${last}, ${year})`;
+
+      if (currentCiteStyle === 'apa') {
+        const init = first.charAt(0) ? `${first.charAt(0)}.` : '';
+        if (currentCiteSource === 'web') {
+          full = `${last}, ${init} (${year}). *${title}*. ${source}. ${url}`;
+        } else if (currentCiteSource === 'book') {
+          full = `${last}, ${init} (${year}). *${title}*. ${source}.`;
+        } else {
+          full = `${last}, ${init} (${year}). ${title}. *${source}*. ${url}`;
+        }
+        intext = `(${last}, ${year})`;
+      } else if (currentCiteStyle === 'mla') {
+        if (currentCiteSource === 'web') {
+          full = `${last}, ${first}. "${title}." *${source}*, ${year}, ${url}.`;
+        } else if (currentCiteSource === 'book') {
+          full = `${last}, ${first}. *${title}*. ${source}, ${year}.`;
+        } else {
+          full = `${last}, ${first}. "${title}." *${source}*, ${year}.`;
+        }
+        intext = `(${last} ${year})`;
+      } else {
+        // Harvard
+        const init = first.charAt(0) ? `${first.charAt(0)}.` : '';
+        full = `${last}, ${init} ${year}, *${title}*, ${source}, viewed ${new Date().toLocaleDateString()}, <${url}>.`;
+        intext = `(${last} ${year})`;
+      }
+
+      const fullEl = document.getElementById('citeFullReference');
+      const intextEl = document.getElementById('citeInTextReference');
+      if (fullEl) fullEl.innerHTML = full.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+      if (intextEl) intextEl.textContent = intext;
+    }
+
+    function copyCitation(type) {
+      const text = type === 'full' 
+        ? document.getElementById('citeFullReference')?.textContent 
+        : document.getElementById('citeInTextReference')?.textContent;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        showToolToast(`Copied ${type === 'full' ? 'Full Reference' : 'In-Text Citation'}!`);
+      });
+    }
+
+    // ==========================================
+    // 18. TOOL 17: TEXT DIFF CHECKER
+    // ==========================================
+    function initTextDiff() {
+      runTextDiff();
+    }
+
+    function runTextDiff() {
+      const original = document.getElementById('diffOriginalText')?.value || '';
+      const modified = document.getElementById('diffNewText')?.value || '';
+
+      const origWords = original.split(/(\s+)/);
+      const modWords = modified.split(/(\s+)/);
+
+      let addCount = 0;
+      let delCount = 0;
+      let matchedCount = 0;
+
+      const modSet = new Set(modified.toLowerCase().match(/\b\w+\b/g) || []);
+      const origSet = new Set(original.toLowerCase().match(/\b\w+\b/g) || []);
+
+      let diffHtml = '';
+
+      origWords.forEach(w => {
+        const clean = w.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (clean && !modSet.has(clean)) {
+          diffHtml += `<span class="diff-del">${w}</span>`;
+          delCount++;
+        } else {
+          diffHtml += w;
+          if (clean) matchedCount++;
+        }
+      });
+
+      diffHtml += '<br><br><strong>Additions in Revised Draft:</strong><br>';
+
+      modWords.forEach(w => {
+        const clean = w.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (clean && !origSet.has(clean)) {
+          diffHtml += `<span class="diff-ins">${w}</span>`;
+          addCount++;
+        } else {
+          diffHtml += w;
+        }
+      });
+
+      const totalUnique = new Set([...origSet, ...modSet]).size;
+      const intersection = [...origSet].filter(x => modSet.has(x)).length;
+      const similarity = totalUnique > 0 ? Math.round((intersection / totalUnique) * 100) : 100;
+
+      const outEl = document.getElementById('diffOutputDisplay');
+      if (outEl) outEl.innerHTML = diffHtml;
+
+      document.getElementById('diffAddedCount').textContent = `+${addCount} Additions`;
+      document.getElementById('diffRemovedCount').textContent = `-${delCount} Removals`;
+      document.getElementById('diffSimilarityScore').textContent = `Similarity: ${similarity}%`;
+    }
+
+    function swapDiffTexts() {
+      const orig = document.getElementById('diffOriginalText');
+      const mod = document.getElementById('diffNewText');
+      if (!orig || !mod) return;
+      const temp = orig.value;
+      orig.value = mod.value;
+      mod.value = temp;
+      runTextDiff();
+    }
+
+    function clearDiffTexts() {
+      const orig = document.getElementById('diffOriginalText');
+      const mod = document.getElementById('diffNewText');
+      if (orig) orig.value = '';
+      if (mod) mod.value = '';
+      runTextDiff();
+    }
+
+    // ==========================================
+    // 19. TOOL 18: INSTANT IMAGE TO PDF CONVERTER
+    // ==========================================
+    let pdfImageList = [];
+
+    function initImageToPdf() {
+      renderPdfThumbs();
+    }
+
+    function handlePdfImageUpload(event) {
+      const files = Array.from(event.target.files || []);
+      if (files.length === 0) return;
+
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          pdfImageList.push({
+            name: file.name,
+            src: e.target.result
+          });
+          renderPdfThumbs();
+        };
+        reader.readAsDataURL(file);
+      });
+      event.target.value = '';
+    }
+
+    function renderPdfThumbs() {
+      const container = document.getElementById('pdfThumbsContainer');
+      const countEl = document.getElementById('pdfImageCount');
+      if (countEl) countEl.textContent = pdfImageList.length;
+      if (!container) return;
+
+      if (pdfImageList.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-muted); font-size: 13.5px;">
+            No images uploaded yet. Select images on the left to preview pages here.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = pdfImageList.map((img, idx) => `
+        <div class="pdf-thumb-card">
+          <img src="${img.src}" alt="Page ${idx + 1}">
+          <div style="font-size: 11.5px; font-weight: 700; margin-top: 4px;">Page ${idx + 1}</div>
+          <button onclick="removePdfImage(${idx})" style="position: absolute; top: 4px; right: 4px; background: rgba(239, 68, 68, 0.85); color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer;">
+            ×
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function removePdfImage(idx) {
+      pdfImageList.splice(idx, 1);
+      renderPdfThumbs();
+    }
+
+    function clearPdfImages() {
+      pdfImageList = [];
+      renderPdfThumbs();
+    }
+
+    function generatePdfFromImages() {
+      if (pdfImageList.length === 0) {
+        alert('Please upload at least one image before generating PDF.');
+        return;
+      }
+
+      if (typeof window.jspdf === 'undefined') {
+        alert('PDF generator library is still loading, please try in a moment.');
+        return;
+      }
+
+      const orientation = document.getElementById('pdfOrientationSelect')?.value || 'p';
+      const margin = parseInt(document.getElementById('pdfMarginSelect')?.value || '10', 10);
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({
+        orientation: orientation,
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const printWidth = pageWidth - (margin * 2);
+      const printHeight = pageHeight - (margin * 2);
+
+      pdfImageList.forEach((item, index) => {
+        if (index > 0) doc.addPage();
+        doc.addImage(item.src, 'JPEG', margin, margin, printWidth, printHeight, undefined, 'FAST');
+      });
+
+      doc.save('TechXSol-Converted-Document.pdf');
+      showToolToast('PDF document downloaded successfully!');
+    }
+
+    // ==========================================
+    // 20. TOOL 19: UTM CAMPAIGN LINK BUILDER
+    // ==========================================
+    function initUtmBuilder() {
+      buildUtmUrl();
+    }
+
+    function buildUtmUrl() {
+      let base = document.getElementById('utmUrlInput')?.value.trim() || 'https://www.techxsol.online';
+      const source = document.getElementById('utmSourceInput')?.value.trim();
+      const medium = document.getElementById('utmMediumInput')?.value.trim();
+      const name = document.getElementById('utmNameInput')?.value.trim();
+      const term = document.getElementById('utmTermInput')?.value.trim();
+      const content = document.getElementById('utmContentInput')?.value.trim();
+
+      if (!base.startsWith('http')) base = 'https://' + base;
+
+      try {
+        const urlObj = new URL(base);
+        if (source) urlObj.searchParams.set('utm_source', source);
+        if (medium) urlObj.searchParams.set('utm_medium', medium);
+        if (name) urlObj.searchParams.set('utm_campaign', name);
+        if (term) urlObj.searchParams.set('utm_term', term);
+        if (content) urlObj.searchParams.set('utm_content', content);
+
+        const out = document.getElementById('utmOutputArea');
+        if (out) out.value = urlObj.toString();
+      } catch (e) {
+        const out = document.getElementById('utmOutputArea');
+        if (out) out.value = 'Invalid base website URL';
+      }
+    }
+
+    function copyUtmUrl() {
+      const out = document.getElementById('utmOutputArea');
+      if (!out || !out.value) return;
+      navigator.clipboard.writeText(out.value).then(() => {
+        showToolToast('UTM Campaign link copied to clipboard!');
+      });
+    }
+
+    function openUtmUrl() {
+      const out = document.getElementById('utmOutputArea');
+      if (out && out.value && out.value.startsWith('http')) {
+        window.open(out.value, '_blank');
+      }
+    }
+
+    // ==========================================
+    // 21. TOOL 20: SOCIAL MEDIA BIO COUNTER
+    // ==========================================
+    function initSocialBioCounter() {
+      handleSocialBioInput();
+    }
+
+    function handleSocialBioInput() {
+      const text = document.getElementById('socialBioTextarea')?.value || '';
+      const chars = text.length;
+      const words = (text.trim().match(/\S+/g) || []).length;
+      const hashtags = (text.match(/#[\w]+/g) || []).length;
+      const mentions = (text.match(/@[\w]+/g) || []).length;
+
+      document.getElementById('bioCharTotal').textContent = chars;
+      document.getElementById('bioWordTotal').textContent = words;
+      document.getElementById('bioHashtagTotal').textContent = hashtags;
+      document.getElementById('bioMentionTotal').textContent = mentions;
+
+      updateBioBar('tw', chars, 280);
+      updateBioBar('ig', chars, 150);
+      updateBioBar('tt', chars, 80);
+      updateBioBar('li', chars, 3000);
+    }
+
+    function updateBioBar(prefix, current, max) {
+      const badge = document.getElementById(`${prefix}CountBadge`);
+      const fill = document.getElementById(`${prefix}BarFill`);
+      const status = document.getElementById(`${prefix}StatusText`);
+      if (!badge || !fill || !status) return;
+
+      badge.textContent = `${current} / ${max}`;
+      const pct = Math.min(100, (current / max) * 100);
+      fill.style.width = `${pct}%`;
+
+      const diff = max - current;
+      if (diff >= 0) {
+        status.textContent = `${diff} characters remaining`;
+        status.style.color = 'var(--text-muted)';
+        fill.style.backgroundColor = pct > 85 ? '#F59E0B' : 'var(--accent-cyan)';
+      } else {
+        status.textContent = `${Math.abs(diff)} characters OVER limit!`;
+        status.style.color = '#EF4444';
+        fill.style.backgroundColor = '#EF4444';
+      }
+    }
+
+    function copySocialBioText() {
+      const text = document.getElementById('socialBioTextarea')?.value || '';
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        showToolToast('Social bio text copied!');
+      });
+    }
+
+    // ==========================================
+    // 22. TOOL 21: YOUTUBE TITLE & TAG GENERATOR
+    // ==========================================
+    function initYoutubeTagGenerator() {
+      generateYtIdeas();
+    }
+
+    function generateYtIdeas() {
+      const topic = document.getElementById('ytTopicInput')?.value.trim() || 'web development';
+      const cat = document.getElementById('ytCategorySelect')?.value || 'tutorial';
+
+      const templates = [
+        `How to Master ${topic} (Complete Roadmap for 2026)`,
+        `Stop Doing This with ${topic}! (10 Crucial Mistakes)`,
+        `${topic} Explained in 15 Minutes for Beginners`,
+        `I Built a Project Using ${topic} - Here is What Happened`,
+        `The Future of ${topic}: What You Must Know in 2026`
+      ];
+
+      const container = document.getElementById('ytTitlesContainer');
+      if (container) {
+        container.innerHTML = templates.map(t => `
+          <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="copyYtTitle('${t.replace(/'/g, "\\'")}')">
+            <span style="font-size: 13.5px; font-weight: 600; color: var(--text-main);">${t}</span>
+            <i class="fa-regular fa-copy" style="color: var(--accent-cyan); font-size: 13px;"></i>
+          </div>
+        `).join('');
+      }
+
+      // Generate tags
+      const words = topic.toLowerCase().split(/\s+/);
+      const tagSet = new Set([
+        topic.toLowerCase(),
+        `${topic.toLowerCase()} 2026`,
+        `${topic.toLowerCase()} tutorial`,
+        `${topic.toLowerCase()} for beginners`,
+        `how to ${topic.toLowerCase()}`,
+        `${topic.toLowerCase()} full course`,
+        `best ${topic.toLowerCase()} tips`,
+        'tech x sol',
+        'software development',
+        'learn coding',
+        'tech guide'
+      ]);
+
+      const tags = Array.from(tagSet).join(', ');
+      const area = document.getElementById('ytTagsArea');
+      const count = document.getElementById('ytTagCharCount');
+      if (area) area.value = tags;
+      if (count) count.textContent = `${tags.length} / 500 chars`;
+    }
+
+    function copyYtTitle(title) {
+      navigator.clipboard.writeText(title).then(() => {
+        showToolToast('YouTube title copied to clipboard!');
+      });
+    }
+
+    function copyYtTags() {
+      const area = document.getElementById('ytTagsArea');
+      if (!area || !area.value) return;
+      navigator.clipboard.writeText(area.value).then(() => {
+        showToolToast('YouTube SEO tags copied to clipboard!');
+      });
+    }
+
+    // ==========================================
+    // 23. TOOL 22: TRENDING HASHTAG GENERATOR
+    // ==========================================
+    let currentHashtags = [];
+
+    function initHashtagGenerator() {
+      generateHashtags();
+    }
+
+    function generateHashtags() {
+      const kw = (document.getElementById('htKeywordInput')?.value || 'tech').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const platform = document.getElementById('htPlatformSelect')?.value || 'instagram';
+
+      const bases = [
+        kw, `${kw}life`, `${kw}tips`, `${kw}daily`, `${kw}world`,
+        `learn${kw}`, `${kw}community`, `${kw}hacks`, `${kw}trends`,
+        `best${kw}`, `${kw}inspiration`, `${kw}creators`, 'techxsol',
+        'innovation', 'digitalgrowth', 'trending', 'viralpost', 'explorepage'
+      ];
+
+      const limit = platform === 'tiktok' ? 8 : (platform === 'youtube' ? 5 : 25);
+      currentHashtags = bases.slice(0, limit).map(t => `#${t}`);
+
+      const container = document.getElementById('htChipsContainer');
+      const countEl = document.getElementById('htTotalCount');
+      if (countEl) countEl.textContent = currentHashtags.length;
+
+      if (container) {
+        container.innerHTML = currentHashtags.map(tag => `
+          <span style="background: rgba(0, 168, 232, 0.08); border: 1px solid rgba(0, 168, 232, 0.2); border-radius: 8px; padding: 4px 10px; font-size: 13px; font-weight: 600; color: var(--accent-dark);">
+            ${tag}
+          </span>
+        `).join('');
+      }
+    }
+
+    function copyAllHashtags() {
+      if (currentHashtags.length === 0) return;
+      navigator.clipboard.writeText(currentHashtags.join(' ')).then(() => {
+        showToolToast(`Copied ${currentHashtags.length} hashtags to clipboard!`);
+      });
+    }
+
+    function copyRandomHashtags(n) {
+      const subset = currentHashtags.slice(0, n);
+      navigator.clipboard.writeText(subset.join(' ')).then(() => {
+        showToolToast(`Copied top ${subset.length} hashtags!`);
+      });
+    }
+
+    // ==========================================
+    // 24. TOOL 23: FREELANCE HOURLY RATE CALCULATOR
+    // ==========================================
+    function initFreelanceRateCalculator() {
+      calculateFreelanceRate();
+    }
+
+    function calculateFreelanceRate() {
+      const netMonthly = parseFloat(document.getElementById('frIncomeInput')?.value) || 2500;
+      const expenses = parseFloat(document.getElementById('frExpensesInput')?.value) || 3000;
+      const billableWeekly = parseFloat(document.getElementById('frBillableHoursInput')?.value) || 25;
+      const vacationWeeks = parseFloat(document.getElementById('frVacationWeeksInput')?.value) || 4;
+      const taxPercent = parseFloat(document.getElementById('frTaxPercentInput')?.value) || 15;
+
+      const workingWeeks = Math.max(1, 52 - vacationWeeks);
+      const annualBillableHours = workingWeeks * billableWeekly;
+
+      const annualNetTarget = netMonthly * 12;
+      const annualGrossNeeded = (annualNetTarget / (1 - (taxPercent / 100))) + expenses;
+
+      const minRate = annualBillableHours > 0 ? (annualGrossNeeded / annualBillableHours) : 0;
+      const targetRate = minRate * 1.25; // 25% profit buffer
+      const dayRate = targetRate * 8;
+
+      const targetEl = document.getElementById('frTargetRate');
+      const minEl = document.getElementById('frMinRate');
+      const dayEl = document.getElementById('frDayRate');
+      const grossEl = document.getElementById('frGrossRevenue');
+
+      if (targetEl) targetEl.textContent = `$${targetRate.toFixed(2)} / hr`;
+      if (minEl) minEl.textContent = `$${minRate.toFixed(2)} / hr`;
+      if (dayEl) dayEl.textContent = `$${Math.round(dayRate).toLocaleString()}`;
+      if (grossEl) grossEl.textContent = `$${Math.round(annualGrossNeeded).toLocaleString()}`;
+    }
+
+    // ==========================================
+    // 25. TOOL 24: LOAN & EMI CALCULATOR
+    // ==========================================
+    function initLoanCalculator() {
+      calculateLoanEmi();
+    }
+
+    function setLoanExample(p, r, y) {
+      document.getElementById('loanPrincipalInput').value = p;
+      document.getElementById('loanRateInput').value = r;
+      document.getElementById('loanTenureInput').value = y;
+      document.getElementById('loanTenureType').value = 'years';
+      calculateLoanEmi();
+    }
+
+    function calculateLoanEmi() {
+      const p = parseFloat(document.getElementById('loanPrincipalInput')?.value) || 0;
+      const r = parseFloat(document.getElementById('loanRateInput')?.value) || 0;
+      const t = parseFloat(document.getElementById('loanTenureInput')?.value) || 1;
+      const type = document.getElementById('loanTenureType')?.value || 'years';
+
+      const months = type === 'years' ? t * 12 : t;
+      const monthlyRate = (r / 12) / 100;
+
+      let emi = 0;
+      if (monthlyRate > 0) {
+        emi = (p * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+      } else {
+        emi = months > 0 ? p / months : 0;
+      }
+
+      const totalPayment = emi * months;
+      const totalInterest = Math.max(0, totalPayment - p);
+
+      const emiEl = document.getElementById('loanMonthlyEmi');
+      const intEl = document.getElementById('loanTotalInterest');
+      const totEl = document.getElementById('loanTotalPayment');
+      const noteEl = document.getElementById('loanSummaryNote');
+
+      if (emiEl) emiEl.textContent = Math.round(emi).toLocaleString();
+      if (intEl) intEl.textContent = Math.round(totalInterest).toLocaleString();
+      if (totEl) totEl.textContent = Math.round(totalPayment).toLocaleString();
+
+      if (noteEl && totalPayment > 0) {
+        const pPct = ((p / totalPayment) * 100).toFixed(1);
+        const iPct = ((totalInterest / totalPayment) * 100).toFixed(1);
+        noteEl.textContent = `Principal accounts for ${pPct}% and Total Markup accounts for ${iPct}% of your repayments.`;
+      }
+    }
+
+    // ==========================================
+    // 26. TOOL 25: STRONG PASSWORD GENERATOR
+    // ==========================================
+    function initPasswordGenerator() {
+      generatePassword();
+    }
+
+    function generatePassword() {
+      const length = parseInt(document.getElementById('pwLengthSlider')?.value || '16', 10);
+      const incUpper = document.getElementById('pwIncUpper')?.checked ?? true;
+      const incLower = document.getElementById('pwIncLower')?.checked ?? true;
+      const incNums = document.getElementById('pwIncNumbers')?.checked ?? true;
+      const incSymbols = document.getElementById('pwIncSymbols')?.checked ?? true;
+      const excAmbiguous = document.getElementById('pwExcAmbiguous')?.checked ?? false;
+
+      let upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      let lower = "abcdefghijklmnopqrstuvwxyz";
+      let numbers = "0123456789";
+      let symbols = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+
+      if (excAmbiguous) {
+        upper = upper.replace(/[IO]/g, '');
+        lower = lower.replace(/[l]/g, '');
+        numbers = numbers.replace(/[01]/g, '');
+      }
+
+      let pool = "";
+      if (incUpper) pool += upper;
+      if (incLower) pool += lower;
+      if (incNums) pool += numbers;
+      if (incSymbols) pool += symbols;
+
+      if (!pool) pool = lower;
+
+      const array = new Uint32Array(length);
+      window.crypto.getRandomValues(array);
+
+      let password = "";
+      for (let i = 0; i < length; i++) {
+        password += pool[array[i] % pool.length];
+      }
+
+      const disp = document.getElementById('pwDisplay');
+      if (disp) disp.textContent = password;
+
+      // Entropy & crack time calculation
+      const entropy = Math.round(length * Math.log2(pool.length));
+      const strLabel = document.getElementById('pwStrengthLabel');
+      const strFill = document.getElementById('pwStrengthFill');
+      const crackEl = document.getElementById('pwCrackTime');
+
+      if (strFill && strLabel && crackEl) {
+        if (entropy >= 80) {
+          strLabel.textContent = `Ultra Strong (${entropy} bits)`;
+          strLabel.style.color = '#10B981';
+          strFill.style.width = '100%';
+          strFill.style.backgroundColor = '#10B981';
+          crackEl.textContent = 'Trillions of Centuries';
+        } else if (entropy >= 60) {
+          strLabel.textContent = `Strong (${entropy} bits)`;
+          strLabel.style.color = 'var(--accent-cyan)';
+          strFill.style.width = '75%';
+          strFill.style.backgroundColor = 'var(--accent-cyan)';
+          crackEl.textContent = '350,000 Years';
+        } else if (entropy >= 40) {
+          strLabel.textContent = `Moderate (${entropy} bits)`;
+          strLabel.style.color = '#F59E0B';
+          strFill.style.width = '50%';
+          strFill.style.backgroundColor = '#F59E0B';
+          crackEl.textContent = '3 Days';
+        } else {
+          strLabel.textContent = `Weak (${entropy} bits)`;
+          strLabel.style.color = '#EF4444';
+          strFill.style.width = '25%';
+          strFill.style.backgroundColor = '#EF4444';
+          crackEl.textContent = 'Instant (A few seconds)';
+        }
+      }
+    }
+
+    function copyPassword() {
+      const pw = document.getElementById('pwDisplay')?.textContent?.trim() || '';
+      if (!pw) return;
+      navigator.clipboard.writeText(pw).then(() => {
+        showToolToast('Secure password copied to clipboard!');
+      });
+    }
+
+    // ==========================================
+    // 27. TOOL 26: UNIT & DATA STORAGE CONVERTER
+    // ==========================================
+    const unitDefinitions = {
+      storage: {
+        units: [
+          { name: 'Bytes (B)', factor: 1 },
+          { name: 'Kilobytes (KB)', factor: 1024 },
+          { name: 'Megabytes (MB)', factor: 1024 * 1024 },
+          { name: 'Gigabytes (GB)', factor: 1024 * 1024 * 1024 },
+          { name: 'Terabytes (TB)', factor: 1024 * 1024 * 1024 * 1024 },
+          { name: 'Petabytes (PB)', factor: 1024 * 1024 * 1024 * 1024 * 1024 }
+        ],
+        defaultFrom: 2, // MB
+        defaultTo: 3    // GB
+      },
+      speed: {
+        units: [
+          { name: 'Kilobits per second (Kbps)', factor: 1 },
+          { name: 'Megabits per second (Mbps)', factor: 1000 },
+          { name: 'Gigabits per second (Gbps)', factor: 1000000 },
+          { name: 'Megabytes per second (MB/s)', factor: 8000 }
+        ],
+        defaultFrom: 1, // Mbps
+        defaultTo: 3    // MB/s
+      },
+      length: {
+        units: [
+          { name: 'Millimeters (mm)', factor: 0.001 },
+          { name: 'Centimeters (cm)', factor: 0.01 },
+          { name: 'Meters (m)', factor: 1 },
+          { name: 'Kilometers (km)', factor: 1000 },
+          { name: 'Inches (in)', factor: 0.0254 },
+          { name: 'Feet (ft)', factor: 0.3048 }
+        ],
+        defaultFrom: 2, // m
+        defaultTo: 5    // ft
+      },
+      weight: {
+        units: [
+          { name: 'Grams (g)', factor: 0.001 },
+          { name: 'Kilograms (kg)', factor: 1 },
+          { name: 'Pounds (lbs)', factor: 0.453592 },
+          { name: 'Ounces (oz)', factor: 0.0283495 }
+        ],
+        defaultFrom: 1, // kg
+        defaultTo: 2    // lbs
+      }
+    };
+
+    let currentUnitCat = 'storage';
+
+    function initUnitDataConverter() {
+      switchUnitCategory('storage');
+    }
+
+    function switchUnitCategory(cat) {
+      currentUnitCat = cat;
+      const tabs = document.querySelectorAll('#unit-data-converter .subtab-btn');
+      tabs.forEach((t, i) => {
+        if ((cat === 'storage' && i === 0) || (cat === 'speed' && i === 1) || (cat === 'length' && i === 2) || (cat === 'weight' && i === 3)) {
+          t.classList.add('active');
+        } else {
+          t.classList.remove('active');
+        }
+      });
+
+      const config = unitDefinitions[cat];
+      const fromSel = document.getElementById('unitFromSelect');
+      const toSel = document.getElementById('unitToSelect');
+      if (!fromSel || !toSel) return;
+
+      fromSel.innerHTML = config.units.map((u, i) => `<option value="${i}">${u.name}</option>`).join('');
+      toSel.innerHTML = config.units.map((u, i) => `<option value="${i}">${u.name}</option>`).join('');
+
+      fromSel.value = config.defaultFrom;
+      toSel.value = config.defaultTo;
+
+      convertUnits();
+    }
+
+    function convertUnits() {
+      const val = parseFloat(document.getElementById('unitInputValue')?.value) || 0;
+      const fromIdx = parseInt(document.getElementById('unitFromSelect')?.value || '0', 10);
+      const toIdx = parseInt(document.getElementById('unitToSelect')?.value || '1', 10);
+
+      const config = unitDefinitions[currentUnitCat];
+      if (!config) return;
+
+      const fromUnit = config.units[fromIdx];
+      const toUnit = config.units[toIdx];
+
+      const baseValue = val * fromUnit.factor;
+      const converted = toUnit.factor > 0 ? (baseValue / toUnit.factor) : 0;
+
+      const resEl = document.getElementById('unitOutputResult');
+      const formEl = document.getElementById('unitFormulaText');
+
+      if (resEl) {
+        const displayVal = converted < 0.0001 || converted > 1000000 ? converted.toExponential(4) : converted.toLocaleString(undefined, { maximumFractionDigits: 6 });
+        resEl.textContent = `${displayVal} ${toUnit.name.split(' ')[0]}`;
+      }
+
+      if (formEl) {
+        formEl.textContent = `Formula: Multiply value by ${(fromUnit.factor / toUnit.factor).toPrecision(4)}`;
+      }
+    }
+
+    function swapUnits() {
+      const fromSel = document.getElementById('unitFromSelect');
+      const toSel = document.getElementById('unitToSelect');
+      if (!fromSel || !toSel) return;
+      const temp = fromSel.value;
+      fromSel.value = toSel.value;
+      toSel.value = temp;
+      convertUnits();
+    }
+
   </script>
 </body>
 </html>
