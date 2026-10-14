@@ -1,24 +1,41 @@
 {
   "version": 2,
+  "cleanUrls": true,
   "routes": [
     {
       "src": "/api/(.*)",
       "dest": "/api/index.js"
     },
     {
-      "handle": "filesystem"
+      "src": "/blogs/(.*)",
+      "dest": "/blog.html"
     },
     {
-      "src": "/tools",
-      "dest": "/tools.html"
+      "src": "/blog/(.*)",
+      "dest": "/blog.html"
+    },
+    {
+      "src": "/blogs",
+      "dest": "/blog.html"
     },
     {
       "src": "/blog",
       "dest": "/blog.html"
     },
     {
+      "src": "/tools/(.*)",
+      "dest": "/tools.html"
+    },
+    {
+      "src": "/tools",
+      "dest": "/tools.html"
+    },
+    {
       "src": "/admin",
       "dest": "/admin.html"
+    },
+    {
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",

@@ -140,4 +140,20 @@ app.get('/api/tools', (req, res) => {
   });
 });
 
+// Clean HTML Routing for direct URL access & refresh
+app.get(['/blogs', '/blog', '/blogs/:slug', '/blog/:slug'], (req, res) => {
+  const filePath = fs.existsSync(path.join(publicPath, 'blog.html')) ? path.join(publicPath, 'blog.html') : path.join(rootPath, 'blog.html');
+  res.sendFile(filePath);
+});
+
+app.get(['/tools', '/tools/:slug'], (req, res) => {
+  const filePath = fs.existsSync(path.join(publicPath, 'tools.html')) ? path.join(publicPath, 'tools.html') : path.join(rootPath, 'tools.html');
+  res.sendFile(filePath);
+});
+
+app.get('/admin', (req, res) => {
+  const filePath = fs.existsSync(path.join(publicPath, 'admin.html')) ? path.join(publicPath, 'admin.html') : path.join(rootPath, 'admin.html');
+  res.sendFile(filePath);
+});
+
 module.exports = app;

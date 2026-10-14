@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
   <link rel="apple-touch-icon" href="favicon.png">
   <title>Interactive Tools Suite | Tech X Sol</title>
+  <meta name="description" content="Free online calculators and developer tools: Smart Digit & Calculator, CGPA Calculator, and Percentage & Marks Calculator by Tech X Sol.">
+  <link rel="canonical" href="https://www.techxsol.online/tools">
   
   <!-- Modern Typography (Outfit + Plus Jakarta Sans + Space Grotesk) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -611,6 +614,23 @@
     }
 
     /* Responsive Adjustments */
+    @media (max-width: 880px) {
+      .tools-cards-row {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+      .tools-category-pills {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 6px;
+        flex-wrap: nowrap;
+      }
+      .cat-pill {
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+    }
+
     @media (max-width: 768px) {
       .tools-hero {
         padding: 120px 16px 30px;
@@ -642,20 +662,20 @@
   <!-- Header -->
   <header>
     <div class="nav-container">
-      <a href="index.html" class="logo-brand">
+      <a href="/" class="logo-brand">
         <div class="logo-svg-wrapper">
           <img src="techxsol logo.png" alt="Tech X Sol Logo">
         </div>
       </a>
 
       <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="index.html#services">Services</a></li>
-        <li><a href="index.html#projects">Projects</a></li>
-        <li><a href="blog.html">Blogs</a></li>
-        <li><a href="tools.html" class="active">Tools <span class="nav-badge">Hub</span></a></li>
-        <li><a href="index.html#founders">Leadership</a></li>
-        <li><a href="index.html#contact" class="btn-primary">Get In Touch</a></li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/#services">Services</a></li>
+        <li><a href="/#projects">Projects</a></li>
+        <li><a href="/blogs">Blogs</a></li>
+        <li><a href="/tools" class="active">Tools <span class="nav-badge">Hub</span></a></li>
+        <li><a href="/#founders">Leadership</a></li>
+        <li><a href="/#contact" class="btn-primary">Get In Touch</a></li>
       </ul>
 
       <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
@@ -1115,7 +1135,7 @@
   <!-- Footer with Stealth Admin Trigger -->
   <footer>
     <div class="footer-container">
-      <a href="index.html" class="logo-brand">
+      <a href="/" class="logo-brand">
         <div class="logo-svg-wrapper">
           <img src="techxsol logo.png" alt="Tech X Sol Logo">
         </div>
@@ -1130,7 +1150,7 @@
 
       <div class="footer-copy">
         &copy; 2026 Tech X Sol. All Rights Reserved. Built with Precision & Care.
-        <a href="admin.html" class="secret-admin-trigger" title="Portal System">•</a>
+        <a href="/admin" class="secret-admin-trigger" title="Portal System">•</a>
       </div>
     </div>
   </footer>
@@ -1151,22 +1171,25 @@
     const TOOL_CONFIG = {
       'digit': {
         id: 'digit-tool',
+        slug: 'digit-tool',
         name: 'Smart Digit & Number Analyzer',
         category: 'Productivity'
       },
       'cgpa': {
         id: 'cgpa-calculator',
+        slug: 'cgpa-calculator',
         name: 'University CGPA & GPA Calculator',
         category: 'Student'
       },
       'percentage': {
         id: 'percentage-calculator',
+        slug: 'percentage-calculator',
         name: 'Percentage & Marks Calculator',
         category: 'Calculation'
       }
     };
 
-    function openSpecificTool(targetTool, shouldScroll = true) {
+    function openSpecificTool(targetTool, shouldScroll = true, updateUrl = true) {
       // Resolve shortcut key
       const idMap = {
         'digit': 'digit',
@@ -1221,8 +1244,14 @@
       const activePill = document.getElementById(`quickPill-${toolKey}`);
       if (activePill) activePill.classList.add('active');
 
-      // Update URL state
-      window.history.replaceState(null, null, `tools.html?tool=${toolKey}#${config.id}`);
+      // Update URL state cleanly
+      if (updateUrl) {
+        const cleanPath = `/tools/${config.slug}`;
+        if (window.location.pathname !== cleanPath) {
+          window.history.pushState({ tool: toolKey }, `${config.name} | Tech X Sol`, cleanPath);
+        }
+      }
+      document.title = `${config.name} | Tech X Sol Tools`;
 
       // Smooth scroll into view
       if (shouldScroll && targetElem) {
@@ -1230,7 +1259,7 @@
       }
     }
 
-    function backToAllTools() {
+    function backToAllTools(updateUrl = true) {
       // 1. Hide all tool boxes
       document.querySelectorAll('.tool-box').forEach(b => {
         b.style.display = 'none';
@@ -1248,8 +1277,13 @@
         navBar.style.display = 'none';
       }
 
-      // Reset URL state
-      window.history.replaceState(null, null, 'tools.html');
+      // Reset URL state to /tools
+      if (updateUrl) {
+        if (window.location.pathname !== '/tools') {
+          window.history.pushState({}, 'Interactive Tools Suite | Tech X Sol', '/tools');
+        }
+      }
+      document.title = 'Interactive Tools Suite | Tech X Sol';
 
       // Scroll smoothly to the 3-box cards grid
       const grid = document.getElementById('toolsCardsGrid');
@@ -1308,6 +1342,28 @@
       }
     }
 
+    function getToolFromUrl() {
+      const pathname = window.location.pathname.replace(/\/+$/, '');
+      const parts = pathname.split('/').filter(Boolean);
+      if (parts[0] === 'tools' && parts[1]) {
+        return parts[1];
+      }
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('tool')) return params.get('tool');
+      const hash = window.location.hash.replace('#', '');
+      if (hash) return hash;
+      return null;
+    }
+
+    window.addEventListener('popstate', () => {
+      const tool = getToolFromUrl();
+      if (tool) {
+        openSpecificTool(tool, false, false);
+      } else {
+        backToAllTools(false);
+      }
+    });
+
     // Auto load on page ready
     window.addEventListener('DOMContentLoaded', () => {
       // Initialize tool engines
@@ -1315,15 +1371,9 @@
       initCgpaTool();
       initPercentageTool();
 
-      // Check direct URL param or hash
-      const params = new URLSearchParams(window.location.search);
-      const toolParam = params.get('tool');
-      const hash = window.location.hash.replace('#', '');
-
-      if (toolParam) {
-        openSpecificTool(toolParam, false);
-      } else if (hash) {
-        openSpecificTool(hash, false);
+      const tool = getToolFromUrl();
+      if (tool) {
+        openSpecificTool(tool, true, false);
       }
     });
 

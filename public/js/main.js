@@ -179,7 +179,7 @@ async function loadFeaturedBlogs() {
         year: 'numeric'
       });
 
-      const blogUrl = `blog.html?id=${blog.id}`;
+      const blogUrl = `/blogs/${blog.slug || blog.id}`;
       const showAuthorForThisCard = globalShowAuthor && (blog.showAuthor !== false);
 
       const footerLeftHtml = showAuthorForThisCard ? `
