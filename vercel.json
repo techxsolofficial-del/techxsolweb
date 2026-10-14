@@ -1,45 +1,33 @@
 {
-  "version": 2,
   "cleanUrls": true,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js"
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
     },
     {
-      "src": "/blogs/(.*)",
-      "dest": "/blog.html"
+      "source": "/blogs/:slug*",
+      "destination": "/blog.html"
     },
     {
-      "src": "/blog/(.*)",
-      "dest": "/blog.html"
+      "source": "/blog/:slug*",
+      "destination": "/blog.html"
     },
     {
-      "src": "/blogs",
-      "dest": "/blog.html"
+      "source": "/blogs",
+      "destination": "/blog.html"
     },
     {
-      "src": "/blog",
-      "dest": "/blog.html"
+      "source": "/tools/:slug*",
+      "destination": "/tools.html"
     },
     {
-      "src": "/tools/(.*)",
-      "dest": "/tools.html"
+      "source": "/tools",
+      "destination": "/tools.html"
     },
     {
-      "src": "/tools",
-      "dest": "/tools.html"
-    },
-    {
-      "src": "/admin",
-      "dest": "/admin.html"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/admin",
+      "destination": "/admin.html"
     }
   ]
 }
