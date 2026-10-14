@@ -19,6 +19,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <!-- QRCode Library for QR Generator -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
   <!-- Global Stylesheet -->
   <link rel="stylesheet" href="css/styles.css">
 
@@ -651,6 +654,299 @@
         justify-content: center;
       }
     }
+
+    /* Common Tool Layout Helpers */
+    .tool-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 820px) {
+      .tool-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tool-panel-card {
+      background: #F8FAFC;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 24px;
+    }
+
+    .tool-quick-nav-container {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      max-width: 100%;
+      padding-bottom: 4px;
+    }
+    .tool-quick-nav-container .quick-nav-pill {
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Timetable Styles */
+    .timetable-wrap {
+      overflow-x: auto;
+      margin-top: 20px;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      background: #FFFFFF;
+      box-shadow: var(--shadow-sm);
+    }
+    .timetable-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+      text-align: left;
+    }
+    .timetable-table th {
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 14px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      border: 1px solid #1E293B;
+    }
+    .timetable-table td {
+      border: 1px solid var(--border-color);
+      padding: 12px 14px;
+      vertical-align: top;
+      font-size: 13px;
+      background: #FFFFFF;
+    }
+    .timetable-slot {
+      background: rgba(0, 168, 232, 0.08);
+      border-left: 4px solid var(--accent-cyan);
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .timetable-slot.break {
+      background: rgba(245, 158, 11, 0.1);
+      border-left-color: #F59E0B;
+      color: #B45309;
+    }
+
+    /* Exam Countdown Cards */
+    .exam-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      margin-top: 24px;
+    }
+    .exam-item-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: all 0.25s ease;
+    }
+    .exam-item-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent-cyan);
+    }
+    .countdown-timer-box {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 16px 0;
+      text-align: center;
+    }
+    .countdown-unit {
+      background: #0F172A;
+      color: #FFFFFF;
+      border-radius: 10px;
+      padding: 10px 4px;
+    }
+    .countdown-num {
+      font-size: 22px;
+      font-weight: 800;
+      font-family: 'Space Grotesk', monospace;
+      color: #38BDF8;
+      line-height: 1.1;
+    }
+    .countdown-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #94A3B8;
+      margin-top: 2px;
+    }
+
+    /* Word Counter Stats Grid */
+    .wc-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .wc-stat-tile {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+    .wc-stat-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      font-family: var(--font-heading);
+    }
+    .wc-stat-lbl {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* Typing Speed Test */
+    .typing-display-box {
+      background: #FFFFFF;
+      border: 2px solid var(--border-color);
+      border-radius: 14px;
+      padding: 24px;
+      font-size: 19px;
+      line-height: 1.85;
+      min-height: 150px;
+      user-select: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 18px 0;
+      letter-spacing: 0.3px;
+    }
+    .typing-char {
+      transition: color 0.1s;
+    }
+    .typing-char.correct {
+      color: #10B981;
+      font-weight: 600;
+    }
+    .typing-char.incorrect {
+      background: rgba(239, 68, 68, 0.18);
+      color: #EF4444;
+      text-decoration: underline;
+      border-radius: 2px;
+    }
+    .typing-char.current {
+      background: #00A8E8;
+      color: #FFFFFF;
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+
+    /* Flashcard 3D flip */
+    .flashcard-scene {
+      perspective: 1000px;
+      margin: 24px auto;
+      max-width: 560px;
+      height: 310px;
+    }
+    .flashcard-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+    .flashcard-inner.flipped {
+      transform: rotateY(180deg);
+    }
+    .flashcard-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 22px;
+      padding: 34px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.08);
+      border: 2px solid var(--border-color);
+      background: #FFFFFF;
+    }
+    .flashcard-back {
+      background: linear-gradient(135deg, #0F172A, #1E293B);
+      color: #FFFFFF;
+      transform: rotateY(180deg);
+      border-color: #38BDF8;
+    }
+
+    /* Social OG Preview cards */
+    .preview-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      overflow-x: auto;
+    }
+    .google-preview-card {
+      font-family: Arial, sans-serif;
+      background: #FFFFFF;
+      padding: 18px;
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(32,33,36,0.15);
+      max-width: 620px;
+      text-align: left;
+    }
+    .google-preview-url {
+      font-size: 12px;
+      color: #202124;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .google-preview-title {
+      font-size: 19px;
+      color: #1a0dab;
+      cursor: pointer;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    .google-preview-desc {
+      font-size: 13.5px;
+      color: #4d5156;
+      line-height: 1.5;
+    }
+    .social-facebook-card {
+      background: #FFFFFF;
+      border: 1px solid #DADDE1;
+      border-radius: 10px;
+      overflow: hidden;
+      max-width: 540px;
+      text-align: left;
+    }
+    .social-facebook-img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      background: #F0F2F5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #65676B;
+    }
+    .social-facebook-body {
+      padding: 14px 16px;
+      background: #F0F2F5;
+    }
   </style>
 </head>
 <body>
@@ -707,26 +1003,26 @@
           All
         </button>
         <button class="cat-pill" data-category="student" onclick="filterByCategory('student')">
-          <i class="fa-solid fa-graduation-cap"></i> Student
+          <i class="fa-solid fa-graduation-cap"></i> Student & Academic
         </button>
         <button class="cat-pill" data-category="productivity" onclick="filterByCategory('productivity')">
-          <i class="fa-solid fa-bolt"></i> Productivity
+          <i class="fa-solid fa-bolt"></i> Productivity & Writing
         </button>
         <button class="cat-pill" data-category="developer" onclick="filterByCategory('developer')">
-          <i class="fa-solid fa-code"></i> Developer & Math
+          <i class="fa-solid fa-code"></i> Developer & SEO
         </button>
       </div>
 
       <!-- 3 Boxes in 1 Line matching Image 2 -->
       <div class="tools-cards-row" id="toolsCardsGrid">
-        <!-- Card 1 -->
+        <!-- Card 1: Digit & Calculator -->
         <div class="tool-select-card" data-tool="digit" data-category="productivity developer" onclick="openSpecificTool('digit')">
           <div class="card-top-row">
             <div class="card-icon-box">
               <i class="fa-solid fa-calculator"></i>
             </div>
             <div class="card-badge-group">
-              <span class="badge-status">HOT</span>
+              <span class="badge-status">POPULAR</span>
               <span class="badge-category-tag">PRODUCTIVITY</span>
             </div>
           </div>
@@ -738,14 +1034,14 @@
           </div>
         </div>
 
-        <!-- Card 2 -->
+        <!-- Card 2: CGPA & GPA Calculator -->
         <div class="tool-select-card" data-tool="cgpa" data-category="student" onclick="openSpecificTool('cgpa')">
           <div class="card-top-row">
             <div class="card-icon-box">
               <i class="fa-solid fa-graduation-cap"></i>
             </div>
             <div class="card-badge-group">
-              <span class="badge-status">POPULAR</span>
+              <span class="badge-status">ESSENTIAL</span>
               <span class="badge-category-tag">STUDENT</span>
             </div>
           </div>
@@ -757,19 +1053,209 @@
           </div>
         </div>
 
-        <!-- Card 3 -->
+        <!-- Card 3: Percentage & Marks Calculator -->
         <div class="tool-select-card" data-tool="percentage" data-category="student productivity developer" onclick="openSpecificTool('percentage')">
           <div class="card-top-row">
             <div class="card-icon-box">
               <i class="fa-solid fa-percent"></i>
             </div>
             <div class="card-badge-group">
-              <span class="badge-status">NEW</span>
+              <span class="badge-status">HOT</span>
               <span class="badge-category-tag">CALCULATION</span>
             </div>
           </div>
           <h3 class="card-title">Percentage & Marks Calculator</h3>
           <p class="card-desc">Convert exam marks to percentages & letter grades, find proportion ratios, and evaluate mark changes.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 4: College Grade & Final Exam Calculator -->
+        <div class="tool-select-card" data-tool="grade" data-category="student" onclick="openSpecificTool('grade')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-award"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">STUDENT</span>
+              <span class="badge-category-tag">ACADEMIC</span>
+            </div>
+          </div>
+          <h3 class="card-title">Grade & Final Exam Calculator</h3>
+          <p class="card-desc">Calculate what score you need on your final exam to pass or reach an A, plus compute overall weighted syllabus grades.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 5: Study Timetable Generator -->
+        <div class="tool-select-card" data-tool="study-timetable" data-category="student productivity" onclick="openSpecificTool('study-timetable')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-calendar-days"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">PLANNER</span>
+              <span class="badge-category-tag">STUDENT</span>
+            </div>
+          </div>
+          <h3 class="card-title">Study Timetable Generator</h3>
+          <p class="card-desc">Generate a personalized, balanced weekly study routine with Pomodoro focus intervals, daily hour targets, and print export.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 6: Exam Countdown -->
+        <div class="tool-select-card" data-tool="exam-countdown" data-category="student productivity" onclick="openSpecificTool('exam-countdown')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-stopwatch-20"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">DEADLINES</span>
+              <span class="badge-category-tag">STUDENT</span>
+            </div>
+          </div>
+          <h3 class="card-title">Exam Countdown & Tracker</h3>
+          <p class="card-desc">Track days, hours, and minutes left until your semester tests, exams, and viva deadlines with motivational reminders.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 7: Word Counter -->
+        <div class="tool-select-card" data-tool="word-counter" data-category="student productivity developer" onclick="openSpecificTool('word-counter')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-file-lines"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">UTILITY</span>
+              <span class="badge-category-tag">WRITING</span>
+            </div>
+          </div>
+          <h3 class="card-title">Word & Character Counter</h3>
+          <p class="card-desc">Instant live word, character, sentence, and paragraph counts with reading/speaking time and case conversions.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 8: Typing Speed Test -->
+        <div class="tool-select-card" data-tool="typing-test" data-category="student productivity" onclick="openSpecificTool('typing-test')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-keyboard"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">PRACTICE</span>
+              <span class="badge-category-tag">SKILLS</span>
+            </div>
+          </div>
+          <h3 class="card-title">Typing Speed Test (WPM)</h3>
+          <p class="card-desc">Test your typing speed and keyboard accuracy in real time with live highlighted feedback and skill ranking.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 9: Flashcard Generator & Quiz -->
+        <div class="tool-select-card" data-tool="flashcard-generator" data-category="student productivity" onclick="openSpecificTool('flashcard-generator')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">STUDY</span>
+              <span class="badge-category-tag">STUDENT</span>
+            </div>
+          </div>
+          <h3 class="card-title">Study Flashcard Generator</h3>
+          <p class="card-desc">Create 3D flippable study flashcards, review computer science or custom decks, and test your retention with quiz mode.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 10: Custom QR Code Generator -->
+        <div class="tool-select-card" data-tool="qr-generator" data-category="productivity developer" onclick="openSpecificTool('qr-generator')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-qrcode"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">GENERATOR</span>
+              <span class="badge-category-tag">UTILITY</span>
+            </div>
+          </div>
+          <h3 class="card-title">Custom QR Code Generator</h3>
+          <p class="card-desc">Generate instant high-resolution QR codes for websites, texts, WhatsApp links, and Wi-Fi networks with PNG download.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 11: Open Graph & Social Preview -->
+        <div class="tool-select-card" data-tool="og-preview" data-category="developer productivity" onclick="openSpecificTool('og-preview')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-share-nodes"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">SEO</span>
+              <span class="badge-category-tag">DEVELOPER</span>
+            </div>
+          </div>
+          <h3 class="card-title">Open Graph & Social Preview</h3>
+          <p class="card-desc">Simulate and preview how your links and blog articles render on Google Search, Facebook, Twitter / X, and LinkedIn.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 12: AI Prompt Generator -->
+        <div class="tool-select-card" data-tool="ai-prompt-generator" data-category="student productivity developer" onclick="openSpecificTool('ai-prompt-generator')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">AI</span>
+              <span class="badge-category-tag">PRODUCTIVITY</span>
+            </div>
+          </div>
+          <h3 class="card-title">AI Prompt Generator</h3>
+          <p class="card-desc">Craft engineered, high-performance system prompts for ChatGPT, Claude, and Gemini across coding, essays, and analysis.</p>
+          <div class="card-action-link">
+            <span>Open tool</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
+        <!-- Card 13: SEO Slug & Meta Tag Generator -->
+        <div class="tool-select-card" data-tool="slug-generator" data-category="developer" onclick="openSpecificTool('slug-generator')">
+          <div class="card-top-row">
+            <div class="card-icon-box">
+              <i class="fa-solid fa-link"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status">SEO</span>
+              <span class="badge-category-tag">DEVELOPER</span>
+            </div>
+          </div>
+          <h3 class="card-title">SEO Slug & Meta Tag Generator</h3>
+          <p class="card-desc">Turn article titles into search-friendly URL slugs and generate full copyable HTML meta tags and Open Graph snippets.</p>
           <div class="card-action-link">
             <span>Open tool</span>
             <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
@@ -800,10 +1286,20 @@
         <span class="badge-status" id="activeToolStatusDisplay" style="font-size: 11px;">OPEN</span>
       </div>
 
-      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <div class="tool-quick-nav-container">
         <button onclick="openSpecificTool('digit')" class="quick-nav-pill" id="quickPill-digit">Digit Tool</button>
         <button onclick="openSpecificTool('cgpa')" class="quick-nav-pill" id="quickPill-cgpa">CGPA Tool</button>
-        <button onclick="openSpecificTool('percentage')" class="quick-nav-pill" id="quickPill-percentage">Percentage Tool</button>
+        <button onclick="openSpecificTool('percentage')" class="quick-nav-pill" id="quickPill-percentage">Percentage</button>
+        <button onclick="openSpecificTool('grade')" class="quick-nav-pill" id="quickPill-grade">Grade Calculator</button>
+        <button onclick="openSpecificTool('study-timetable')" class="quick-nav-pill" id="quickPill-study-timetable">Study Timetable</button>
+        <button onclick="openSpecificTool('exam-countdown')" class="quick-nav-pill" id="quickPill-exam-countdown">Exam Countdown</button>
+        <button onclick="openSpecificTool('word-counter')" class="quick-nav-pill" id="quickPill-word-counter">Word Counter</button>
+        <button onclick="openSpecificTool('typing-test')" class="quick-nav-pill" id="quickPill-typing-test">Typing Test</button>
+        <button onclick="openSpecificTool('flashcard-generator')" class="quick-nav-pill" id="quickPill-flashcard-generator">Flashcards</button>
+        <button onclick="openSpecificTool('qr-generator')" class="quick-nav-pill" id="quickPill-qr-generator">QR Code</button>
+        <button onclick="openSpecificTool('og-preview')" class="quick-nav-pill" id="quickPill-og-preview">Social Preview</button>
+        <button onclick="openSpecificTool('ai-prompt-generator')" class="quick-nav-pill" id="quickPill-ai-prompt-generator">AI Prompts</button>
+        <button onclick="openSpecificTool('slug-generator')" class="quick-nav-pill" id="quickPill-slug-generator">Slug & Meta</button>
       </div>
     </div>
 
@@ -1130,6 +1626,743 @@
       </div>
     </section>
 
+    <!-- TOOL 4: GRADE & FINAL EXAM CALCULATOR -->
+    <section class="tool-box" id="grade-calculator">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-award"></i></div>
+        <div>
+          <h3>College Grade & Final Exam Calculator</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Determine what score you need on your final exam to achieve a target letter grade, or calculate your overall weighted class average.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-subtabs">
+        <button class="subtab-btn active" onclick="switchGradeMode('final')">
+          <i class="fa-solid fa-bullseye"></i> Final Exam Target Calculator
+        </button>
+        <button class="subtab-btn" onclick="switchGradeMode('weighted')">
+          <i class="fa-solid fa-scale-balanced"></i> Weighted Course Grade
+        </button>
+      </div>
+
+      <!-- Mode 1: Final Exam Needed -->
+      <div id="gradeFinalView">
+        <div class="tool-grid-2">
+          <div class="tool-panel-card">
+            <h4 style="margin-bottom: 16px; font-size: 16px;">Target Exam Parameters</h4>
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label style="font-size: 13.5px; font-weight: 600;">Current Course Grade (%)</label>
+              <input type="number" id="gradeCurrentInput" class="form-control" placeholder="e.g. 78" value="82" oninput="calculateFinalExamNeeded()">
+            </div>
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label style="font-size: 13.5px; font-weight: 600;">Target Desired Grade (%)</label>
+              <input type="number" id="gradeTargetInput" class="form-control" placeholder="e.g. 85 (Grade A)" value="85" oninput="calculateFinalExamNeeded()">
+            </div>
+            <div class="form-group" style="margin-bottom: 18px;">
+              <label style="font-size: 13.5px; font-weight: 600;">Final Exam Weight (% of entire course)</label>
+              <input type="number" id="gradeWeightInput" class="form-control" placeholder="e.g. 30" value="30" oninput="calculateFinalExamNeeded()">
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button onclick="setGradeTargetPreset(85, 30)" class="quick-nav-pill">Target A (85%)</button>
+              <button onclick="setGradeTargetPreset(75, 30)" class="quick-nav-pill">Target B (75%)</button>
+              <button onclick="setGradeTargetPreset(60, 30)" class="quick-nav-pill">Pass (60%)</button>
+            </div>
+          </div>
+
+          <div class="tool-panel-card" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+            <span class="tool-stat-badge" style="margin: 0 auto 12px;"><i class="fa-solid fa-graduation-cap"></i> REQUIRED SCORE</span>
+            <div style="font-size: 46px; font-weight: 800; color: var(--accent-cyan); font-family: 'Space Grotesk', monospace;" id="gradeFinalResult">
+              92.0%
+            </div>
+            <p id="gradeFinalStatus" style="font-weight: 600; font-size: 14.5px; color: var(--text-main); margin: 8px 0;">
+              You need 92.0% on the final to get an A (85%).
+            </p>
+            <div style="background: rgba(0, 168, 232, 0.08); border-radius: 10px; padding: 12px; font-size: 13px; color: var(--text-muted); margin-top: 10px;" id="gradeFinalFeedback">
+              Plan intense revision sessions on high-weight exam chapters.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mode 2: Weighted Class Grade -->
+      <div id="gradeWeightedView" style="display: none;">
+        <p style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 16px;">
+          Add your syllabus categories (e.g. Quizzes, Midterms, Assignments, Projects, Labs).
+        </p>
+        <div class="table-responsive">
+          <table class="cgpa-table">
+            <thead>
+              <tr>
+                <th>Category Name</th>
+                <th style="width: 140px;">Weight (%)</th>
+                <th style="width: 140px;">Your Score (%)</th>
+                <th style="width: 60px; text-align: center;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="weightedGradeTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; flex-wrap: wrap; gap: 10px;">
+          <button onclick="addWeightedGradeRow()" class="btn-action-secondary">
+            <i class="fa-solid fa-plus"></i> Add Category
+          </button>
+          <div style="display: flex; gap: 16px; align-items: center;">
+            <span style="font-size: 13px; color: var(--text-muted);" id="weightedTotalWeightCheck">Total Weight: 100%</span>
+            <div style="font-size: 20px; font-weight: 800; color: var(--accent-cyan);">
+              Grade: <span id="weightedGradeResult">86.5%</span> (<span id="weightedLetterGrade">A</span>)
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOL 5: STUDY TIMETABLE GENERATOR -->
+    <section class="tool-box" id="study-timetable">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-calendar-days"></i></div>
+        <div>
+          <h3>Smart Study Timetable Generator</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Generate a personalized, balanced weekly study routine with Pomodoro focus intervals, daily hour targets, and print export.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <h4 style="margin-bottom: 14px; font-size: 16px;">Schedule Configuration</h4>
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 13.5px; font-weight: 600;">Your Subjects (Comma Separated)</label>
+            <input type="text" id="timetableSubjectsInput" class="form-control" value="Data Structures, Calculus, Web Development, Technical Writing, Database Systems">
+          </div>
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 13.5px; font-weight: 600;">Daily Study Target</label>
+            <select id="timetableDailyHoursSelect" class="form-control">
+              <option value="2">2 Hours / Day (Light Revision)</option>
+              <option value="4" selected>4 Hours / Day (Standard Semester Pace)</option>
+              <option value="6">6 Hours / Day (Exam Prep Mode)</option>
+              <option value="8">8 Hours / Day (Intensive Study Bootcamp)</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 13.5px; font-weight: 600;">Focus Time Window</label>
+            <select id="timetableTimeWindowSelect" class="form-control">
+              <option value="morning">Morning & Noon (8:00 AM - 1:00 PM)</option>
+              <option value="evening" selected>Late Afternoon & Evening (4:00 PM - 9:00 PM)</option>
+              <option value="night">Night Owl Focus (8:00 PM - 1:00 AM)</option>
+            </select>
+          </div>
+          <button onclick="generateWeeklyTimetable()" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 6px;">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Weekly Routine
+          </button>
+        </div>
+
+        <div class="tool-panel-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h4 style="margin-bottom: 12px; font-size: 16px;">Study Strategy Tips</h4>
+            <ul style="color: var(--text-muted); font-size: 13.5px; line-height: 1.7; padding-left: 20px;">
+              <li><strong>Spaced Repetition:</strong> Subjects rotate across days to avoid cognitive burnout.</li>
+              <li><strong>Pomodoro Breaks:</strong> Take 10-15 minute walk/stretch breaks between sessions.</li>
+              <li><strong>Active Recall:</strong> Test yourself rather than just re-reading notes.</li>
+            </ul>
+          </div>
+          <div style="display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;">
+            <button onclick="printStudyTimetable()" class="btn-action-secondary">
+              <i class="fa-solid fa-print"></i> Print / Save PDF
+            </button>
+            <button onclick="copyTimetableText()" class="btn-action-secondary">
+              <i class="fa-solid fa-copy"></i> Copy Text Summary
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="timetable-wrap" id="timetablePrintArea">
+        <table class="timetable-table" id="timetableWeeklyTable">
+          <!-- Rendered via JS -->
+        </table>
+      </div>
+    </section>
+
+    <!-- TOOL 6: EXAM COUNTDOWN & TRACKER -->
+    <section class="tool-box" id="exam-countdown">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-stopwatch-20"></i></div>
+        <div>
+          <h3>Exam Countdown & Study Tracker</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Track days, hours, and minutes left until your semester tests, exams, and viva deadlines with motivational reminders.
+          </p>
+        </div>
+      </div>
+
+      <!-- Motivational Banner -->
+      <div style="background: linear-gradient(135deg, rgba(0, 168, 232, 0.08), rgba(0, 119, 182, 0.12)); border: 1px solid rgba(0, 168, 232, 0.2); border-radius: 12px; padding: 14px 20px; display: flex; align-items: center; gap: 14px; margin-bottom: 24px;">
+        <i class="fa-solid fa-quote-left" style="color: var(--accent-cyan); font-size: 20px;"></i>
+        <div style="font-size: 14px; color: var(--text-main); font-weight: 500;" id="examMotivationalQuote">
+          "The expert in anything was once a beginner. Keep your focus sharp!"
+        </div>
+      </div>
+
+      <!-- Add Exam Form -->
+      <div class="tool-panel-card">
+        <h4 style="margin-bottom: 14px; font-size: 16px;"><i class="fa-solid fa-plus-circle"></i> Add Upcoming Exam / Test</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+          <div>
+            <label style="font-size: 12.5px; font-weight: 600;">Subject / Exam Title</label>
+            <input type="text" id="examNameInput" class="form-control" placeholder="e.g. Final Algorithms Exam">
+          </div>
+          <div>
+            <label style="font-size: 12.5px; font-weight: 600;">Date & Time</label>
+            <input type="datetime-local" id="examDateInput" class="form-control">
+          </div>
+          <div>
+            <label style="font-size: 12.5px; font-weight: 600;">Hall / Room / Details</label>
+            <input type="text" id="examRoomInput" class="form-control" placeholder="e.g. Hall 4B • Room 201">
+          </div>
+          <div style="display: flex; align-items: flex-end;">
+            <button onclick="addExamToCountdown()" class="btn-action-primary" style="width: 100%; justify-content: center;">
+              <i class="fa-solid fa-bell"></i> Set Countdown
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Countdown Cards Grid -->
+      <div class="exam-cards-grid" id="examCardsContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- TOOL 7: WORD & CHARACTER COUNTER -->
+    <section class="tool-box" id="word-counter">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-file-lines"></i></div>
+        <div>
+          <h3>Word & Character Counter</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Real-time word, character, sentence, and paragraph analytics with reading time, speaking time, and text case transformations.
+          </p>
+        </div>
+      </div>
+
+      <!-- Stat Tiles -->
+      <div class="wc-stats-grid">
+        <div class="wc-stat-tile">
+          <div class="wc-stat-val" id="wcWords">0</div>
+          <div class="wc-stat-lbl">Words</div>
+        </div>
+        <div class="wc-stat-tile">
+          <div class="wc-stat-val" id="wcCharsWithSpaces">0</div>
+          <div class="wc-stat-lbl">Characters</div>
+        </div>
+        <div class="wc-stat-tile">
+          <div class="wc-stat-val" id="wcCharsNoSpaces">0</div>
+          <div class="wc-stat-lbl">Chars (No Space)</div>
+        </div>
+        <div class="wc-stat-tile">
+          <div class="wc-stat-val" id="wcSentences">0</div>
+          <div class="wc-stat-lbl">Sentences</div>
+        </div>
+        <div class="wc-stat-tile">
+          <div class="wc-stat-val" id="wcParagraphs">0</div>
+          <div class="wc-stat-lbl">Paragraphs</div>
+        </div>
+        <div class="wc-stat-tile">
+          <div class="wc-stat-val" id="wcReadingTime">0s</div>
+          <div class="wc-stat-lbl">Reading Time</div>
+        </div>
+        <div class="wc-stat-tile">
+          <div class="wc-stat-val" id="wcSpeakingTime">0s</div>
+          <div class="wc-stat-lbl">Speaking Time</div>
+        </div>
+      </div>
+
+      <!-- Textarea -->
+      <div style="position: relative;">
+        <textarea id="wordCounterTextarea" class="form-control" style="width: 100%; height: 200px; font-size: 15px; line-height: 1.7; padding: 16px; resize: vertical;" placeholder="Type or paste your essay, assignment, blog post, or notes here to analyze in real time..." oninput="handleWordCounterInput()"></textarea>
+      </div>
+
+      <!-- Transformation Toolbar -->
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px;">
+        <button onclick="transformTextCase('upper')" class="quick-nav-pill">UPPERCASE</button>
+        <button onclick="transformTextCase('lower')" class="quick-nav-pill">lowercase</button>
+        <button onclick="transformTextCase('title')" class="quick-nav-pill">Title Case</button>
+        <button onclick="transformTextCase('sentence')" class="quick-nav-pill">Sentence case</button>
+        <button onclick="transformTextCase('clean')" class="quick-nav-pill">Remove Extra Spaces</button>
+        <button onclick="copyWordCounterText()" class="btn-action-primary" style="margin-left: auto;">
+          <i class="fa-solid fa-copy"></i> Copy Text
+        </button>
+        <button onclick="clearWordCounterText()" class="btn-action-secondary">
+          <i class="fa-solid fa-trash-can"></i> Clear
+        </button>
+      </div>
+
+      <!-- Keyword Density Table -->
+      <div style="margin-top: 24px; background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 12px; padding: 18px;">
+        <h4 style="font-size: 14.5px; margin-bottom: 12px; color: var(--text-main);"><i class="fa-solid fa-chart-pie"></i> Keyword Density (Top Frequent Words)</h4>
+        <div id="wcKeywordDensity" style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <span style="font-size: 13px; color: var(--text-muted);">Type text above to see keyword frequencies.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOL 8: TYPING SPEED TEST -->
+    <section class="tool-box" id="typing-test">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-keyboard"></i></div>
+        <div>
+          <h3>Interactive Typing Speed Test (WPM)</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Test your typing speed and keyboard accuracy in real time with live highlighted feedback and skill ranking.
+          </p>
+        </div>
+      </div>
+
+      <!-- Controls & Live Score -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; background: #F8FAFC; padding: 16px 20px; border-radius: 14px; border: 1px solid var(--border-color);">
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <label style="font-size: 13px; font-weight: 700;">Difficulty:</label>
+          <select id="typingDifficultySelect" class="form-control" style="width: 140px; padding: 6px 12px;" onchange="initTypingTest()">
+            <option value="easy">Easy (General)</option>
+            <option value="medium" selected>Medium (Tech)</option>
+            <option value="hard">Hard (Code & Syntax)</option>
+          </select>
+          <label style="font-size: 13px; font-weight: 700; margin-left: 8px;">Time:</label>
+          <select id="typingTimeSelect" class="form-control" style="width: 110px; padding: 6px 12px;" onchange="initTypingTest()">
+            <option value="30">30 Secs</option>
+            <option value="60" selected>60 Secs</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 18px; align-items: center;">
+          <div style="text-align: center;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Time Left</div>
+            <div style="font-size: 22px; font-weight: 800; color: var(--accent-cyan); font-family: 'Space Grotesk', monospace;" id="typingTimerDisplay">60s</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Speed</div>
+            <div style="font-size: 22px; font-weight: 800; color: #10B981; font-family: 'Space Grotesk', monospace;" id="typingWpmDisplay">0 WPM</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Accuracy</div>
+            <div style="font-size: 22px; font-weight: 800; color: var(--accent-dark); font-family: 'Space Grotesk', monospace;" id="typingAccDisplay">100%</div>
+          </div>
+          <button onclick="initTypingTest()" class="btn-action-secondary" style="height: 38px;">
+            <i class="fa-solid fa-rotate-right"></i> Restart
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Typing Display -->
+      <div class="typing-display-box" id="typingTextDisplay">
+        <!-- Rendered with spans via JS -->
+      </div>
+
+      <!-- Real-time Input Box -->
+      <div>
+        <input type="text" id="typingInputBox" class="form-control" style="font-size: 18px; padding: 14px 18px; border-radius: 12px;" placeholder="Start typing here when ready — the timer begins on your first keystroke..." oninput="handleTypingKeypress()" autocomplete="off" autocapitalize="off" spellcheck="false">
+      </div>
+
+      <!-- Result Banner (Hidden until test ends) -->
+      <div id="typingResultBanner" style="display: none; margin-top: 20px; background: linear-gradient(135deg, rgba(0, 168, 232, 0.1), rgba(16, 185, 129, 0.1)); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 14px; padding: 24px; text-align: center;">
+        <span class="tool-stat-badge" style="background: rgba(16, 185, 129, 0.2); color: #065F46; margin-bottom: 10px;">TEST COMPLETED</span>
+        <h3 style="font-size: 28px; margin-bottom: 6px;" id="typingFinalScore">Speed: 64 WPM • Accuracy: 98%</h3>
+        <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 16px;" id="typingRankFeedback">Great work! You type faster than 80% of average computer users.</p>
+        <button onclick="initTypingTest()" class="btn-action-primary">
+          <i class="fa-solid fa-redo"></i> Try Another Test
+        </button>
+      </div>
+    </section>
+
+    <!-- TOOL 9: FLASHCARD GENERATOR & QUIZ -->
+    <section class="tool-box" id="flashcard-generator">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-layer-group"></i></div>
+        <div>
+          <h3>Study Flashcard Generator & Quiz</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Memorize key concepts, formulas, and definitions using interactive 3D flippable flashcards with self-assessment quiz mode.
+          </p>
+        </div>
+      </div>
+
+      <!-- Deck Selection & Controls -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px;">
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <span style="font-size: 13.5px; font-weight: 700;">Deck:</span>
+          <select id="flashcardDeckSelect" class="form-control" style="width: 220px;" onchange="switchFlashcardDeck()">
+            <option value="cs">Computer Science Fundamentals</option>
+            <option value="web">Web Development & JavaScript</option>
+            <option value="custom">My Custom Flashcards</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <span style="font-size: 13px; font-weight: 700; color: var(--text-muted);" id="flashcardCounter">Card 1 of 6</span>
+          <button onclick="shuffleFlashcards()" class="quick-nav-pill" title="Shuffle Deck"><i class="fa-solid fa-shuffle"></i> Shuffle</button>
+          <button onclick="toggleAddCardModal()" class="btn-action-secondary"><i class="fa-solid fa-plus"></i> Add Card</button>
+        </div>
+      </div>
+
+      <!-- Add Card Inline Form (Collapsible) -->
+      <div id="addCardInlineForm" style="display: none; background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 14px; padding: 18px; margin-bottom: 20px;">
+        <h4 style="margin-bottom: 12px; font-size: 15px;">Add New Card to Custom Deck</h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div>
+            <label style="font-size: 12.5px; font-weight: 600;">Front (Question / Concept)</label>
+            <input type="text" id="newCardFront" class="form-control" placeholder="e.g. What is polymorphism in OOP?">
+          </div>
+          <div>
+            <label style="font-size: 12.5px; font-weight: 600;">Back (Answer / Definition)</label>
+            <input type="text" id="newCardBack" class="form-control" placeholder="e.g. The ability of an object to take on many forms.">
+          </div>
+        </div>
+        <div style="margin-top: 12px; display: flex; gap: 10px;">
+          <button onclick="saveNewFlashcard()" class="btn-action-primary"><i class="fa-solid fa-save"></i> Save Flashcard</button>
+          <button onclick="toggleAddCardModal()" class="btn-action-secondary">Cancel</button>
+        </div>
+      </div>
+
+      <!-- 3D Interactive Flashcard Scene -->
+      <div class="flashcard-scene" onclick="flipCurrentFlashcard()">
+        <div class="flashcard-inner" id="flashcardInner">
+          <div class="flashcard-face">
+            <span class="tool-stat-badge" style="margin-bottom: 16px;">FRONT (CLICK TO FLIP)</span>
+            <div style="font-size: 22px; font-weight: 700; color: var(--text-main); font-family: var(--font-heading); line-height: 1.4;" id="flashcardFrontText">
+              Loading concept...
+            </div>
+            <div style="margin-top: auto; font-size: 12px; color: var(--text-muted);">
+              <i class="fa-solid fa-hand-pointer"></i> Click card to reveal definition
+            </div>
+          </div>
+          <div class="flashcard-face flashcard-back">
+            <span class="tool-stat-badge" style="background: rgba(56, 189, 248, 0.2); color: #38BDF8; margin-bottom: 16px;">ANSWER & EXPLANATION</span>
+            <div style="font-size: 17px; font-weight: 500; line-height: 1.6; color: #F8FAFC;" id="flashcardBackText">
+              Loading answer...
+            </div>
+            <div style="margin-top: auto; font-size: 12px; color: #94A3B8;">
+              <i class="fa-solid fa-arrow-rotate-left"></i> Click to flip back
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation & Self-Assessment Controls -->
+      <div style="max-width: 560px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <button onclick="prevFlashcard()" class="btn-action-secondary" style="padding: 10px 18px;">
+          <i class="fa-solid fa-arrow-left"></i> Previous
+        </button>
+        <div style="display: flex; gap: 8px;">
+          <button onclick="markFlashcardMastery(true)" class="quick-nav-pill" style="border-color: #10B981; color: #10B981;">
+            <i class="fa-solid fa-circle-check"></i> Mastered
+          </button>
+          <button onclick="markFlashcardMastery(false)" class="quick-nav-pill" style="border-color: #F59E0B; color: #B45309;">
+            <i class="fa-solid fa-clock-rotate-left"></i> Needs Review
+          </button>
+        </div>
+        <button onclick="nextFlashcard()" class="btn-action-secondary" style="padding: 10px 18px;">
+          Next <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- TOOL 10: CUSTOM QR CODE GENERATOR -->
+    <section class="tool-box" id="qr-generator">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-qrcode"></i></div>
+        <div>
+          <h3>Custom High-Res QR Code Generator</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Generate instant high-resolution QR codes for websites, plain text, WhatsApp links, and Wi-Fi networks with PNG export.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <h4 style="margin-bottom: 14px; font-size: 16px;">QR Data & Content</h4>
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 13px; font-weight: 600;">Data Type</label>
+            <select id="qrTypeSelect" class="form-control" onchange="handleQrTypeChange()">
+              <option value="url">Website URL</option>
+              <option value="text">Plain Text / Note</option>
+              <option value="whatsapp">WhatsApp Direct Chat</option>
+              <option value="wifi">Wi-Fi Network Quick Connect</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 13px; font-weight: 600;" id="qrContentLabel">Target Website URL</label>
+            <input type="text" id="qrContentInput" class="form-control" value="https://www.techxsol.online" placeholder="https://..." oninput="generateDynamicQrCode()">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">QR Color</label>
+              <input type="color" id="qrColorInput" value="#0F172A" style="width: 100%; height: 38px; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer;" onchange="generateDynamicQrCode()">
+            </div>
+            <div>
+              <label style="font-size: 12.5px; font-weight: 600;">Background Color</label>
+              <input type="color" id="qrBgInput" value="#FFFFFF" style="width: 100%; height: 38px; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer;" onchange="generateDynamicQrCode()">
+            </div>
+          </div>
+
+          <button onclick="generateDynamicQrCode()" class="btn-action-primary" style="width: 100%; justify-content: center;">
+            <i class="fa-solid fa-arrows-rotate"></i> Refresh QR Code
+          </button>
+        </div>
+
+        <div class="tool-panel-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+          <div style="background: #FFFFFF; padding: 18px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 16px;">
+            <div id="qrCodeCanvasWrap" style="width: 220px; height: 220px; display: flex; align-items: center; justify-content: center;"></div>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button onclick="downloadQrCodePng()" class="btn-action-primary">
+              <i class="fa-solid fa-download"></i> Download PNG
+            </button>
+            <button onclick="copyQrCodeLink()" class="btn-action-secondary">
+              <i class="fa-solid fa-link"></i> Copy Data Link
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOL 11: OPEN GRAPH & SOCIAL PREVIEW -->
+    <section class="tool-box" id="og-preview">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-share-nodes"></i></div>
+        <div>
+          <h3>Open Graph & Social Share Preview</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Simulate and preview how your website links and blog articles render on Google Search, Facebook, Twitter / X, and LinkedIn.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <h4 style="margin-bottom: 14px; font-size: 16px;">Metadata Editor</h4>
+          <div class="form-group" style="margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between;">
+              <label style="font-size: 13px; font-weight: 600;">Page Title</label>
+              <span style="font-size: 11.5px; color: var(--text-muted);" id="ogTitleCharCount">58 / 60 chars</span>
+            </div>
+            <input type="text" id="ogTitleInput" class="form-control" value="Tech X Sol | Empowering Futures Through Smart Tech Solutions" oninput="updateSocialPreviews()">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between;">
+              <label style="font-size: 13px; font-weight: 600;">Meta Description</label>
+              <span style="font-size: 11.5px; color: var(--text-muted);" id="ogDescCharCount">142 / 160 chars</span>
+            </div>
+            <textarea id="ogDescInput" class="form-control" style="height: 80px; resize: none;" oninput="updateSocialPreviews()">Bespoke Web Applications, Custom Software, and Enterprise Systems engineered for scale. Discover our services and live developer utilities.</textarea>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 13px; font-weight: 600;">Target Canonical URL</label>
+            <input type="text" id="ogUrlInput" class="form-control" value="https://www.techxsol.online" oninput="updateSocialPreviews()">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 13px; font-weight: 600;">Cover Image URL</label>
+            <input type="text" id="ogImageInput" class="form-control" value="https://www.techxsol.online/techxsol%20logo.png" oninput="updateSocialPreviews()">
+          </div>
+        </div>
+
+        <div class="tool-panel-card">
+          <div class="preview-tabs">
+            <button class="quick-nav-pill active" onclick="switchSocialPreviewTab('google')">Google Search</button>
+            <button class="quick-nav-pill" onclick="switchSocialPreviewTab('facebook')">Facebook</button>
+            <button class="quick-nav-pill" onclick="switchSocialPreviewTab('twitter')">Twitter / X</button>
+            <button class="quick-nav-pill" onclick="switchSocialPreviewTab('linkedin')">LinkedIn</button>
+          </div>
+
+          <!-- Google Search Preview -->
+          <div id="prevTabGoogle" class="social-prev-view">
+            <div class="google-preview-card">
+              <div class="google-preview-url">
+                <i class="fa-solid fa-globe" style="color: #5f6368; font-size: 13px;"></i>
+                <span id="prevGoogleUrlDisplay">https://www.techxsol.online</span>
+              </div>
+              <div class="google-preview-title" id="prevGoogleTitleDisplay">
+                Tech X Sol | Empowering Futures Through Smart Tech Solutions
+              </div>
+              <div class="google-preview-desc" id="prevGoogleDescDisplay">
+                Bespoke Web Applications, Custom Software, and Enterprise Systems engineered for scale. Discover our services and live developer utilities.
+              </div>
+            </div>
+          </div>
+
+          <!-- Facebook Preview -->
+          <div id="prevTabFacebook" class="social-prev-view" style="display: none;">
+            <div class="social-facebook-card">
+              <div class="social-facebook-img">
+                <img id="prevFbImg" src="techxsol logo.png" alt="Preview" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+              </div>
+              <div class="social-facebook-body">
+                <div style="font-size: 12px; text-transform: uppercase; color: #65676B;" id="prevFbDomain">TECHXSOL.ONLINE</div>
+                <div style="font-size: 16px; font-weight: 700; color: #050505; margin: 4px 0;" id="prevFbTitle">Title Preview</div>
+                <div style="font-size: 13px; color: #65676B; line-height: 1.4;" id="prevFbDesc">Description preview...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Twitter Preview -->
+          <div id="prevTabTwitter" class="social-prev-view" style="display: none;">
+            <div style="background: #FFFFFF; border: 1px solid #CFD9DE; border-radius: 16px; overflow: hidden; max-width: 520px; text-align: left;">
+              <div style="height: 200px; background: #0F172A; display: flex; align-items: center; justify-content: center;">
+                <img id="prevTwitterImg" src="techxsol logo.png" alt="Preview" style="max-height: 90%; max-width: 90%; object-fit: contain;">
+              </div>
+              <div style="padding: 12px 16px;">
+                <div style="font-size: 12.5px; color: #536471;" id="prevTwitterDomain">From techxsol.online</div>
+                <div style="font-size: 15px; font-weight: 700; color: #0F1419; margin-top: 4px;" id="prevTwitterTitle">Title Preview</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LinkedIn Preview -->
+          <div id="prevTabLinkedin" class="social-prev-view" style="display: none;">
+            <div style="background: #FFFFFF; border: 1px solid #E0E0E0; border-radius: 8px; overflow: hidden; max-width: 520px; text-align: left;">
+              <div style="height: 200px; background: #F3F6F8; display: flex; align-items: center; justify-content: center;">
+                <img id="prevLinkedinImg" src="techxsol logo.png" alt="Preview" style="max-height: 90%; max-width: 90%; object-fit: contain;">
+              </div>
+              <div style="padding: 12px 14px; background: #F3F6F8;">
+                <div style="font-size: 14.5px; font-weight: 600; color: rgba(0,0,0,0.9);" id="prevLinkedinTitle">Title Preview</div>
+                <div style="font-size: 12px; color: rgba(0,0,0,0.6); margin-top: 2px;" id="prevLinkedinDomain">techxsol.online</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOL 12: AI PROMPT GENERATOR -->
+    <section class="tool-box" id="ai-prompt-generator">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-robot"></i></div>
+        <div>
+          <h3>AI Prompt Generator & Optimizer</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Craft engineered, high-performance system prompts for ChatGPT, Claude, and Gemini across coding, essays, and analysis.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <h4 style="margin-bottom: 14px; font-size: 16px;">Prompt Parameters</h4>
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 13px; font-weight: 600;">Use Case / Goal</label>
+            <select id="promptGoalSelect" class="form-control" onchange="handlePromptGoalPreset()">
+              <option value="coding">Code Generation & Bug Fixing</option>
+              <option value="academic">Academic Essay & Thesis Outline</option>
+              <option value="blog">SEO Blog Post & Article Writing</option>
+              <option value="tutor">Interactive Concept Tutor (Explain Like I'm 10)</option>
+              <option value="business">Business Pitch & Startup Strategy</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 13px; font-weight: 600;">System Persona / Role</label>
+            <input type="text" id="promptRoleInput" class="form-control" value="Senior Full-Stack Architect & Clean Code Expert">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 13px; font-weight: 600;">Task / Question Details</label>
+            <textarea id="promptTaskInput" class="form-control" style="height: 70px; resize: none;">Build a reusable JavaScript date countdown module with live ticking seconds and error boundaries.</textarea>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 13px; font-weight: 600;">Constraints & Output Format</label>
+            <input type="text" id="promptFormatInput" class="form-control" value="Vanilla JS, zero dependencies, annotated code with brief explanation">
+          </div>
+
+          <button onclick="generateEngineeredPrompt()" class="btn-action-primary" style="width: 100%; justify-content: center;">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate AI Prompt
+          </button>
+        </div>
+
+        <div class="tool-panel-card" style="display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h4 style="font-size: 15px;">Optimized Prompt Output</h4>
+            <span class="tool-stat-badge">READY TO COPY</span>
+          </div>
+          <textarea id="promptOutputArea" class="form-control" style="flex-grow: 1; min-height: 220px; font-family: monospace; font-size: 13px; line-height: 1.6; background: #0F172A; color: #38BDF8; padding: 16px;" readonly></textarea>
+          <div style="display: flex; gap: 10px; margin-top: 14px;">
+            <button onclick="copyAiPrompt()" class="btn-action-primary">
+              <i class="fa-solid fa-copy"></i> Copy Prompt
+            </button>
+            <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" class="btn-action-secondary">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> Open ChatGPT
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOL 13: SEO SLUG & META TAG GENERATOR -->
+    <section class="tool-box" id="slug-generator">
+      <div class="tool-box-header">
+        <div class="tool-box-icon"><i class="fa-solid fa-link"></i></div>
+        <div>
+          <h3>SEO Slug & Meta Tag Generator</h3>
+          <p style="color: var(--text-muted); font-size: 14px; margin: 0;">
+            Turn article titles into search-friendly URL slugs and generate full copyable HTML meta tags and Open Graph snippets.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-grid-2">
+        <div class="tool-panel-card">
+          <h4 style="margin-bottom: 14px; font-size: 16px;">Article & Page Inputs</h4>
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 13px; font-weight: 600;">Article Title / Headline</label>
+            <input type="text" id="slugTitleInput" class="form-control" value="How Powerful Is ChatGPT? 10 Hidden Features You Must Know in 2026" oninput="handleSlugInput()">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 13px; font-weight: 600;">Meta Description</label>
+            <input type="text" id="slugDescInput" class="form-control" value="An architectural breakdown of ChatGPT capabilities, advanced workflows, and real-world benchmarks." oninput="handleSlugInput()">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 13px; font-weight: 600;">Canonical URL Base</label>
+            <input type="text" id="slugUrlBaseInput" class="form-control" value="https://www.techxsol.online/blogs/" oninput="handleSlugInput()">
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+              <input type="checkbox" id="slugStopWordsCheck" checked onchange="handleSlugInput()">
+              <span>Filter common English stop words (a, the, is, in, at, of, you)</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="tool-panel-card" style="display: flex; flex-direction: column;">
+          <h4 style="margin-bottom: 12px; font-size: 15px;">Generated SEO Slug</h4>
+          <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <code style="color: var(--accent-cyan); font-weight: 700; font-size: 14px; word-break: break-all;" id="slugOutputDisplay">
+              how-powerful-chatgpt-10-hidden-features-must-know-2026
+            </code>
+            <button onclick="copySlugToClipboard()" class="quick-nav-pill" style="margin-left: 8px; flex-shrink: 0;">
+              <i class="fa-solid fa-copy"></i> Copy
+            </button>
+          </div>
+
+          <h4 style="margin-bottom: 8px; font-size: 14.5px;">Complete HTML &lt;head&gt; Meta Snippet</h4>
+          <textarea id="slugMetaTagsOutput" class="form-control" style="flex-grow: 1; min-height: 140px; font-family: monospace; font-size: 12px; line-height: 1.5; background: #0F172A; color: #F8FAFC; padding: 12px;" readonly></textarea>
+          <button onclick="copyGeneratedMetaTags()" class="btn-action-primary" style="margin-top: 12px;">
+            <i class="fa-solid fa-copy"></i> Copy All HTML Meta Tags
+          </button>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- Footer with Stealth Admin Trigger -->
@@ -1186,6 +2419,66 @@
         slug: 'percentage-calculator',
         name: 'Percentage & Marks Calculator',
         category: 'Calculation'
+      },
+      'grade': {
+        id: 'grade-calculator',
+        slug: 'grade-calculator',
+        name: 'College Grade & Final Exam Calculator',
+        category: 'Student'
+      },
+      'study-timetable': {
+        id: 'study-timetable',
+        slug: 'study-timetable',
+        name: 'Smart Study Timetable Generator',
+        category: 'Student'
+      },
+      'exam-countdown': {
+        id: 'exam-countdown',
+        slug: 'exam-countdown',
+        name: 'Exam Countdown & Study Tracker',
+        category: 'Student'
+      },
+      'word-counter': {
+        id: 'word-counter',
+        slug: 'word-counter',
+        name: 'Pro Word & Character Counter',
+        category: 'Productivity'
+      },
+      'typing-test': {
+        id: 'typing-test',
+        slug: 'typing-test',
+        name: 'Interactive Typing Speed Test (WPM)',
+        category: 'Student'
+      },
+      'flashcard-generator': {
+        id: 'flashcard-generator',
+        slug: 'flashcard-generator',
+        name: 'Study Flashcard Generator & Quiz',
+        category: 'Student'
+      },
+      'qr-generator': {
+        id: 'qr-generator',
+        slug: 'qr-generator',
+        name: 'Custom High-Res QR Code Generator',
+        category: 'Productivity'
+      },
+      'og-preview': {
+        id: 'og-preview',
+        slug: 'og-preview',
+        name: 'Open Graph & Social Share Preview',
+        category: 'Developer'
+      },
+      'ai-prompt-generator': {
+        id: 'ai-prompt-generator',
+        slug: 'ai-prompt-generator',
+        name: 'AI Prompt Generator & Optimizer',
+        category: 'Productivity'
+      },
+      'slug-generator': {
+        id: 'slug-generator',
+        slug: 'slug-generator',
+        name: 'SEO Slug & Meta Tag Generator',
+        category: 'Developer'
       }
     };
 
@@ -1197,7 +2490,28 @@
         'cgpa': 'cgpa',
         'cgpa-calculator': 'cgpa',
         'percentage': 'percentage',
-        'percentage-calculator': 'percentage'
+        'percentage-calculator': 'percentage',
+        'grade': 'grade',
+        'grade-calculator': 'grade',
+        'study-timetable': 'study-timetable',
+        'timetable': 'study-timetable',
+        'exam-countdown': 'exam-countdown',
+        'countdown': 'exam-countdown',
+        'word-counter': 'word-counter',
+        'wordcount': 'word-counter',
+        'typing-test': 'typing-test',
+        'typing': 'typing-test',
+        'flashcard-generator': 'flashcard-generator',
+        'flashcard': 'flashcard-generator',
+        'flashcards': 'flashcard-generator',
+        'qr-generator': 'qr-generator',
+        'qrcode': 'qr-generator',
+        'og-preview': 'og-preview',
+        'open-graph': 'og-preview',
+        'ai-prompt-generator': 'ai-prompt-generator',
+        'prompt-generator': 'ai-prompt-generator',
+        'slug-generator': 'slug-generator',
+        'meta-tag-generator': 'slug-generator'
       };
 
       const toolKey = idMap[targetTool] || 'digit';
@@ -1370,6 +2684,16 @@
       initDigitTool();
       initCgpaTool();
       initPercentageTool();
+      initGradeCalculator();
+      initStudyTimetable();
+      initExamCountdown();
+      initWordCounter();
+      initTypingTest();
+      initFlashcards();
+      initQrGenerator();
+      initOgPreview();
+      initAiPromptGenerator();
+      initSlugGenerator();
 
       const tool = getToolFromUrl();
       if (tool) {
@@ -1764,6 +3088,1231 @@
       const prefix = change > 0 ? '+' : '';
       document.getElementById('f3Result').textContent = `${prefix}${change.toFixed(2)}%`;
       document.getElementById('f3Result').style.color = change >= 0 ? '#10B981' : '#EF4444';
+    }
+
+    // Toast Notification Utility
+    function showToolToast(message) {
+      let toast = document.getElementById('shareToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'shareToast';
+        toast.className = 'share-toast';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // ==========================================
+    // 5. TOOL 4: GRADE & FINAL EXAM CALCULATOR LOGIC
+    // ==========================================
+    function switchGradeMode(mode) {
+      const tabs = document.querySelectorAll('#grade-calculator .subtab-btn');
+      tabs.forEach(t => t.classList.remove('active'));
+      const finalView = document.getElementById('gradeFinalView');
+      const weightedView = document.getElementById('gradeWeightedView');
+
+      if (mode === 'final') {
+        if (tabs[0]) tabs[0].classList.add('active');
+        if (finalView) finalView.style.display = 'block';
+        if (weightedView) weightedView.style.display = 'none';
+        calculateFinalExamNeeded();
+      } else {
+        if (tabs[1]) tabs[1].classList.add('active');
+        if (finalView) finalView.style.display = 'none';
+        if (weightedView) weightedView.style.display = 'block';
+        calculateWeightedGrade();
+      }
+    }
+
+    function calculateFinalExamNeeded() {
+      const current = parseFloat(document.getElementById('gradeCurrentInput')?.value) || 0;
+      const target = parseFloat(document.getElementById('gradeTargetInput')?.value) || 0;
+      const weight = parseFloat(document.getElementById('gradeWeightInput')?.value) || 0;
+
+      const resultEl = document.getElementById('gradeFinalResult');
+      const statusEl = document.getElementById('gradeFinalStatus');
+      const feedbackEl = document.getElementById('gradeFinalFeedback');
+      if (!resultEl || !statusEl || !feedbackEl) return;
+
+      if (weight <= 0 || weight > 100) {
+        resultEl.textContent = '--';
+        statusEl.textContent = 'Final exam weight must be between 1% and 100%.';
+        feedbackEl.textContent = 'Please adjust exam weight.';
+        return;
+      }
+
+      const wFrac = weight / 100;
+      const required = (target - current * (1 - wFrac)) / wFrac;
+      const reqRounded = required.toFixed(1);
+
+      resultEl.textContent = `${reqRounded}%`;
+
+      if (required <= 0) {
+        resultEl.style.color = '#10B981';
+        statusEl.textContent = `You have already secured your target grade of ${target}%!`;
+        feedbackEl.textContent = 'Even a 0% on the final exam keeps your grade above target. Keep going!';
+      } else if (required <= 60) {
+        resultEl.style.color = '#10B981';
+        statusEl.textContent = `You need ${reqRounded}% on the final to get ${target}%.`;
+        feedbackEl.textContent = 'Very achievable! Maintain steady study routine and review past quizzes.';
+      } else if (required <= 85) {
+        resultEl.style.color = '#00A8E8';
+        statusEl.textContent = `You need ${reqRounded}% on the final to achieve ${target}%.`;
+        feedbackEl.textContent = 'Solid preparation required. Prioritize high-weight chapters and practice problems.';
+      } else if (required <= 100) {
+        resultEl.style.color = '#F59E0B';
+        statusEl.textContent = `You need ${reqRounded}% on the final to reach ${target}%.`;
+        feedbackEl.textContent = 'High focus required! Dedicated revision and office hour questions recommended.';
+      } else {
+        resultEl.style.color = '#EF4444';
+        statusEl.textContent = `You need ${reqRounded}% on the final exam.`;
+        feedbackEl.textContent = 'Target exceeds 100%. Check with your instructor for extra credit opportunities.';
+      }
+    }
+
+    function setGradeTargetPreset(target, weight) {
+      const tInput = document.getElementById('gradeTargetInput');
+      const wInput = document.getElementById('gradeWeightInput');
+      if (tInput) tInput.value = target;
+      if (wInput) wInput.value = weight;
+      calculateFinalExamNeeded();
+    }
+
+    let weightedCategories = [
+      { name: 'Quizzes & Homework', weight: 20, score: 88 },
+      { name: 'Midterm Examination', weight: 25, score: 78 },
+      { name: 'Semester Project / Lab', weight: 25, score: 92 },
+      { name: 'Final Examination', weight: 30, score: 85 }
+    ];
+
+    function initGradeCalculator() {
+      calculateFinalExamNeeded();
+      renderWeightedRows();
+    }
+
+    function renderWeightedRows() {
+      const tbody = document.getElementById('weightedGradeTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = weightedCategories.map((c, idx) => `
+        <tr>
+          <td><input type="text" class="form-control" value="${c.name}" oninput="updateWeightedCategory(${idx}, 'name', this.value)"></td>
+          <td><input type="number" class="form-control" value="${c.weight}" min="0" max="100" oninput="updateWeightedCategory(${idx}, 'weight', this.value)"></td>
+          <td><input type="number" class="form-control" value="${c.score}" min="0" max="100" oninput="updateWeightedCategory(${idx}, 'score', this.value)"></td>
+          <td style="text-align: center;">
+            <button onclick="removeWeightedGradeRow(${idx})" class="btn-action-secondary" style="color: var(--danger); padding: 6px 10px;" title="Remove">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+      calculateWeightedGrade();
+    }
+
+    function updateWeightedCategory(idx, field, val) {
+      if (field === 'name') weightedCategories[idx].name = val;
+      else weightedCategories[idx][field] = parseFloat(val) || 0;
+      calculateWeightedGrade();
+    }
+
+    function addWeightedGradeRow(name = 'New Assessment', weight = 10, score = 85) {
+      weightedCategories.push({ name, weight, score });
+      renderWeightedRows();
+    }
+
+    function removeWeightedGradeRow(idx) {
+      if (weightedCategories.length <= 1) {
+        showToolToast('You must keep at least 1 category.');
+        return;
+      }
+      weightedCategories.splice(idx, 1);
+      renderWeightedRows();
+    }
+
+    function calculateWeightedGrade() {
+      let totalWeight = 0;
+      let weightedScoreSum = 0;
+
+      weightedCategories.forEach(c => {
+        totalWeight += c.weight;
+        weightedScoreSum += (c.weight * c.score);
+      });
+
+      const checkEl = document.getElementById('weightedTotalWeightCheck');
+      const resultEl = document.getElementById('weightedGradeResult');
+      const letterEl = document.getElementById('weightedLetterGrade');
+      if (!resultEl || !letterEl) return;
+
+      if (checkEl) {
+        checkEl.textContent = `Total Weight: ${totalWeight}%`;
+        checkEl.style.color = totalWeight === 100 ? '#10B981' : (totalWeight > 100 ? '#EF4444' : '#F59E0B');
+      }
+
+      const finalGrade = totalWeight > 0 ? (weightedScoreSum / totalWeight) : 0;
+      resultEl.textContent = `${finalGrade.toFixed(1)}%`;
+
+      let letter = 'F';
+      if (finalGrade >= 90) letter = 'A+';
+      else if (finalGrade >= 85) letter = 'A';
+      else if (finalGrade >= 80) letter = 'A-';
+      else if (finalGrade >= 75) letter = 'B+';
+      else if (finalGrade >= 70) letter = 'B';
+      else if (finalGrade >= 65) letter = 'C+';
+      else if (finalGrade >= 60) letter = 'C';
+      else if (finalGrade >= 50) letter = 'D';
+
+      letterEl.textContent = letter;
+    }
+
+    // ==========================================
+    // 6. TOOL 5: SMART STUDY TIMETABLE GENERATOR
+    // ==========================================
+    let currentTimetableData = [];
+
+    function initStudyTimetable() {
+      generateWeeklyTimetable();
+    }
+
+    function generateWeeklyTimetable() {
+      const subInput = document.getElementById('timetableSubjectsInput')?.value || '';
+      const subjects = subInput.split(',').map(s => s.trim()).filter(Boolean);
+      const hours = parseInt(document.getElementById('timetableDailyHoursSelect')?.value || '4', 10);
+      const windowMode = document.getElementById('timetableTimeWindowSelect')?.value || 'evening';
+
+      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      const defaultSubjects = ['Computer Science', 'Mathematics', 'Software Engineering', 'Algorithms', 'Web Design'];
+      const activeSubjects = subjects.length > 0 ? subjects : defaultSubjects;
+
+      let timeSlots = [];
+      if (windowMode === 'morning') {
+        if (hours === 2) timeSlots = ['08:30 AM - 09:30 AM', '10:00 AM - 11:00 AM'];
+        else if (hours === 4) timeSlots = ['08:00 AM - 09:30 AM', '10:00 AM - 11:30 AM', '11:45 AM - 12:45 PM'];
+        else if (hours === 6) timeSlots = ['08:00 AM - 09:30 AM', '10:00 AM - 11:30 AM', '11:45 AM - 01:15 PM', '01:30 PM - 03:00 PM'];
+        else timeSlots = ['07:30 AM - 09:30 AM', '10:00 AM - 12:00 PM', '01:00 PM - 03:00 PM', '03:30 PM - 05:30 PM'];
+      } else if (windowMode === 'night') {
+        if (hours === 2) timeSlots = ['08:30 PM - 09:30 PM', '10:00 PM - 11:00 PM'];
+        else if (hours === 4) timeSlots = ['08:00 PM - 09:30 PM', '10:00 PM - 11:30 PM', '11:45 PM - 12:45 AM'];
+        else if (hours === 6) timeSlots = ['07:00 PM - 08:30 PM', '09:00 PM - 10:30 PM', '10:45 PM - 12:15 AM', '12:30 AM - 02:00 AM'];
+        else timeSlots = ['06:00 PM - 08:00 PM', '08:30 PM - 10:30 PM', '11:00 PM - 01:00 AM', '01:30 AM - 03:30 AM'];
+      } else {
+        if (hours === 2) timeSlots = ['04:30 PM - 05:30 PM', '06:00 PM - 07:00 PM'];
+        else if (hours === 4) timeSlots = ['04:00 PM - 05:30 PM', '06:00 PM - 07:30 PM', '08:00 PM - 09:00 PM'];
+        else if (hours === 6) timeSlots = ['03:00 PM - 04:30 PM', '05:00 PM - 06:30 PM', '07:00 PM - 08:30 PM', '09:00 PM - 10:30 PM'];
+        else timeSlots = ['02:00 PM - 04:00 PM', '04:30 PM - 06:30 PM', '07:00 PM - 09:00 PM', '09:30 PM - 11:30 PM'];
+      }
+
+      currentTimetableData = [];
+      let subIdx = 0;
+
+      days.forEach((day, dIdx) => {
+        const slots = timeSlots.map((time, sIdx) => {
+          const subject = activeSubjects[subIdx % activeSubjects.length];
+          subIdx++;
+          const activities = [
+            'Deep Concept Study & Chapter Notes',
+            'Practice Problems & Numerical Exercises',
+            'Active Recall & Flashcard Self-Quiz',
+            'Summary Sheet Writing & Formula Revision',
+            'Past Paper & Mock Test Solving'
+          ];
+          const activity = activities[(dIdx + sIdx) % activities.length];
+          return { time, subject, activity };
+        });
+        currentTimetableData.push({ day, slots });
+      });
+
+      renderTimetableTable();
+    }
+
+    function renderTimetableTable() {
+      const table = document.getElementById('timetableWeeklyTable');
+      if (!table || currentTimetableData.length === 0) return;
+
+      let html = `
+        <thead>
+          <tr>
+            <th style="width: 140px;">Day</th>
+            <th>Study Intervals & Focus Subjects</th>
+          </tr>
+        </thead>
+        <tbody>
+      `;
+
+      currentTimetableData.forEach(row => {
+        html += `
+          <tr>
+            <td style="font-weight: 700; color: var(--accent-cyan); vertical-align: top;">
+              ${row.day}
+            </td>
+            <td>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                ${row.slots.map(s => `
+                  <div style="background: rgba(0, 168, 232, 0.05); border: 1px solid rgba(0, 168, 232, 0.15); border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+                    <div>
+                      <strong style="color: var(--text-main); font-size: 14px;">${s.subject}</strong>
+                      <span style="font-size: 12.5px; color: var(--text-muted); margin-left: 8px;">(${s.activity})</span>
+                    </div>
+                    <span class="tool-stat-badge" style="font-size: 11.5px; padding: 2px 8px;">
+                      <i class="fa-regular fa-clock"></i> ${s.time}
+                    </span>
+                  </div>
+                `).join('')}
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody>`;
+      table.innerHTML = html;
+    }
+
+    function printStudyTimetable() {
+      window.print();
+    }
+
+    function copyTimetableText() {
+      if (currentTimetableData.length === 0) return;
+      let text = "=== TECH X SOL WEEKLY STUDY TIMETABLE ===\n\n";
+      currentTimetableData.forEach(row => {
+        text += `[${row.day}]\n`;
+        row.slots.forEach(s => {
+          text += `  • ${s.time} : ${s.subject} - ${s.activity}\n`;
+        });
+        text += "\n";
+      });
+      text += "Generated via Tech X Sol Interactive Student Tools Suite (https://www.techxsol.online/tools/study-timetable)\n";
+
+      navigator.clipboard.writeText(text).then(() => {
+        showToolToast('Timetable text copied to clipboard!');
+      });
+    }
+
+    // ==========================================
+    // 7. TOOL 6: EXAM COUNTDOWN & TRACKER LOGIC
+    // ==========================================
+    let userExams = [];
+    let examTickerInterval = null;
+
+    const motivationalQuotes = [
+      '"The expert in anything was once a beginner. Keep your focus sharp!"',
+      '"Success is the sum of small efforts, repeated day in and day out."',
+      '"Believe you can and you are halfway there. Study smart!"',
+      '"Your future self will thank you for the effort you put in today."',
+      '"Don\'t watch the clock; do what it does. Keep going!"'
+    ];
+
+    function initExamCountdown() {
+      const saved = localStorage.getItem('techxsol_exams_list');
+      if (saved) {
+        try {
+          userExams = JSON.parse(saved);
+        } catch (e) {
+          userExams = [];
+        }
+      }
+
+      if (!userExams || userExams.length === 0) {
+        const date1 = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000);
+        const date2 = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+        userExams = [
+          {
+            id: 'exam_' + Date.now(),
+            name: 'Data Structures & Algorithms Final',
+            date: date1.toISOString().slice(0, 16),
+            room: 'Exam Hall 4B • Morning Slot'
+          },
+          {
+            id: 'exam_' + (Date.now() + 1),
+            name: 'Database Management Systems Viva',
+            date: date2.toISOString().slice(0, 16),
+            room: 'Lab 204 • CS Department'
+          }
+        ];
+        saveExamsToStorage();
+      }
+
+      const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      tomorrow.setHours(9, 0, 0, 0);
+      const dateInput = document.getElementById('examDateInput');
+      if (dateInput) {
+        dateInput.value = tomorrow.toISOString().slice(0, 16);
+      }
+
+      const quoteEl = document.getElementById('examMotivationalQuote');
+      if (quoteEl) {
+        quoteEl.textContent = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+      }
+
+      renderExamCountdowns();
+      if (examTickerInterval) clearInterval(examTickerInterval);
+      examTickerInterval = setInterval(updateExamTickers, 1000);
+    }
+
+    function saveExamsToStorage() {
+      localStorage.setItem('techxsol_exams_list', JSON.stringify(userExams));
+    }
+
+    function addExamToCountdown() {
+      const name = (document.getElementById('examNameInput')?.value || '').trim();
+      const date = document.getElementById('examDateInput')?.value;
+      const room = (document.getElementById('examRoomInput')?.value || '').trim() || 'Main Campus';
+
+      if (!name) {
+        alert('Please enter an exam title or subject name.');
+        return;
+      }
+      if (!date) {
+        alert('Please pick a date and time for the exam.');
+        return;
+      }
+
+      userExams.push({
+        id: 'exam_' + Date.now(),
+        name,
+        date,
+        room
+      });
+      saveExamsToStorage();
+
+      document.getElementById('examNameInput').value = '';
+      document.getElementById('examRoomInput').value = '';
+
+      renderExamCountdowns();
+      showToolToast('Exam countdown saved successfully!');
+    }
+
+    function deleteExam(id) {
+      userExams = userExams.filter(e => e.id !== id);
+      saveExamsToStorage();
+      renderExamCountdowns();
+    }
+
+    function renderExamCountdowns() {
+      const container = document.getElementById('examCardsContainer');
+      if (!container) return;
+
+      if (userExams.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: #F8FAFC; border-radius: 14px; border: 1px dashed var(--border-color);">
+            <i class="fa-regular fa-calendar-check" style="font-size: 36px; color: var(--accent-cyan); margin-bottom: 12px; display: block;"></i>
+            <h4 style="margin-bottom: 6px;">No Upcoming Exams Scheduled</h4>
+            <p style="color: var(--text-muted); font-size: 14px;">Use the form above to track your exams, project deadlines, and tests.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = userExams.map(e => `
+        <div class="exam-card" id="card_${e.id}">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+            <div>
+              <h4 style="font-size: 17px; margin-bottom: 4px; color: var(--text-main); font-weight: 700;">${e.name}</h4>
+              <div style="font-size: 13px; color: var(--text-muted);">
+                <i class="fa-solid fa-location-dot" style="color: var(--accent-cyan); margin-right: 4px;"></i> ${e.room}
+              </div>
+            </div>
+            <button onclick="deleteExam('${e.id}')" class="btn-action-secondary" style="color: var(--danger); padding: 4px 8px; font-size: 12px;" title="Delete">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+
+          <div class="exam-timer-grid">
+            <div class="exam-timer-box">
+              <div class="num" id="days_${e.id}">0</div>
+              <div class="lbl">Days</div>
+            </div>
+            <div class="exam-timer-box">
+              <div class="num" id="hours_${e.id}">00</div>
+              <div class="lbl">Hours</div>
+            </div>
+            <div class="exam-timer-box">
+              <div class="num" id="mins_${e.id}">00</div>
+              <div class="lbl">Mins</div>
+            </div>
+            <div class="exam-timer-box">
+              <div class="num" id="secs_${e.id}">00</div>
+              <div class="lbl">Secs</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted);">
+            <span><i class="fa-regular fa-calendar"></i> ${new Date(e.date).toLocaleString()}</span>
+            <span id="status_${e.id}" style="font-weight: 700; color: #10B981;">Ticking...</span>
+          </div>
+        </div>
+      `).join('');
+
+      updateExamTickers();
+    }
+
+    function updateExamTickers() {
+      const now = Date.now();
+      userExams.forEach(e => {
+        const target = new Date(e.date).getTime();
+        const diff = target - now;
+
+        const dEl = document.getElementById(`days_${e.id}`);
+        const hEl = document.getElementById(`hours_${e.id}`);
+        const mEl = document.getElementById(`mins_${e.id}`);
+        const sEl = document.getElementById(`secs_${e.id}`);
+        const statEl = document.getElementById(`status_${e.id}`);
+
+        if (!dEl || !hEl || !mEl || !sEl) return;
+
+        if (diff <= 0) {
+          dEl.textContent = '0';
+          hEl.textContent = '00';
+          mEl.textContent = '00';
+          sEl.textContent = '00';
+          if (statEl) {
+            statEl.textContent = 'Completed / Today!';
+            statEl.style.color = '#EF4444';
+          }
+        } else {
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+          dEl.textContent = days;
+          hEl.textContent = String(hours).padStart(2, '0');
+          mEl.textContent = String(mins).padStart(2, '0');
+          sEl.textContent = String(secs).padStart(2, '0');
+
+          if (statEl) {
+            if (days === 0) {
+              statEl.textContent = 'Today! Final Hours';
+              statEl.style.color = '#EF4444';
+            } else if (days <= 3) {
+              statEl.textContent = 'Urgent: Revision Time';
+              statEl.style.color = '#F59E0B';
+            } else {
+              statEl.textContent = 'On Track';
+              statEl.style.color = '#10B981';
+            }
+          }
+        }
+      });
+    }
+
+    // ==========================================
+    // 8. TOOL 7: WORD & CHARACTER COUNTER LOGIC
+    // ==========================================
+    function initWordCounter() {
+      handleWordCounterInput();
+    }
+
+    function handleWordCounterInput() {
+      const text = document.getElementById('wordCounterTextarea')?.value || '';
+
+      const charsWithSpaces = text.length;
+      const charsNoSpaces = text.replace(/\s/g, '').length;
+      const words = (text.trim().match(/\S+/g) || []).length;
+      const sentences = text.trim() ? (text.match(/[^.!?]+[.!?]+(\s|$)/g) || [text.trim()]).length : 0;
+      const paragraphs = text.split(/\n+/).filter(p => p.trim().length > 0).length;
+
+      const readSeconds = Math.ceil((words / 200) * 60);
+      const readFormatted = readSeconds < 60 ? `${readSeconds}s` : `${Math.floor(readSeconds / 60)}m ${readSeconds % 60}s`;
+
+      const speakSeconds = Math.ceil((words / 130) * 60);
+      const speakFormatted = speakSeconds < 60 ? `${speakSeconds}s` : `${Math.floor(speakSeconds / 60)}m ${speakSeconds % 60}s`;
+
+      document.getElementById('wcWords').textContent = words.toLocaleString();
+      document.getElementById('wcCharsWithSpaces').textContent = charsWithSpaces.toLocaleString();
+      document.getElementById('wcCharsNoSpaces').textContent = charsNoSpaces.toLocaleString();
+      document.getElementById('wcSentences').textContent = sentences;
+      document.getElementById('wcParagraphs').textContent = paragraphs;
+      document.getElementById('wcReadingTime').textContent = readFormatted;
+      document.getElementById('wcSpeakingTime').textContent = speakFormatted;
+
+      renderKeywordDensity(text, words);
+    }
+
+    function renderKeywordDensity(text, totalWords) {
+      const container = document.getElementById('wcKeywordDensity');
+      if (!container) return;
+
+      if (!text.trim() || totalWords === 0) {
+        container.innerHTML = '<span style="font-size: 13px; color: var(--text-muted);">Type text above to see keyword frequencies.</span>';
+        return;
+      }
+
+      const stopWords = new Set(['the', 'and', 'a', 'an', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'it', 'that', 'this', 'by', 'as', 'or', 'be', 'from']);
+      const wordList = text.toLowerCase().match(/\b[a-z0-9_-]{3,}\b/g) || [];
+      const freqMap = {};
+
+      wordList.forEach(w => {
+        if (!stopWords.has(w)) {
+          freqMap[w] = (freqMap[w] || 0) + 1;
+        }
+      });
+
+      const sorted = Object.entries(freqMap).sort((a, b) => b[1] - a[1]).slice(0, 8);
+
+      if (sorted.length === 0) {
+        container.innerHTML = '<span style="font-size: 13px; color: var(--text-muted);">No significant keywords detected.</span>';
+        return;
+      }
+
+      container.innerHTML = sorted.map(([word, count]) => {
+        const pct = ((count / totalWords) * 100).toFixed(1);
+        return `
+          <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 6px; font-size: 13px;">
+            <strong>${word}</strong>
+            <span style="color: var(--accent-cyan); font-weight: 700;">${count}×</span>
+            <span style="color: var(--text-muted); font-size: 11px;">(${pct}%)</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function transformTextCase(mode) {
+      const area = document.getElementById('wordCounterTextarea');
+      if (!area || !area.value) return;
+      const text = area.value;
+
+      if (mode === 'upper') {
+        area.value = text.toUpperCase();
+      } else if (mode === 'lower') {
+        area.value = text.toLowerCase();
+      } else if (mode === 'title') {
+        area.value = text.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+      } else if (mode === 'sentence') {
+        area.value = text.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g, c => c.toUpperCase());
+      } else if (mode === 'clean') {
+        area.value = text.replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+      }
+      handleWordCounterInput();
+      showToolToast('Text transformed successfully!');
+    }
+
+    function copyWordCounterText() {
+      const area = document.getElementById('wordCounterTextarea');
+      if (!area || !area.value) {
+        showToolToast('No text to copy!');
+        return;
+      }
+      navigator.clipboard.writeText(area.value).then(() => {
+        showToolToast('Text copied to clipboard!');
+      });
+    }
+
+    function clearWordCounterText() {
+      const area = document.getElementById('wordCounterTextarea');
+      if (area) {
+        area.value = '';
+        handleWordCounterInput();
+      }
+    }
+
+    // ==========================================
+    // 9. TOOL 8: TYPING SPEED TEST (WPM)
+    // ==========================================
+    const typingPassages = {
+      easy: [
+        "The quick brown fox jumps over the lazy dog. Learning to type with speed and accuracy is a valuable skill that saves hours of productive work every single week.",
+        "Practice makes progress in coding and writing. Every keystroke you train builds muscle memory that helps you think faster and create better software applications."
+      ],
+      medium: [
+        "Modern web architecture relies on asynchronous data fetching, responsive user interfaces, and clean component state management. High typing speed allows developers to code at the speed of thought.",
+        "Artificial intelligence and automated neural networks are transforming modern productivity. Engineering prompt structures and optimizing algorithm complexity requires patience, accuracy, and clear logic."
+      ],
+      hard: [
+        "const calculateEfficiency = (wpm, accuracy) => { return Math.round((wpm * 0.8) + (accuracy * 0.2)); }; // Clean Code Principles 2026",
+        "function parseQuery(url) { const params = new URLSearchParams(window.location.search); return params.get('q') || 'default_token'; }"
+      ]
+    };
+
+    let typingCurrentPassage = '';
+    let typingTimer = null;
+    let typingTimeRemaining = 60;
+    let typingTestActive = false;
+    let typingStarted = false;
+
+    function initTypingTest() {
+      if (typingTimer) clearInterval(typingTimer);
+      typingTestActive = true;
+      typingStarted = false;
+
+      const diff = document.getElementById('typingDifficultySelect')?.value || 'medium';
+      const timeSetting = parseInt(document.getElementById('typingTimeSelect')?.value || '60', 10);
+      typingTimeRemaining = timeSetting;
+
+      const list = typingPassages[diff] || typingPassages.medium;
+      typingCurrentPassage = list[Math.floor(Math.random() * list.length)];
+
+      const display = document.getElementById('typingTextDisplay');
+      if (display) {
+        display.innerHTML = typingCurrentPassage.split('').map((ch, idx) => `
+          <span id="char_${idx}">${ch}</span>
+        `).join('');
+      }
+
+      const input = document.getElementById('typingInputBox');
+      if (input) {
+        input.value = '';
+        input.disabled = false;
+        input.placeholder = "Start typing here when ready — the timer begins on your first keystroke...";
+      }
+
+      document.getElementById('typingTimerDisplay').textContent = `${typingTimeRemaining}s`;
+      document.getElementById('typingWpmDisplay').textContent = '0 WPM';
+      document.getElementById('typingAccDisplay').textContent = '100%';
+      document.getElementById('typingResultBanner').style.display = 'none';
+    }
+
+    function handleTypingKeypress() {
+      if (!typingTestActive) return;
+
+      const input = document.getElementById('typingInputBox');
+      if (!input) return;
+      const typed = input.value;
+
+      if (!typingStarted && typed.length > 0) {
+        typingStarted = true;
+        typingTimer = setInterval(() => {
+          typingTimeRemaining--;
+          document.getElementById('typingTimerDisplay').textContent = `${typingTimeRemaining}s`;
+          if (typingTimeRemaining <= 0) {
+            finishTypingTest();
+          }
+        }, 1000);
+      }
+
+      let correctCount = 0;
+      let wrongCount = 0;
+
+      for (let i = 0; i < typingCurrentPassage.length; i++) {
+        const span = document.getElementById(`char_${i}`);
+        if (!span) continue;
+
+        if (i < typed.length) {
+          if (typed[i] === typingCurrentPassage[i]) {
+            span.className = 'typing-char-correct';
+            correctCount++;
+          } else {
+            span.className = 'typing-char-wrong';
+            wrongCount++;
+          }
+        } else if (i === typed.length) {
+          span.className = 'typing-char-current';
+        } else {
+          span.className = '';
+        }
+      }
+
+      const timeLimit = parseInt(document.getElementById('typingTimeSelect')?.value || '60', 10);
+      const elapsedSeconds = Math.max(1, timeLimit - typingTimeRemaining);
+      const elapsedMinutes = elapsedSeconds / 60;
+
+      const currentWpm = Math.round((correctCount / 5) / elapsedMinutes) || 0;
+      const accuracy = typed.length > 0 ? Math.round((correctCount / typed.length) * 100) : 100;
+
+      document.getElementById('typingWpmDisplay').textContent = `${currentWpm} WPM`;
+      document.getElementById('typingAccDisplay').textContent = `${accuracy}%`;
+
+      if (typed.length >= typingCurrentPassage.length) {
+        finishTypingTest();
+      }
+    }
+
+    function finishTypingTest() {
+      if (typingTimer) clearInterval(typingTimer);
+      typingTestActive = false;
+
+      const input = document.getElementById('typingInputBox');
+      if (input) input.disabled = true;
+
+      const finalWpm = document.getElementById('typingWpmDisplay')?.textContent || '0 WPM';
+      const finalAcc = document.getElementById('typingAccDisplay')?.textContent || '100%';
+      const wpmNum = parseInt(finalWpm, 10) || 0;
+
+      let rank = "Good effort! Keep practicing to push past 40 WPM.";
+      if (wpmNum >= 80) rank = "Rocket Pro! You type faster than 95% of software engineers.";
+      else if (wpmNum >= 60) rank = "Advanced speed! You possess excellent keyboard agility and muscle memory.";
+      else if (wpmNum >= 40) rank = "Above average speed! Solid typing proficiency for college and work.";
+
+      document.getElementById('typingFinalScore').textContent = `Speed: ${finalWpm} • Accuracy: ${finalAcc}`;
+      document.getElementById('typingRankFeedback').textContent = rank;
+      document.getElementById('typingResultBanner').style.display = 'block';
+    }
+
+    // ==========================================
+    // 10. TOOL 9: FLASHCARD GENERATOR & QUIZ
+    // ==========================================
+    const predefinedDecks = {
+      cs: [
+        { front: "What is Polymorphism in OOP?", back: "The ability of an object to take on many forms, allowing different classes to implement the same interface or method in their own unique way." },
+        { front: "What is the time complexity of QuickSort average vs worst case?", back: "Average case: O(n log n). Worst case: O(n²) when the pivot selection consistently produces unbalanced partitions." },
+        { front: "What is Normalization in Relational Databases?", back: "The process of organizing data into tables to minimize redundancy and dependency (1NF, 2NF, 3NF, BCNF)." },
+        { front: "What is an Operating System Deadlock?", back: "A situation where a set of processes are blocked because each process is holding a resource and waiting for another resource held by another process (Mutual exclusion, Hold & wait, No preemption, Circular wait)." },
+        { front: "Difference between Stack and Queue?", back: "Stack is LIFO (Last In, First Out) like a stack of plates. Queue is FIFO (First In, First Out) like a checkout line." },
+        { front: "What is Virtual Memory?", back: "A memory management capability of an OS that uses hardware and software to allow a computer to compensate for physical memory shortages by temporarily transferring data from RAM to disk storage." }
+      ],
+      web: [
+        { front: "Difference between let, const, and var in JavaScript?", back: "var is function-scoped and hoisted. let and const are block-scoped; const prevents re-assignment of the identifier." },
+        { front: "What is the Virtual DOM in modern UI frameworks?", back: "A lightweight in-memory representation of the real DOM. When state changes, the framework diffs the virtual DOM and calculates the minimal batch of updates to apply to the real DOM." },
+        { front: "What is CORS (Cross-Origin Resource Sharing)?", back: "A browser security mechanism that uses HTTP headers to tell browsers to give a web application running at one origin access to selected resources from a different origin." },
+        { front: "What is the CSS Box Model?", back: "The layout model consisting of Content, Padding, Border, and Margin that wraps around every HTML element." },
+        { front: "What is a Promise in JavaScript?", back: "An object representing the eventual completion (or failure) of an asynchronous operation and its resulting value (Pending, Fulfilled, Rejected)." },
+        { front: "Difference between HTTP GET and POST?", back: "GET requests data from a specified resource (parameters in URL query, idempotent). POST submits data to be processed to a specified resource (parameters in request body)." }
+      ],
+      custom: []
+    };
+
+    let activeFlashcards = [];
+    let currentFlashcardIndex = 0;
+
+    function initFlashcards() {
+      const savedCustom = localStorage.getItem('techxsol_custom_deck');
+      if (savedCustom) {
+        try {
+          predefinedDecks.custom = JSON.parse(savedCustom);
+        } catch (e) {
+          predefinedDecks.custom = [];
+        }
+      }
+      switchFlashcardDeck();
+    }
+
+    function switchFlashcardDeck() {
+      const select = document.getElementById('flashcardDeckSelect');
+      const key = select?.value || 'cs';
+      activeFlashcards = predefinedDecks[key] || predefinedDecks.cs;
+
+      if (activeFlashcards.length === 0) {
+        activeFlashcards = [
+          { front: "Your custom deck is currently empty!", back: "Click '+ Add Card' above to create custom study flashcards that persist in your browser." }
+        ];
+      }
+
+      currentFlashcardIndex = 0;
+      renderCurrentFlashcard();
+    }
+
+    function renderCurrentFlashcard() {
+      const card = activeFlashcards[currentFlashcardIndex];
+      const frontEl = document.getElementById('flashcardFrontText');
+      const backEl = document.getElementById('flashcardBackText');
+      const counterEl = document.getElementById('flashcardCounter');
+      const inner = document.getElementById('flashcardInner');
+
+      if (inner) inner.classList.remove('is-flipped');
+
+      if (frontEl) frontEl.textContent = card.front;
+      if (backEl) backEl.textContent = card.back;
+      if (counterEl) counterEl.textContent = `Card ${currentFlashcardIndex + 1} of ${activeFlashcards.length}`;
+    }
+
+    function flipCurrentFlashcard() {
+      const inner = document.getElementById('flashcardInner');
+      if (inner) {
+        inner.classList.toggle('is-flipped');
+      }
+    }
+
+    function nextFlashcard() {
+      currentFlashcardIndex = (currentFlashcardIndex + 1) % activeFlashcards.length;
+      renderCurrentFlashcard();
+    }
+
+    function prevFlashcard() {
+      currentFlashcardIndex = (currentFlashcardIndex - 1 + activeFlashcards.length) % activeFlashcards.length;
+      renderCurrentFlashcard();
+    }
+
+    function shuffleFlashcards() {
+      for (let i = activeFlashcards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [activeFlashcards[i], activeFlashcards[j]] = [activeFlashcards[j], activeFlashcards[i]];
+      }
+      currentFlashcardIndex = 0;
+      renderCurrentFlashcard();
+      showToolToast('Deck shuffled!');
+    }
+
+    function toggleAddCardModal() {
+      const form = document.getElementById('addCardInlineForm');
+      if (form) {
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+      }
+    }
+
+    function saveNewFlashcard() {
+      const front = (document.getElementById('newCardFront')?.value || '').trim();
+      const back = (document.getElementById('newCardBack')?.value || '').trim();
+
+      if (!front || !back) {
+        alert('Please enter both concept/question and answer/definition.');
+        return;
+      }
+
+      predefinedDecks.custom.push({ front, back });
+      localStorage.setItem('techxsol_custom_deck', JSON.stringify(predefinedDecks.custom));
+
+      document.getElementById('newCardFront').value = '';
+      document.getElementById('newCardBack').value = '';
+      toggleAddCardModal();
+
+      const select = document.getElementById('flashcardDeckSelect');
+      if (select) select.value = 'custom';
+      switchFlashcardDeck();
+      currentFlashcardIndex = activeFlashcards.length - 1;
+      renderCurrentFlashcard();
+      showToolToast('Flashcard added to your custom deck!');
+    }
+
+    function markFlashcardMastery(isMastered) {
+      if (isMastered) {
+        showToolToast('Marked as Mastered! Moving to next card...');
+      } else {
+        showToolToast('Marked for Review! Keep testing yourself.');
+      }
+      setTimeout(nextFlashcard, 400);
+    }
+
+    // ==========================================
+    // 11. TOOL 10: CUSTOM HIGH-RES QR CODE GENERATOR
+    // ==========================================
+    let qrInstance = null;
+
+    function initQrGenerator() {
+      generateDynamicQrCode();
+    }
+
+    function handleQrTypeChange() {
+      const type = document.getElementById('qrTypeSelect')?.value || 'url';
+      const label = document.getElementById('qrContentLabel');
+      const input = document.getElementById('qrContentInput');
+
+      if (!label || !input) return;
+
+      if (type === 'url') {
+        label.textContent = 'Target Website URL';
+        input.value = 'https://www.techxsol.online';
+        input.placeholder = 'https://...';
+      } else if (type === 'text') {
+        label.textContent = 'Plain Text / Notes';
+        input.value = 'Tech X Sol - Smart Web Solutions & Custom Software Engineering.';
+        input.placeholder = 'Enter plain text message...';
+      } else if (type === 'whatsapp') {
+        label.textContent = 'WhatsApp Number (with Country Code)';
+        input.value = 'https://wa.me/923001234567';
+        input.placeholder = 'https://wa.me/92...';
+      } else if (type === 'wifi') {
+        label.textContent = 'Wi-Fi Network Format (WIFI:T:WPA;S:NetworkName;P:Password;;)';
+        input.value = 'WIFI:T:WPA;S:TechXSol_Guest;P:innovation2026;;';
+        input.placeholder = 'WIFI:T:WPA;S:SSID;P:PASSWORD;;';
+      }
+
+      generateDynamicQrCode();
+    }
+
+    function generateDynamicQrCode() {
+      const container = document.getElementById('qrCodeCanvasWrap');
+      if (!container) return;
+
+      const content = document.getElementById('qrContentInput')?.value || 'https://www.techxsol.online';
+      const colorDark = document.getElementById('qrColorInput')?.value || '#0F172A';
+      const colorLight = document.getElementById('qrBgInput')?.value || '#FFFFFF';
+
+      container.innerHTML = '';
+
+      if (typeof QRCode !== 'undefined') {
+        qrInstance = new QRCode(container, {
+          text: content,
+          width: 200,
+          height: 200,
+          colorDark: colorDark,
+          colorLight: colorLight,
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      } else {
+        container.innerHTML = `<p style="font-size: 13px; color: var(--danger);">QRCode library loading...</p>`;
+      }
+    }
+
+    function downloadQrCodePng() {
+      const container = document.getElementById('qrCodeCanvasWrap');
+      if (!container) return;
+
+      const canvas = container.querySelector('canvas');
+      const img = container.querySelector('img');
+
+      let dataUrl = '';
+      if (canvas) {
+        dataUrl = canvas.toDataURL('image/png');
+      } else if (img && img.src) {
+        dataUrl = img.src;
+      }
+
+      if (!dataUrl) {
+        showToolToast('Unable to export QR image.');
+        return;
+      }
+
+      const link = document.createElement('a');
+      link.download = 'techxsol-qr-code.png';
+      link.href = dataUrl;
+      link.click();
+      showToolToast('High-Res QR Code PNG downloaded!');
+    }
+
+    function copyQrCodeLink() {
+      const content = document.getElementById('qrContentInput')?.value || '';
+      if (!content) return;
+      navigator.clipboard.writeText(content).then(() => {
+        showToolToast('QR data content copied!');
+      });
+    }
+
+    // ==========================================
+    // 12. TOOL 11: OPEN GRAPH & SOCIAL PREVIEW
+    // ==========================================
+    function initOgPreview() {
+      updateSocialPreviews();
+    }
+
+    function updateSocialPreviews() {
+      const title = document.getElementById('ogTitleInput')?.value || '';
+      const desc = document.getElementById('ogDescInput')?.value || '';
+      const url = document.getElementById('ogUrlInput')?.value || 'https://www.techxsol.online';
+      const img = document.getElementById('ogImageInput')?.value || 'techxsol logo.png';
+
+      const tCountEl = document.getElementById('ogTitleCharCount');
+      if (tCountEl) {
+        tCountEl.textContent = `${title.length} / 60 chars`;
+        tCountEl.style.color = title.length > 60 ? '#EF4444' : 'var(--text-muted)';
+      }
+      const dCountEl = document.getElementById('ogDescCharCount');
+      if (dCountEl) {
+        dCountEl.textContent = `${desc.length} / 160 chars`;
+        dCountEl.style.color = desc.length > 160 ? '#EF4444' : 'var(--text-muted)';
+      }
+
+      let domain = 'techxsol.online';
+      try {
+        const parsed = new URL(url.startsWith('http') ? url : `https://${url}`);
+        domain = parsed.hostname.replace(/^www\./, '');
+      } catch (e) {
+        domain = 'techxsol.online';
+      }
+
+      const gUrl = document.getElementById('prevGoogleUrlDisplay');
+      const gTitle = document.getElementById('prevGoogleTitleDisplay');
+      const gDesc = document.getElementById('prevGoogleDescDisplay');
+      if (gUrl) gUrl.textContent = url;
+      if (gTitle) gTitle.textContent = title;
+      if (gDesc) gDesc.textContent = desc;
+
+      const fbDomain = document.getElementById('prevFbDomain');
+      const fbTitle = document.getElementById('prevFbTitle');
+      const fbDesc = document.getElementById('prevFbDesc');
+      const fbImg = document.getElementById('prevFbImg');
+      if (fbDomain) fbDomain.textContent = domain.toUpperCase();
+      if (fbTitle) fbTitle.textContent = title;
+      if (fbDesc) fbDesc.textContent = desc;
+      if (fbImg && img) fbImg.src = img;
+
+      const twDomain = document.getElementById('prevTwitterDomain');
+      const twTitle = document.getElementById('prevTwitterTitle');
+      const twImg = document.getElementById('prevTwitterImg');
+      if (twDomain) twDomain.textContent = `From ${domain}`;
+      if (twTitle) twTitle.textContent = title;
+      if (twImg && img) twImg.src = img;
+
+      const liDomain = document.getElementById('prevLinkedinDomain');
+      const liTitle = document.getElementById('prevLinkedinTitle');
+      const liImg = document.getElementById('prevLinkedinImg');
+      if (liDomain) liDomain.textContent = domain;
+      if (liTitle) liTitle.textContent = title;
+      if (liImg && img) liImg.src = img;
+    }
+
+    function switchSocialPreviewTab(tab) {
+      document.querySelectorAll('#og-preview .preview-tabs .quick-nav-pill').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelectorAll('#og-preview .social-prev-view').forEach(view => {
+        view.style.display = 'none';
+      });
+
+      const tabMap = {
+        'google': { view: 'prevTabGoogle', idx: 0 },
+        'facebook': { view: 'prevTabFacebook', idx: 1 },
+        'twitter': { view: 'prevTabTwitter', idx: 2 },
+        'linkedin': { view: 'prevTabLinkedin', idx: 3 }
+      };
+
+      const target = tabMap[tab];
+      if (target) {
+        const viewEl = document.getElementById(target.view);
+        if (viewEl) viewEl.style.display = 'block';
+        const buttons = document.querySelectorAll('#og-preview .preview-tabs .quick-nav-pill');
+        if (buttons[target.idx]) buttons[target.idx].classList.add('active');
+      }
+    }
+
+    // ==========================================
+    // 13. TOOL 12: AI PROMPT GENERATOR & OPTIMIZER
+    // ==========================================
+    const promptPresets = {
+      coding: {
+        role: "Senior Full-Stack Architect & Clean Code Expert",
+        task: "Build a reusable JavaScript date countdown module with live ticking seconds and error boundaries.",
+        format: "Vanilla JS, zero external dependencies, modular ES6 syntax with inline code commentary."
+      },
+      academic: {
+        role: "Distinguished Academic Advisor & Thesis Research Consultant",
+        task: "Provide a comprehensive outline and literature review methodology on the impact of generative AI in higher education.",
+        format: "Formal academic tone, APA 7th style structure, numbered thesis objectives and research questions."
+      },
+      blog: {
+        role: "Lead SEO Strategist & Senior Tech Editorial Writer",
+        task: "Write a high-converting, deeply researched 1,500-word blog post on why businesses are migrating from legacy architectures to micro-frontends.",
+        format: "Punchy intro, H2/H3 semantic structure, FAQ schema section, and actionable takeaways."
+      },
+      tutor: {
+        role: "Intuitive Socratic Computer Science Professor",
+        task: "Explain Dynamic Programming versus Memoization using a real-world everyday kitchen cooking analogy.",
+        format: "Clear step-by-step breakdown, zero confusing jargon, followed by 2 practice questions."
+      },
+      business: {
+        role: "YC Startup Pitch & Venture Capital Investment Specialist",
+        task: "Formulate a concise 1-page executive pitch summary and unit economics model for a B2B SaaS analytics tool.",
+        format: "Problem statement, unique value proposition, TAM/SAM/SOM calculation, and go-to-market strategy."
+      }
+    };
+
+    function initAiPromptGenerator() {
+      generateEngineeredPrompt();
+    }
+
+    function handlePromptGoalPreset() {
+      const goal = document.getElementById('promptGoalSelect')?.value || 'coding';
+      const preset = promptPresets[goal];
+      if (!preset) return;
+
+      document.getElementById('promptRoleInput').value = preset.role;
+      document.getElementById('promptTaskInput').value = preset.task;
+      document.getElementById('promptFormatInput').value = preset.format;
+
+      generateEngineeredPrompt();
+    }
+
+    function generateEngineeredPrompt() {
+      const role = document.getElementById('promptRoleInput')?.value || 'Subject Matter Expert';
+      const task = document.getElementById('promptTaskInput')?.value || '';
+      const format = document.getElementById('promptFormatInput')?.value || 'Structured markdown response';
+
+      const prompt = `[SYSTEM ROLE]
+You are a ${role}. You operate with relentless attention to detail, precision, and adherence to production-grade best practices.
+
+[OBJECTIVE & CONTEXT]
+Your primary task is to: ${task}
+
+[INSTRUCTIONS & WORKFLOW]
+1. Analyze the core requirements and identify any edge cases or pitfalls.
+2. Formulate your solution systematically with clear step-by-step reasoning.
+3. Ensure all technical explanations and code are directly actionable, clean, and verified.
+4. Maintain a direct, authoritative, and helpful tone without fluff or generic filler phrases.
+
+[OUTPUT CONSTRAINTS & FORMAT]
+- Delivery format: ${format}
+- Avoid outdated patterns or unverified assumptions.
+- If relevant, include concrete real-world examples or verification tests.`;
+
+      const output = document.getElementById('promptOutputArea');
+      if (output) {
+        output.value = prompt;
+      }
+    }
+
+    function copyAiPrompt() {
+      const output = document.getElementById('promptOutputArea');
+      if (!output || !output.value) return;
+
+      navigator.clipboard.writeText(output.value).then(() => {
+        showToolToast('Engineered AI Prompt copied to clipboard!');
+      });
+    }
+
+    // ==========================================
+    // 14. TOOL 13: SEO SLUG & META TAG GENERATOR
+    // ==========================================
+    function initSlugGenerator() {
+      handleSlugInput();
+    }
+
+    function handleSlugInput() {
+      const title = document.getElementById('slugTitleInput')?.value || '';
+      const desc = document.getElementById('slugDescInput')?.value || '';
+      const urlBase = document.getElementById('slugUrlBaseInput')?.value || 'https://www.techxsol.online/blogs/';
+      const filterStopWords = document.getElementById('slugStopWordsCheck')?.checked ?? true;
+
+      const stopWords = ['a', 'an', 'the', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'is', 'are', 'was', 'were', 'it', 'you', 'your', 'and', 'or', 'by'];
+
+      let words = title.toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim()
+        .split(/\s+/);
+
+      if (filterStopWords) {
+        words = words.filter(w => !stopWords.includes(w));
+      }
+
+      const slug = words.join('-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+      const fullUrl = `${urlBase.replace(/\/+$/, '')}/${slug}`;
+
+      const slugDisplay = document.getElementById('slugOutputDisplay');
+      if (slugDisplay) {
+        slugDisplay.textContent = slug || 'enter-article-title-above';
+      }
+
+      const metaSnippet = `<!-- Primary SEO Meta Tags -->
+<title>${title} | Tech X Sol</title>
+<meta name="title" content="${title} | Tech X Sol">
+<meta name="description" content="${desc}">
+<link rel="canonical" href="${fullUrl}">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="${fullUrl}">
+<meta property="og:title" content="${title}">
+<meta property="og:description" content="${desc}">
+<meta property="og:image" content="https://www.techxsol.online/techxsol%20logo.png">
+
+<!-- Twitter Cards -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="${fullUrl}">
+<meta property="twitter:title" content="${title}">
+<meta property="twitter:description" content="${desc}">
+<meta property="twitter:image" content="https://www.techxsol.online/techxsol%20logo.png">`;
+
+      const metaOutput = document.getElementById('slugMetaTagsOutput');
+      if (metaOutput) {
+        metaOutput.value = metaSnippet;
+      }
+    }
+
+    function copySlugToClipboard() {
+      const slugText = document.getElementById('slugOutputDisplay')?.textContent?.trim() || '';
+      if (!slugText) return;
+      navigator.clipboard.writeText(slugText).then(() => {
+        showToolToast(`Copied slug: ${slugText}`);
+      });
+    }
+
+    function copyGeneratedMetaTags() {
+      const metaText = document.getElementById('slugMetaTagsOutput')?.value || '';
+      if (!metaText) return;
+      navigator.clipboard.writeText(metaText).then(() => {
+        showToolToast('HTML <head> meta tags copied to clipboard!');
+      });
     }
   </script>
 </body>

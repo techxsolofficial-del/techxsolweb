@@ -4,3 +4,4 @@ Disallow: /admin
 Disallow: /api/
 
 Sitemap: https://www.techxsol.online/sitemap.xml
+
