@@ -1566,11 +1566,8 @@
             actionHtml = `<span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">System Protected</span>`;
           } else {
             actionHtml = `
-              <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-                <button type="button" onclick="copyDirectLoginLink('${(u.username || '').replace(/'/g, "\\'")}', '${(u.password || 'wahid123').replace(/'/g, "\\'")}')" class="btn-action-secondary" style="color: var(--accent-dark); border-color: rgba(0, 168, 232, 0.4); padding: 5px 10px; font-size: 12px;" title="Copy 1-Click Login Link to send to publisher">
-                  <i class="fa-solid fa-link"></i> Copy Login Link
-                </button>
-                <button type="button" onclick="deleteUserAccount('${u.id}', '${(u.username || '').replace(/'/g, "\\'")}')" class="btn-action-secondary" style="color: var(--danger); padding: 5px 10px; border-color: #FCA5A5; font-size: 12px;" title="Delete User">
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <button type="button" onclick="deleteUserAccount('${u.id}', '${(u.username || '').replace(/'/g, "\\'")}')" class="btn-action-secondary" style="color: var(--danger); padding: 6px 14px; border-color: #FCA5A5; font-size: 12px; font-weight: 600;" title="Delete User">
                   <i class="fa-solid fa-trash"></i> Delete
                 </button>
               </div>
@@ -1650,30 +1647,14 @@
     }
 
     async function deleteUserAccount(id, uname) {
-      if (!confirm(`Are you sure you want to delete user account "${uname}"?`)) return;
+      if (!confirm(`Are you sure you want to permanently delete user account "${uname}"?`)) return;
       try {
         await window.API.deleteUser(id);
-        alert(`User account "${uname}" has been deleted successfully.`);
+        alert(`User account "${uname}" has been permanently deleted.`);
         await loadUsersTable();
         await loadOverviewStats();
       } catch (err) {
         alert(err.message || 'Failed to delete user');
-      }
-    }
-
-    function copyDirectLoginLink(username, password) {
-      const origin = window.location.origin || 'https://www.techxsol.online';
-      const cleanPath = window.location.pathname.includes('/frontend/') ? '/frontend/admin.html' : '/admin';
-      const link = `${origin}${cleanPath}?user=${encodeURIComponent(username)}&pass=${encodeURIComponent(password)}`;
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(link).then(() => {
-          alert(`Login Link copied successfully!\n\nSend this link to your publisher to log in instantly on ANY device or browser:\n${link}`);
-        }).catch(() => {
-          prompt('Copy this 1-click login link for your publisher:', link);
-        });
-      } else {
-        prompt('Copy this 1-click login link for your publisher:', link);
       }
     }
   </script>

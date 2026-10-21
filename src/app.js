@@ -37,38 +37,39 @@ db.initDb();
 // ===================
 // API ROUTES
 // ===================
+const apiRouter = express.Router();
 
 // Health & System status
-app.get('/api/health', (req, res) => {
+apiRouter.get('/health', (req, res) => {
   res.json({
     status: 'online',
-    database: db.getIsConnected() ? 'Neon PostgreSQL (Connected)' : 'Local Storage Fallback',
+    database: db.getIsConnected() ? 'Neon PostgreSQL (Connected)' : 'Server Active',
     timestamp: new Date().toISOString()
   });
 });
 
 // Authentication
-app.post('/api/auth/login', authController.login);
-app.get('/api/auth/me', authMiddleware, authController.getMe);
+apiRouter.post('/auth/login', authController.login);
+apiRouter.get('/auth/me', authMiddleware, authController.getMe);
 
 // User Management (Admin only)
-app.get('/api/users', authMiddleware, authController.getUsers);
-app.post('/api/users', authMiddleware, authController.createUser);
-app.delete('/api/users/:id', authMiddleware, authController.deleteUser);
+apiRouter.get('/users', authMiddleware, authController.getUsers);
+apiRouter.post('/users', authMiddleware, authController.createUser);
+apiRouter.delete('/users/:id', authMiddleware, authController.deleteUser);
 
 // Blog Articles
-app.get('/api/blogs', blogController.getBlogs);
-app.get('/api/blogs/:idOrSlug', blogController.getBlogByIdOrSlug);
-app.post('/api/blogs', authMiddleware, blogController.createBlog);
-app.put('/api/blogs/:id', authMiddleware, blogController.updateBlog);
-app.patch('/api/blogs/:id/status', authMiddleware, blogController.toggleStatus);
-app.delete('/api/blogs/:id', authMiddleware, blogController.deleteBlog);
+apiRouter.get('/blogs', blogController.getBlogs);
+apiRouter.get('/blogs/:idOrSlug', blogController.getBlogByIdOrSlug);
+apiRouter.post('/blogs', authMiddleware, blogController.createBlog);
+apiRouter.put('/blogs/:id', authMiddleware, blogController.updateBlog);
+apiRouter.patch('/blogs/:id/status', authMiddleware, blogController.toggleStatus);
+apiRouter.delete('/blogs/:id', authMiddleware, blogController.deleteBlog);
 
 // Stats Overview
-app.get('/api/stats', blogController.getStats);
+apiRouter.get('/stats', blogController.getStats);
 
 // Settings (Blog display preferences & Admin settings)
-app.get('/api/settings', async (req, res) => {
+apiRouter.get('/settings', async (req, res) => {
   try {
     if (db.getIsConnected()) {
       const result = await db.query('SELECT value FROM site_settings WHERE key = $1', ['general']);
@@ -88,7 +89,7 @@ app.get('/api/settings', async (req, res) => {
   }
 });
 
-app.post('/api/settings', async (req, res) => {
+apiRouter.post('/settings', async (req, res) => {
   try {
     const payload = req.body || {};
     if (!db.memoryStore.settings) {
@@ -111,7 +112,7 @@ app.post('/api/settings', async (req, res) => {
 });
 
 // Interactive Tools Metadata
-app.get('/api/tools', (req, res) => {
+apiRouter.get('/tools', (req, res) => {
   res.json({
     success: true,
     tools: [
@@ -139,6 +140,9 @@ app.get('/api/tools', (req, res) => {
     ]
   });
 });
+
+app.use('/api', apiRouter);
+app.use('/', apiRouter);
 
 // Clean HTML Routing for direct URL access & refresh
 app.get(['/blogs', '/blog', '/blogs/:slug', '/blog/:slug'], (req, res) => {

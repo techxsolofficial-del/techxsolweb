@@ -120,11 +120,12 @@ exports.deleteUser = async (req, res) => {
       }
       await db.query('DELETE FROM users WHERE id = $1', [id]);
     } else {
-      const target = db.memoryStore.users.find(u => String(u.id) === String(id));
+      const cleanId = String(id).trim().toLowerCase();
+      const target = db.memoryStore.users.find(u => String(u.id).toLowerCase() === cleanId || (u.username || '').toLowerCase() === cleanId);
       if (target && (target.username || '').toLowerCase() === 'admin') {
         return res.status(400).json({ success: false, error: 'Cannot delete primary admin account' });
       }
-      db.memoryStore.users = db.memoryStore.users.filter(u => String(u.id) !== String(id));
+      db.memoryStore.users = db.memoryStore.users.filter(u => String(u.id).toLowerCase() !== cleanId && (u.username || '').toLowerCase() !== cleanId);
     }
     return res.json({ success: true, message: 'User deleted' });
   } catch (err) {

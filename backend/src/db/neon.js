@@ -15,8 +15,8 @@ let isConnected = false;
 // Fallback in-memory store pre-populated with 3 premium SEO articles
 const memoryStore = {
   users: [
-    { id: '1', username: 'admin', password: 'admin123', name: 'Super Admin', role: 'admin' },
-    { id: '2', username: 'publisher', password: 'publish123', name: 'Blog Publisher', role: 'author' }
+    { id: 'usr-admin', username: 'admin', password: 'admin123', name: 'Super Admin', role: 'admin' },
+    { id: 'usr-wahid', username: 'wahid', password: 'wahid123', name: 'Abdul Wahid', role: 'author' }
   ],
   blogs: [...seedBlogs],
   settings: {

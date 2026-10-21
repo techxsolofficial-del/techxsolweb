@@ -206,31 +206,25 @@ const API = (() => {
   function getLocalUsers() {
     try {
       const raw = localStorage.getItem(LOCAL_USERS_KEY);
-      if (raw) {
+      if (raw !== null) {
         let parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed)) {
           // Clean up any unwanted dummy placeholder accounts (publisher, writer, author)
-          parsed = parsed.filter(u => {
+          const cleaned = parsed.filter(u => {
             const un = (u.username || '').toLowerCase();
             return un !== 'publisher' && un !== 'writer' && un !== 'author';
           });
 
-          // Always ensure the default admin user exists
-          const hasAdmin = parsed.some(u => (u.username || '').toLowerCase() === 'admin');
+          // Always ensure the protected super admin user exists
+          const hasAdmin = cleaned.some(u => (u.username || '').toLowerCase() === 'admin');
           if (!hasAdmin) {
-            parsed.unshift(DEFAULT_USERS[0]);
+            cleaned.unshift(DEFAULT_USERS[0]);
           }
 
-          // Ensure wahid account exists and has a valid password
-          const wahidUser = parsed.find(u => (u.username || '').toLowerCase() === 'wahid');
-          if (!wahidUser) {
-            parsed.push(DEFAULT_USERS[1]);
-          } else if (!wahidUser.password || wahidUser.password === 'undefined') {
-            wahidUser.password = 'wahid123';
+          if (cleaned.length !== parsed.length) {
+            saveLocalUsers(cleaned);
           }
-
-          saveLocalUsers(parsed);
-          return parsed;
+          return cleaned;
         }
       }
       saveLocalUsers(DEFAULT_USERS);
