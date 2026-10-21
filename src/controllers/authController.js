@@ -73,15 +73,35 @@ exports.createUser = async (req, res) => {
     return res.status(400).json({ success: false, error: 'Username and password are required' });
   }
 
+  const cleanUser = username.trim();
+  const cleanPass = password.trim();
+
   try {
     if (db.getIsConnected()) {
+      const check = await db.query('SELECT id FROM users WHERE LOWER(username) = LOWER($1)', [cleanUser]);
+      if (check && check.rows.length > 0) {
+        return res.status(400).json({ success: false, error: `Username "${cleanUser}" already exists` });
+      }
+
       const result = await db.query(
         'INSERT INTO users (username, password, name, role) VALUES ($1, $2, $3, $4) RETURNING id, username, name, role, created_at',
-        [username, password, name || username, role || 'author']
+        [cleanUser, cleanPass, name || cleanUser, role || 'author']
       );
       return res.json({ success: true, user: result.rows[0] });
     } else {
-      const newUser = { id: String(Date.now()), username, password, name: name || username, role: role || 'author' };
+      const exists = db.memoryStore.users.some(u => (u.username || '').toLowerCase() === cleanUser.toLowerCase());
+      if (exists) {
+        return res.status(400).json({ success: false, error: `Username "${cleanUser}" already exists` });
+      }
+
+      const newUser = {
+        id: String(Date.now()),
+        username: cleanUser,
+        password: cleanPass,
+        name: name || cleanUser,
+        role: role || 'author',
+        createdAt: new Date().toISOString()
+      };
       db.memoryStore.users.push(newUser);
       return res.json({ success: true, user: newUser });
     }
@@ -94,9 +114,17 @@ exports.deleteUser = async (req, res) => {
   const { id } = req.params;
   try {
     if (db.getIsConnected()) {
+      const check = await db.query('SELECT username FROM users WHERE id = $1', [id]);
+      if (check && check.rows.length > 0 && check.rows[0].username.toLowerCase() === 'admin') {
+        return res.status(400).json({ success: false, error: 'Cannot delete primary admin account' });
+      }
       await db.query('DELETE FROM users WHERE id = $1', [id]);
     } else {
-      db.memoryStore.users = db.memoryStore.users.filter(u => u.id !== id);
+      const target = db.memoryStore.users.find(u => String(u.id) === String(id));
+      if (target && (target.username || '').toLowerCase() === 'admin') {
+        return res.status(400).json({ success: false, error: 'Cannot delete primary admin account' });
+      }
+      db.memoryStore.users = db.memoryStore.users.filter(u => String(u.id) !== String(id));
     }
     return res.json({ success: true, message: 'User deleted' });
   } catch (err) {

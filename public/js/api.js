@@ -196,6 +196,43 @@ const API = (() => {
     }
   }
 
+  // Default Seed Users (for persistent local storage fallback)
+  const DEFAULT_USERS = [
+    { id: 'usr-1', username: 'admin', password: 'admin123', name: 'Super Admin', role: 'admin', active: true, createdAt: '2026-10-01T00:00:00.000Z' },
+    { id: 'usr-2', username: 'author', password: 'author123', name: 'Tech Author', role: 'author', active: true, createdAt: '2026-10-01T00:00:00.000Z' }
+  ];
+
+  const LOCAL_USERS_KEY = 'txs_local_users';
+  function getLocalUsers() {
+    try {
+      const raw = localStorage.getItem(LOCAL_USERS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Always ensure the default admin user exists
+          const hasAdmin = parsed.some(u => (u.username || '').toLowerCase() === 'admin');
+          if (!hasAdmin) {
+            parsed.unshift(DEFAULT_USERS[0]);
+            saveLocalUsers(parsed);
+          }
+          return parsed;
+        }
+      }
+      saveLocalUsers(DEFAULT_USERS);
+      return DEFAULT_USERS;
+    } catch {
+      return DEFAULT_USERS;
+    }
+  }
+
+  function saveLocalUsers(list) {
+    try {
+      localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(list));
+    } catch (e) {
+      console.warn('Storage save users error:', e);
+    }
+  }
+
   return {
     BASE_URL,
     UPLOADS_BASE,
@@ -217,13 +254,19 @@ const API = (() => {
         }
         return res;
       } catch (err) {
-        // Local fallback: authenticate admin or author
-        if ((username === 'admin' && password === 'admin123') || (username === 'author' && password === 'author123')) {
+        // Local fallback: authenticate against local users database
+        const users = getLocalUsers();
+        const cleanUser = (username || '').trim().toLowerCase();
+        const found = users.find(u => 
+          (u.username || '').toLowerCase() === cleanUser && 
+          String(u.password) === String(password)
+        );
+        if (found) {
           const user = {
-            id: username === 'admin' ? 'usr-1' : 'usr-2',
-            username: username,
-            name: username === 'admin' ? 'Super Admin' : 'Tech Author',
-            role: username === 'admin' ? 'admin' : 'author'
+            id: found.id,
+            username: found.username,
+            name: found.name || found.username,
+            role: found.role || 'author'
           };
           const token = 'txs_token_' + Date.now();
           setSession(token, user);
@@ -243,38 +286,92 @@ const API = (() => {
       }
     },
 
-    // Users (Admin Only)
+    // Users (Admin Only) - Full Persistence
     async getUsers() {
       try {
-        return await request('/users', { method: 'GET', headers: getHeaders() });
+        const res = await request('/users', { method: 'GET', headers: getHeaders() });
+        if (res && res.users && res.users.length > 0) {
+          return res;
+        }
+        return { success: true, users: getLocalUsers() };
       } catch {
-        return {
-          users: [
-            { id: 'usr-1', username: 'admin', name: 'Super Admin', role: 'admin', active: true, createdAt: new Date().toISOString() },
-            { id: 'usr-2', username: 'author', name: 'Tech Author', role: 'author', active: true, createdAt: new Date().toISOString() }
-          ]
-        };
+        return { success: true, users: getLocalUsers() };
       }
     },
 
     async createUser(userData) {
+      const cleanUsername = (userData.username || '').trim();
+      const cleanPassword = (userData.password || '').trim();
+      const cleanName = (userData.name || cleanUsername).trim();
+      const cleanRole = userData.role || 'author';
+
+      if (!cleanUsername || !cleanPassword) {
+        throw new Error('Username and password are required');
+      }
+
+      // Check duplicate immediately
+      const users = getLocalUsers();
+      const exists = users.some(u => (u.username || '').toLowerCase() === cleanUsername.toLowerCase());
+      if (exists) {
+        throw new Error(`Username "${cleanUsername}" is already taken! Please choose another.`);
+      }
+
+      let createdUser = null;
       try {
-        return await request('/users', {
+        const res = await request('/users', {
           method: 'POST',
           headers: getHeaders(),
-          body: JSON.stringify(userData)
+          body: JSON.stringify({
+            username: cleanUsername,
+            name: cleanName,
+            password: cleanPassword,
+            role: cleanRole
+          })
         });
-      } catch {
-        return { success: true, user: { ...userData, id: 'usr-' + Date.now() } };
+        if (res && res.user) {
+          createdUser = res.user;
+        }
+      } catch (err) {
+        // Fallback to local user creation
       }
+
+      if (!createdUser) {
+        createdUser = {
+          id: 'usr-' + Date.now(),
+          username: cleanUsername,
+          name: cleanName,
+          password: cleanPassword,
+          role: cleanRole,
+          active: true,
+          createdAt: new Date().toISOString()
+        };
+      }
+
+      if (!createdUser.password) {
+        createdUser.password = cleanPassword;
+      }
+
+      users.push(createdUser);
+      saveLocalUsers(users);
+      return { success: true, user: createdUser };
     },
 
     async deleteUser(userId) {
-      try {
-        return await request(`/users/${userId}`, { method: 'DELETE', headers: getHeaders() });
-      } catch {
-        return { success: true };
+      const users = getLocalUsers();
+      const targetUser = users.find(u => String(u.id) === String(userId));
+      if (targetUser && (targetUser.username || '').toLowerCase() === 'admin') {
+        throw new Error('The primary Super Admin account is protected and cannot be deleted.');
       }
+
+      try {
+        await request(`/users/${userId}`, { method: 'DELETE', headers: getHeaders() });
+      } catch (err) {
+        // Fallback to local storage
+      }
+
+      const filtered = users.filter(u => String(u.id) !== String(userId));
+      saveLocalUsers(filtered);
+      return { success: true, message: 'User account deleted successfully' };
     },
 
     // Blogs with Local Storage & Fallback Persistence
@@ -472,12 +569,13 @@ const API = (() => {
         return await request('/stats', { method: 'GET', headers: getHeaders() });
       } catch {
         const list = getLocalBlogs();
+        const users = getLocalUsers();
         return {
           stats: {
             totalBlogs: list.length,
             publishedBlogs: list.filter(b => b.published !== false).length,
             featuredBlogs: list.filter(b => b.featured && b.published !== false).length,
-            totalUsers: 2
+            totalUsers: users.length
           }
         };
       }
