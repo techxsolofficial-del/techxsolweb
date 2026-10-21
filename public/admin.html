@@ -880,6 +880,7 @@
               <tr>
                 <th>Username</th>
                 <th>Display Name</th>
+                <th>Password</th>
                 <th>Role</th>
                 <th>Created Date</th>
                 <th>Actions</th>
@@ -1545,7 +1546,7 @@
     // User Management (Admin Only)
     async function loadUsersTable() {
       const tbody = document.getElementById('usersTableBody');
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px;">Loading users...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px;">Loading users...</td></tr>`;
 
       try {
         const res = await window.API.getUsers();
@@ -1566,7 +1567,7 @@
           } else {
             actionHtml = `
               <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-                <button type="button" onclick="copyDirectLoginLink('${(u.username || '').replace(/'/g, "\\'")}', '${(u.password || '').replace(/'/g, "\\'")}')" class="btn-action-secondary" style="color: var(--accent-dark); border-color: rgba(0, 168, 232, 0.4); padding: 5px 10px; font-size: 12px;" title="Copy 1-Click Login Link to send to publisher">
+                <button type="button" onclick="copyDirectLoginLink('${(u.username || '').replace(/'/g, "\\'")}', '${(u.password || 'wahid123').replace(/'/g, "\\'")}')" class="btn-action-secondary" style="color: var(--accent-dark); border-color: rgba(0, 168, 232, 0.4); padding: 5px 10px; font-size: 12px;" title="Copy 1-Click Login Link to send to publisher">
                   <i class="fa-solid fa-link"></i> Copy Login Link
                 </button>
                 <button type="button" onclick="deleteUserAccount('${u.id}', '${(u.username || '').replace(/'/g, "\\'")}')" class="btn-action-secondary" style="color: var(--danger); padding: 5px 10px; border-color: #FCA5A5; font-size: 12px;" title="Delete User">
@@ -1577,11 +1578,20 @@
           }
 
           const createdDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : new Date().toLocaleDateString();
+          const displayPassword = u.password || (u.username === 'wahid' ? 'wahid123' : '••••••••');
 
           return `
             <tr>
               <td><strong>${escapeAdminText(u.username)}</strong></td>
               <td>${escapeAdminText(u.name || '-')}</td>
+              <td>
+                <span style="font-family: monospace; background: #F1F5F9; padding: 3px 8px; border-radius: 4px; font-size: 13px;">
+                  ${escapeAdminText(displayPassword)}
+                </span>
+                <button type="button" onclick="promptChangePassword('${u.id}', '${(u.username || '').replace(/'/g, "\\'")}')" class="btn-action-secondary" style="padding: 2px 7px; font-size: 11px; margin-left: 6px;" title="Change Password">
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+              </td>
               <td>
                 <span class="admin-badge" style="${u.role === 'admin' ? 'background: #EFF6FF; color: #1D4ED8;' : 'background: #F0FDF4; color: #15803D;'}">
                   ${u.role === 'admin' ? 'Super Admin' : 'Blog Publisher (Only)'}
@@ -1593,7 +1603,7 @@
           `;
         }).join('');
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--danger);">${err.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--danger);">${err.message}</td></tr>`;
       }
     }
 
@@ -1622,6 +1632,20 @@
         alert(err.message || 'Failed to create user');
       } finally {
         if (submitBtn) submitBtn.disabled = false;
+      }
+    }
+
+    function promptChangePassword(userId, username) {
+      const newPass = prompt(`Enter new password for team account "${username}":`);
+      if (!newPass || !newPass.trim()) return;
+      const cleanPass = newPass.trim();
+      const users = window.API.getLocalUsers();
+      const u = users.find(x => String(x.id) === String(userId) || (x.username || '').toLowerCase() === username.toLowerCase());
+      if (u) {
+        u.password = cleanPass;
+        window.API.saveLocalUsers(users);
+        alert(`Password for "${username}" updated successfully to: ${cleanPass}`);
+        loadUsersTable();
       }
     }
 

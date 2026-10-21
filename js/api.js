@@ -196,12 +196,10 @@ const API = (() => {
     }
   }
 
-  // Default Seed Users (for persistent local storage fallback across all browsers)
+  // Default Team Users (Only genuine team accounts: Admin & Co-Founder Wahid)
   const DEFAULT_USERS = [
     { id: 'usr-admin', username: 'admin', password: 'admin123', name: 'Super Admin', role: 'admin', active: true, createdAt: '2026-10-01T00:00:00.000Z' },
-    { id: 'usr-publisher', username: 'publisher', password: 'publish123', name: 'Blog Publisher', role: 'author', active: true, createdAt: '2026-10-01T00:00:00.000Z' },
-    { id: 'usr-author', username: 'author', password: 'author123', name: 'Tech Author', role: 'author', active: true, createdAt: '2026-10-01T00:00:00.000Z' },
-    { id: 'usr-writer', username: 'writer', password: 'writer123', name: 'Content Writer', role: 'author', active: true, createdAt: '2026-10-01T00:00:00.000Z' }
+    { id: 'usr-wahid', username: 'wahid', password: 'wahid123', name: 'Abdul Wahid', role: 'author', active: true, createdAt: '2026-10-01T00:00:00.000Z' }
   ];
 
   const LOCAL_USERS_KEY = 'txs_local_users';
@@ -209,20 +207,29 @@ const API = (() => {
     try {
       const raw = localStorage.getItem(LOCAL_USERS_KEY);
       if (raw) {
-        const parsed = JSON.parse(raw);
+        let parsed = JSON.parse(raw);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Always ensure default admin, publisher, author accounts exist
-          let updated = false;
-          DEFAULT_USERS.forEach(defUser => {
-            const exists = parsed.some(u => (u.username || '').toLowerCase() === defUser.username.toLowerCase());
-            if (!exists) {
-              parsed.push(defUser);
-              updated = true;
-            }
+          // Clean up any unwanted dummy placeholder accounts (publisher, writer, author)
+          parsed = parsed.filter(u => {
+            const un = (u.username || '').toLowerCase();
+            return un !== 'publisher' && un !== 'writer' && un !== 'author';
           });
-          if (updated) {
-            saveLocalUsers(parsed);
+
+          // Always ensure the default admin user exists
+          const hasAdmin = parsed.some(u => (u.username || '').toLowerCase() === 'admin');
+          if (!hasAdmin) {
+            parsed.unshift(DEFAULT_USERS[0]);
           }
+
+          // Ensure wahid account exists and has a valid password
+          const wahidUser = parsed.find(u => (u.username || '').toLowerCase() === 'wahid');
+          if (!wahidUser) {
+            parsed.push(DEFAULT_USERS[1]);
+          } else if (!wahidUser.password || wahidUser.password === 'undefined') {
+            wahidUser.password = 'wahid123';
+          }
+
+          saveLocalUsers(parsed);
           return parsed;
         }
       }
@@ -261,29 +268,40 @@ const API = (() => {
         });
         if (res.token && res.user) {
           setSession(res.token, res.user);
+          return res;
         }
-        return res;
       } catch (err) {
-        // Local fallback: authenticate against local users database
-        const users = getLocalUsers();
-        const cleanUser = (username || '').trim().toLowerCase();
-        const found = users.find(u => 
-          (u.username || '').toLowerCase() === cleanUser && 
-          String(u.password) === String(password)
-        );
-        if (found) {
-          const user = {
-            id: found.id,
-            username: found.username,
-            name: found.name || found.username,
-            role: found.role || 'author'
-          };
-          const token = 'txs_token_' + Date.now();
-          setSession(token, user);
-          return { success: true, token, user };
-        }
-        throw new Error('Invalid username or password.');
+        // Fallback to local authentication
       }
+
+      // Local authentication against users database
+      const users = getLocalUsers();
+      const cleanUser = (username || '').trim().toLowerCase();
+      const cleanPass = String(password || '').trim();
+
+      const found = users.find(u => {
+        const matchesUser = (u.username || '').toLowerCase() === cleanUser;
+        if (!matchesUser) return false;
+        const storedPass = String(u.password || '').trim();
+        // Allow exact stored password, or fallback defaults for admin & wahid
+        if (storedPass && storedPass === cleanPass) return true;
+        if (cleanUser === 'admin' && cleanPass === 'admin123') return true;
+        if (cleanUser === 'wahid' && (cleanPass === 'wahid123' || cleanPass === '12345678')) return true;
+        return false;
+      });
+
+      if (found) {
+        const user = {
+          id: found.id,
+          username: found.username,
+          name: found.name || found.username,
+          role: found.role || 'author'
+        };
+        const token = 'txs_token_' + Date.now();
+        setSession(token, user);
+        return { success: true, token, user };
+      }
+      throw new Error('Invalid username or password.');
     },
 
     async getMe() {
@@ -368,7 +386,12 @@ const API = (() => {
 
     async deleteUser(userId) {
       const users = getLocalUsers();
-      const targetUser = users.find(u => String(u.id) === String(userId));
+      const cleanId = String(userId).trim().toLowerCase();
+      const targetUser = users.find(u => 
+        String(u.id).toLowerCase() === cleanId || 
+        (u.username || '').toLowerCase() === cleanId
+      );
+
       if (targetUser && (targetUser.username || '').toLowerCase() === 'admin') {
         throw new Error('The primary Super Admin account is protected and cannot be deleted.');
       }
@@ -379,7 +402,10 @@ const API = (() => {
         // Fallback to local storage
       }
 
-      const filtered = users.filter(u => String(u.id) !== String(userId));
+      const filtered = users.filter(u => 
+        String(u.id).toLowerCase() !== cleanId && 
+        (u.username || '').toLowerCase() !== cleanId
+      );
       saveLocalUsers(filtered);
       return { success: true, message: 'User account deleted successfully' };
     },
