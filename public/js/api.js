@@ -196,10 +196,12 @@ const API = (() => {
     }
   }
 
-  // Default Seed Users (for persistent local storage fallback)
+  // Default Seed Users (for persistent local storage fallback across all browsers)
   const DEFAULT_USERS = [
-    { id: 'usr-1', username: 'admin', password: 'admin123', name: 'Super Admin', role: 'admin', active: true, createdAt: '2026-10-01T00:00:00.000Z' },
-    { id: 'usr-2', username: 'author', password: 'author123', name: 'Tech Author', role: 'author', active: true, createdAt: '2026-10-01T00:00:00.000Z' }
+    { id: 'usr-admin', username: 'admin', password: 'admin123', name: 'Super Admin', role: 'admin', active: true, createdAt: '2026-10-01T00:00:00.000Z' },
+    { id: 'usr-publisher', username: 'publisher', password: 'publish123', name: 'Blog Publisher', role: 'author', active: true, createdAt: '2026-10-01T00:00:00.000Z' },
+    { id: 'usr-author', username: 'author', password: 'author123', name: 'Tech Author', role: 'author', active: true, createdAt: '2026-10-01T00:00:00.000Z' },
+    { id: 'usr-writer', username: 'writer', password: 'writer123', name: 'Content Writer', role: 'author', active: true, createdAt: '2026-10-01T00:00:00.000Z' }
   ];
 
   const LOCAL_USERS_KEY = 'txs_local_users';
@@ -209,10 +211,16 @@ const API = (() => {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Always ensure the default admin user exists
-          const hasAdmin = parsed.some(u => (u.username || '').toLowerCase() === 'admin');
-          if (!hasAdmin) {
-            parsed.unshift(DEFAULT_USERS[0]);
+          // Always ensure default admin, publisher, author accounts exist
+          let updated = false;
+          DEFAULT_USERS.forEach(defUser => {
+            const exists = parsed.some(u => (u.username || '').toLowerCase() === defUser.username.toLowerCase());
+            if (!exists) {
+              parsed.push(defUser);
+              updated = true;
+            }
+          });
+          if (updated) {
             saveLocalUsers(parsed);
           }
           return parsed;
@@ -240,6 +248,8 @@ const API = (() => {
     getCurrentUser,
     setSession,
     clearSession,
+    getLocalUsers,
+    saveLocalUsers,
 
     // Auth with local fallback
     async login(username, password) {
