@@ -38,6 +38,18 @@
       "destination": "/tools.html"
     },
     {
+      "source": "/leadership",
+      "destination": "/leadership.html"
+    },
+    {
+      "source": "/team",
+      "destination": "/leadership.html"
+    },
+    {
+      "source": "/founders",
+      "destination": "/leadership.html"
+    },
+    {
       "source": "/admin",
       "destination": "/admin.html"
     }

@@ -217,6 +217,11 @@ app.get(['/tools', '/tools/:slug'], (req, res) => {
   res.sendFile(filePath);
 });
 
+app.get(['/leadership', '/leadership.html', '/team', '/founders'], (req, res) => {
+  const filePath = fs.existsSync(path.join(publicPath, 'leadership.html')) ? path.join(publicPath, 'leadership.html') : path.join(publicPath, '../leadership.html');
+  res.sendFile(filePath);
+});
+
 app.get('/admin', (req, res) => {
   const filePath = fs.existsSync(path.join(publicPath, 'admin.html')) ? path.join(publicPath, 'admin.html') : path.join(rootPath, 'admin.html');
   res.sendFile(filePath);
