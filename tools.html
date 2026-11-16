@@ -1202,6 +1202,25 @@
 
       <!-- 3 Boxes in 1 Line matching Image 2 -->
       <div class="tools-cards-row" id="toolsCardsGrid">
+        <!-- Featured Tool: Visual HTML Page Designer -->
+        <div class="tool-select-card" data-tool="html-designer" data-category="developer productivity" onclick="openSpecificTool('html-designer')">
+          <div class="card-top-row">
+            <div class="card-icon-box" style="background: rgba(0, 168, 232, 0.12); color: var(--accent-cyan);">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <div class="card-badge-group">
+              <span class="badge-status" style="background: var(--accent-cyan); color: #fff;">PRO STUDIO</span>
+              <span class="badge-category-tag">DEVELOPER</span>
+            </div>
+          </div>
+          <h3 class="card-title">Visual HTML Page Designer</h3>
+          <p class="card-desc">Design single HTML pages visually with drag-and-drop elements, live typography & styling, keyframe animation engine, and instant HTML & ZIP export.</p>
+          <div class="card-action-link">
+            <span>Launch Studio</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i>
+          </div>
+        </div>
+
         <!-- Card 1: Digit & Calculator -->
         <div class="tool-select-card" data-tool="digit" data-category="productivity developer" onclick="openSpecificTool('digit')">
           <div class="card-top-row">
@@ -1721,6 +1740,7 @@
       </div>
 
       <div class="tool-quick-nav-container">
+        <button onclick="openSpecificTool('html-designer')" class="quick-nav-pill active" id="quickPill-html-designer"><i class="fa-solid fa-wand-magic-sparkles"></i> HTML Designer</button>
         <button onclick="openSpecificTool('digit')" class="quick-nav-pill" id="quickPill-digit">Digit Tool</button>
         <button onclick="openSpecificTool('cgpa')" class="quick-nav-pill" id="quickPill-cgpa">CGPA Tool</button>
         <button onclick="openSpecificTool('percentage')" class="quick-nav-pill" id="quickPill-percentage">Percentage</button>
@@ -1749,6 +1769,66 @@
         <button onclick="openSpecificTool('unit-data-converter')" class="quick-nav-pill" id="quickPill-unit-data-converter">Unit Converter</button>
       </div>
     </div>
+
+    <!-- TOOL 0: TECHXSOL VISUAL HTML PAGE DESIGNER -->
+    <section class="tool-box" id="html-designer-tool">
+      <div class="tool-box-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 24px;">
+        <div class="tool-box-icon" style="background: rgba(0, 168, 232, 0.12); color: var(--accent-cyan);"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <div style="flex: 1;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h3 style="font-family: var(--font-heading); font-size: 24px; margin-bottom: 4px;">Visual HTML Page Designer</h3>
+              <p style="color: var(--text-muted); font-size: 14.5px; margin: 0;">
+                Design single HTML pages visually with mouse-based drag & drop, real-time typography, box model styling, animation engine, code editor sync, and instant standalone HTML & ZIP export.
+              </p>
+            </div>
+            <a href="/tools/html-page-designer" class="btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; font-weight: 700; border-radius: 10px; background: linear-gradient(135deg, #253763, #1A2747); box-shadow: 0 4px 14px rgba(37, 55, 99, 0.25); color: #fff;">
+              <i class="fa-solid fa-up-right-and-down-left-from-center"></i> Open Fullscreen Studio
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Highlights Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px;">
+          <div style="color: var(--accent-cyan); font-size: 20px; margin-bottom: 8px;"><i class="fa-solid fa-shapes"></i></div>
+          <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 4px;">Drag & Drop Library</h4>
+          <p style="font-size: 12.5px; color: var(--text-muted); margin: 0;">22+ draggable elements across Basic, Layout, and Advanced Form components.</p>
+        </div>
+        <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px;">
+          <div style="color: var(--accent-cyan); font-size: 20px; margin-bottom: 8px;"><i class="fa-solid fa-palette"></i></div>
+          <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 4px;">Visual Box Model & Style</h4>
+          <p style="font-size: 12.5px; color: var(--text-muted); margin: 0;">Live margin/padding visualizer, color pickers, typography, flexbox and grid.</p>
+        </div>
+        <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px;">
+          <div style="color: var(--accent-cyan); font-size: 20px; margin-bottom: 8px;"><i class="fa-solid fa-play"></i></div>
+          <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 4px;">Animation Engine</h4>
+          <p style="font-size: 12.5px; color: var(--text-muted); margin: 0;">Keyframe animations, hover/scroll triggers, and instant live canvas preview.</p>
+        </div>
+        <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px;">
+          <div style="color: var(--accent-cyan); font-size: 20px; margin-bottom: 8px;"><i class="fa-solid fa-file-zipper"></i></div>
+          <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 4px;">HTML & ZIP Export</h4>
+          <p style="font-size: 12.5px; color: var(--text-muted); margin: 0;">Export 100% standalone single-file HTML or complete project ZIP with clean assets.</p>
+        </div>
+      </div>
+
+      <!-- Studio Embedded Workspace Frame -->
+      <div style="border: 1px solid var(--border-color); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-md); background: #EDEFF5;">
+        <div style="background: #253763; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1E2843;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 10px; height: 10px; border-radius: 50%; background: #EF4444;"></div>
+            <div style="width: 10px; height: 10px; border-radius: 50%; background: #F59E0B;"></div>
+            <div style="width: 10px; height: 10px; border-radius: 50%; background: #10B981;"></div>
+            <span style="font-size: 12px; font-weight: 600; color: #FFFFFF; margin-left: 8px;">TechXSol HTML Page Designer — Studio Workspace</span>
+          </div>
+          <a href="/tools/html-page-designer" target="_blank" style="font-size: 12px; color: #8A87F9; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 5px;">
+            <span>Open in New Tab</span> <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 11px;"></i>
+          </a>
+        </div>
+        <iframe src="/tools/html-page-designer" style="width: 100%; height: 750px; border: none; display: block;" title="TechXSol HTML Designer Embed"></iframe>
+      </div>
+    </section>
 
     <!-- TOOL 1: SMART DIGITAL & DIGIT CALCULATOR SUITE -->
     <section class="tool-box" id="digit-tool">
@@ -4240,12 +4320,27 @@
         slug: 'unit-data-converter',
         name: 'Unit & Data Storage Converter',
         category: 'Productivity'
+      },
+      'html-designer': {
+        id: 'html-designer-tool',
+        slug: 'html-page-designer',
+        name: 'Visual HTML Page Designer',
+        category: 'Developer'
+      },
+      'html-page-designer': {
+        id: 'html-designer-tool',
+        slug: 'html-page-designer',
+        name: 'Visual HTML Page Designer',
+        category: 'Developer'
       }
     };
 
     function openSpecificTool(targetTool, shouldScroll = true, updateUrl = true) {
       // Resolve shortcut key
       const idMap = {
+        'html-designer': 'html-designer',
+        'html-page-designer': 'html-designer',
+        'designer': 'html-designer',
         'digit': 'digit',
         'digit-tool': 'digit',
         'cgpa': 'cgpa',

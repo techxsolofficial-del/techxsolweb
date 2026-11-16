@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+    <!-- Outer Shield Defense Perimeter -->
+    <path fill="#00D084" d="M24 5L8 11.5V24C8 33.5 14.8 41.5 24 44C33.2 41.5 40 33.5 40 24V11.5L24 5Z" />
+    <!-- Dual-Tone Right Facet for Depth -->
+    <path fill="#0EA5E9" d="M24 5L40 11.5V24C40 33.5 33.2 41.5 24 44Z" />
+    <!-- Shield Inner Core (Deep Obsidian) -->
+    <path fill="#0B111E" d="M24 8L10.5 13.5V24C10.5 31.8 16.2 38.8 24 41.2C31.8 38.8 37.5 31.8 37.5 24V13.5L24 8Z" />
+    <!-- 'C' Monogram (Left Arc) -->
+    <path fill="#00D084" d="M21 18H17C15.3 18 14 19.3 14 21V27C14 28.7 15.3 30 17 30H21V27.5H17C16.7 27.5 16.5 27.3 16.5 27V21C16.5 20.7 16.7 20.5 17 20.5H21V18Z" />
+    <!-- 'H' Monogram (Right Arc) -->
+    <path fill="#0EA5E9" d="M25 18H27.5V22.8H31.5V18H34V30H31.5V25.2H27.5V30H25V18Z" />
+    <!-- Central Micro-Node of Verifiability -->
+    <path fill="#F8FAFC" d="M23 23H24.5V27H23V23Z" />
+</svg>

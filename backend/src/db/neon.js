@@ -1,10 +1,12 @@
 /**
  * Tech X Sol - Neon Serverless PostgreSQL Database Connector
  * Connects to Neon PostgreSQL using standard pg connection pool with SSL
- * Supports automatic table provisioning and fallback storage
+ * Supports automatic table provisioning, file persistence, and fallback storage
  */
 
 const { Pool } = require('pg');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
 const seedBlogs = require('./seedBlogs');
@@ -12,17 +14,80 @@ const seedBlogs = require('./seedBlogs');
 let pool = null;
 let isConnected = false;
 
-// Fallback in-memory store pre-populated with 3 premium SEO articles
-const memoryStore = {
-  users: [
-    { id: 'usr-admin', username: 'admin', password: 'admin123', name: 'Super Admin', role: 'admin' },
-    { id: 'usr-wahid', username: 'wahid', password: 'wahid123', name: 'Abdul Wahid', role: 'author' }
-  ],
-  blogs: [...seedBlogs],
-  settings: {
-    showAuthor: true
+// Persistent Local File Fallback Storage
+const dataDir = path.resolve(__dirname, '../../../data');
+const blogsFile = path.join(dataDir, 'blogs.json');
+const usersFile = path.join(dataDir, 'users.json');
+const settingsFile = path.join(dataDir, 'settings.json');
+
+function initLocalFiles() {
+  try {
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+
+    if (!fs.existsSync(blogsFile)) {
+      fs.writeFileSync(blogsFile, JSON.stringify(seedBlogs, null, 2), 'utf-8');
+    }
+
+    if (!fs.existsSync(usersFile)) {
+      fs.writeFileSync(usersFile, JSON.stringify([
+        { id: 'usr-admin', username: 'admin', password: 'admin123', name: 'Super Admin', role: 'admin', active: true, createdAt: '2026-10-01T00:00:00.000Z' },
+        { id: 'usr-wahid', username: 'wahid', password: 'wahid123', name: 'Abdul Wahid', role: 'author', active: true, createdAt: '2026-10-01T00:00:00.000Z' }
+      ], null, 2), 'utf-8');
+    }
+
+    if (!fs.existsSync(settingsFile)) {
+      fs.writeFileSync(settingsFile, JSON.stringify({ showAuthor: true }, null, 2), 'utf-8');
+    }
+  } catch (err) {
+    console.warn('[Storage] Notice initializing local data files:', err.message);
   }
+}
+
+initLocalFiles();
+
+function readLocalJson(filePath, defaultVal) {
+  try {
+    if (fs.existsSync(filePath)) {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      return JSON.parse(content);
+    }
+  } catch (err) {
+    console.warn(`[Storage] Read error ${filePath}:`, err.message);
+  }
+  return defaultVal;
+}
+
+const loadedBlogs = readLocalJson(blogsFile, seedBlogs);
+const loadedUsers = readLocalJson(usersFile, [
+  { id: 'usr-admin', username: 'admin', password: 'admin123', name: 'Super Admin', role: 'admin', active: true, createdAt: '2026-10-01T00:00:00.000Z' },
+  { id: 'usr-wahid', username: 'wahid', password: 'wahid123', name: 'Abdul Wahid', role: 'author', active: true, createdAt: '2026-10-01T00:00:00.000Z' }
+]);
+const loadedSettings = readLocalJson(settingsFile, { showAuthor: true });
+
+// Fallback in-memory store backed by persistent files
+const memoryStore = {
+  users: Array.isArray(loadedUsers) && loadedUsers.length > 0 ? loadedUsers : [
+    { id: 'usr-admin', username: 'admin', password: 'admin123', name: 'Super Admin', role: 'admin', active: true, createdAt: '2026-10-01T00:00:00.000Z' },
+    { id: 'usr-wahid', username: 'wahid', password: 'wahid123', name: 'Abdul Wahid', role: 'author', active: true, createdAt: '2026-10-01T00:00:00.000Z' }
+  ],
+  blogs: Array.isArray(loadedBlogs) && loadedBlogs.length > 0 ? loadedBlogs : [...seedBlogs],
+  settings: loadedSettings || { showAuthor: true }
 };
+
+function saveLocalData() {
+  try {
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    fs.writeFileSync(blogsFile, JSON.stringify(memoryStore.blogs, null, 2), 'utf-8');
+    fs.writeFileSync(usersFile, JSON.stringify(memoryStore.users, null, 2), 'utf-8');
+    fs.writeFileSync(settingsFile, JSON.stringify(memoryStore.settings, null, 2), 'utf-8');
+  } catch (err) {
+    console.warn('[Storage] Error saving local persistent data:', err.message);
+  }
+}
 
 if (process.env.DATABASE_URL) {
   try {
@@ -37,7 +102,7 @@ if (process.env.DATABASE_URL) {
 
 async function initDb() {
   if (!pool || !process.env.DATABASE_URL) {
-    console.log('[Database] Running in Fallback Mode (Add DATABASE_URL from Neon to .env to persist in PostgreSQL).');
+    console.log('[Database] Running with Persistent Local File Store (Add DATABASE_URL from Neon to .env to also sync PostgreSQL).');
     return;
   }
 
@@ -92,7 +157,7 @@ async function initDb() {
     // Seed default featured blogs if table is empty
     const blogCount = await client.query('SELECT count(*) FROM blogs');
     if (parseInt(blogCount.rows[0].count, 10) === 0) {
-      for (const blog of seedBlogs) {
+      for (const blog of memoryStore.blogs) {
         await client.query(`
           INSERT INTO blogs (id, title, slug, category, excerpt, content, cover_image, image_size_kb, tags, published, featured, author, author_role, created_at)
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
@@ -106,22 +171,22 @@ async function initDb() {
           blog.content,
           blog.coverImage,
           blog.imageSizeKB,
-          JSON.stringify(blog.tags),
-          blog.published,
-          blog.featured,
-          blog.author,
-          blog.authorRole,
-          blog.createdAt
+          JSON.stringify(Array.isArray(blog.tags) ? blog.tags : []),
+          blog.published !== undefined ? blog.published : true,
+          blog.featured !== undefined ? blog.featured : false,
+          blog.author || 'Tech X Sol',
+          blog.authorRole || 'admin',
+          blog.createdAt || new Date().toISOString()
         ]);
       }
-      console.log('[Neon DB] Seeded 3 premium articles successfully!');
+      console.log('[Neon DB] Seeded articles successfully into PostgreSQL!');
     }
 
     client.release();
     isConnected = true;
     console.log('[Neon DB] Connected successfully to Neon Serverless PostgreSQL!');
   } catch (err) {
-    console.warn('[Neon DB] Connection failed, falling back to local store:', err.message);
+    console.warn('[Neon DB] Connection failed, falling back to local persistent store:', err.message);
     isConnected = false;
   }
 }
@@ -144,6 +209,6 @@ module.exports = {
   query,
   initDb,
   memoryStore,
+  saveLocalData,
   getIsConnected: () => isConnected
 };
-

@@ -192,7 +192,19 @@ const API = (() => {
     try {
       localStorage.setItem(LOCAL_BLOGS_KEY, JSON.stringify(list));
     } catch (e) {
-      console.warn('Storage save error:', e);
+      console.warn('Storage save warning, applying quota cleanup:', e);
+      try {
+        // If quota is tight, remove huge base64 strings from older articles
+        const optimized = list.map((b, idx) => {
+          if (idx > 2 && b.coverImage && b.coverImage.startsWith('data:image')) {
+            return { ...b, coverImage: '' };
+          }
+          return b;
+        });
+        localStorage.setItem(LOCAL_BLOGS_KEY, JSON.stringify(optimized));
+      } catch (err2) {
+        console.warn('LocalStorage save failed:', err2.message);
+      }
     }
   }
 
@@ -406,125 +418,168 @@ const API = (() => {
 
     // Blogs with Local Storage & Fallback Persistence
     async getBlogs(params = {}) {
+      let serverBlogs = [];
       try {
         const query = new URLSearchParams(params).toString();
         const endpoint = query ? `/blogs?${query}` : '/blogs';
         const res = await request(endpoint, { method: 'GET', headers: getHeaders() });
-        if (res && res.blogs && res.blogs.length > 0) {
-          return res;
+        if (res && Array.isArray(res.blogs)) {
+          serverBlogs = res.blogs;
         }
-        let list = getLocalBlogs();
-        if (params.featured === 'true') {
-          list = list.filter(b => b.featured && b.published);
-        } else if (!params.all) {
-          list = list.filter(b => b.published !== false);
-        }
-        if (params.limit) {
-          list = list.slice(0, parseInt(params.limit, 10));
-        }
-        return { success: true, blogs: list };
-      } catch {
-        let list = getLocalBlogs();
-        if (params.featured === 'true') {
-          list = list.filter(b => b.featured && b.published);
-        } else if (!params.all) {
-          list = list.filter(b => b.published !== false);
-        }
-        if (params.limit) {
-          list = list.slice(0, parseInt(params.limit, 10));
-        }
-        return { success: true, blogs: list };
+      } catch (err) {
+        console.warn('[getBlogs] Server fetch warning:', err.message);
       }
+
+      const localBlogs = getLocalBlogs();
+      const blogMap = new Map();
+
+      // 1. Put server blogs first
+      serverBlogs.forEach(b => {
+        const key = b.id || b.slug;
+        if (key) blogMap.set(key, b);
+      });
+
+      // 2. Overlay / merge local blogs so newly created local blogs are ALWAYS included
+      localBlogs.forEach(b => {
+        const key = b.id || b.slug;
+        if (key) {
+          const existing = blogMap.get(key);
+          if (!existing) {
+            blogMap.set(key, b);
+          } else {
+            // Keep local changes if newer or custom
+            blogMap.set(key, { ...existing, ...b });
+          }
+        }
+      });
+
+      let merged = Array.from(blogMap.values());
+
+      // Silently sync unsynced local blogs to server if authenticated and server was missing them
+      if (serverBlogs.length > 0 && getToken()) {
+        const serverIds = new Set(serverBlogs.map(b => b.id));
+        const unsynced = localBlogs.filter(b => b.id && !serverIds.has(b.id) && !DEFAULT_FEATURED_BLOGS.some(d => d.id === b.id));
+        if (unsynced.length > 0) {
+          unsynced.forEach(ub => {
+            request('/blogs', {
+              method: 'POST',
+              headers: getHeaders(),
+              body: JSON.stringify(ub)
+            }).catch(() => {});
+          });
+        }
+      }
+
+      // Filter by parameters
+      if (params.featured === 'true') {
+        merged = merged.filter(b => b.featured && b.published !== false);
+      } else if (params.all !== 'true') {
+        merged = merged.filter(b => b.published !== false);
+      }
+
+      if (params.category && params.category !== 'All') {
+        merged = merged.filter(b => (b.category || '').toLowerCase() === params.category.toLowerCase());
+      }
+
+      // Sort by newest created_at first
+      merged.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+      if (params.limit) {
+        merged = merged.slice(0, parseInt(params.limit, 10));
+      }
+
+      return { success: true, blogs: merged };
     },
 
     async getBlog(idOrSlug) {
       try {
-        return await request(`/blogs/${idOrSlug}`, { method: 'GET', headers: getHeaders() });
-      } catch {
-        const list = getLocalBlogs();
-        const found = list.find(b => b.id === idOrSlug || b.slug === idOrSlug);
-        if (found) return { success: true, blog: found };
-        throw new Error('Blog not found');
-      }
+        const res = await request(`/blogs/${idOrSlug}`, { method: 'GET', headers: getHeaders() });
+        if (res && res.blog) return res;
+      } catch (err) {}
+      const list = getLocalBlogs();
+      const found = list.find(b => b.id === idOrSlug || b.slug === idOrSlug);
+      if (found) return { success: true, blog: found };
+      throw new Error('Blog not found');
     },
 
     async createBlog(blogData) {
+      let serverBlog = null;
       try {
         const res = await request('/blogs', {
           method: 'POST',
           headers: getHeaders(),
           body: JSON.stringify(blogData)
         });
-        // Also sync local
-        const list = getLocalBlogs();
-        if (res.blog) list.unshift(res.blog);
-        saveLocalBlogs(list);
-        return res;
-      } catch {
-        const list = getLocalBlogs();
-        const newBlog = {
-          id: 'blog-' + Date.now(),
-          ...blogData,
-          slug: (blogData.title || 'post').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
-          published: blogData.published !== undefined ? blogData.published : true,
-          createdAt: new Date().toISOString()
-        };
-        list.unshift(newBlog);
-        saveLocalBlogs(list);
-        return { success: true, blog: newBlog };
+        if (res && res.blog) {
+          serverBlog = res.blog;
+        }
+      } catch (err) {
+        console.warn('[createBlog] Server create warning, saving locally:', err.message);
       }
+
+      const list = getLocalBlogs();
+      const newBlog = serverBlog || {
+        id: 'blog-' + Date.now(),
+        ...blogData,
+        slug: (blogData.title || 'post')
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .trim()
+          .replace(/[\s_-]+/g, '-') + '-' + Math.floor(Math.random() * 1000),
+        published: blogData.published !== undefined ? blogData.published : true,
+        createdAt: new Date().toISOString()
+      };
+
+      // Unshift into local blogs without duplicate
+      const filtered = list.filter(b => b.id !== newBlog.id && b.slug !== newBlog.slug);
+      filtered.unshift(newBlog);
+      saveLocalBlogs(filtered);
+
+      return { success: true, blog: newBlog };
     },
 
     async updateBlog(id, blogData) {
+      let serverBlog = null;
       try {
         const res = await request(`/blogs/${id}`, {
           method: 'PUT',
           headers: getHeaders(),
           body: JSON.stringify(blogData)
         });
-        const list = getLocalBlogs();
-        const idx = list.findIndex(b => b.id === id);
-        if (idx !== -1 && res.blog) {
-          list[idx] = res.blog;
-          saveLocalBlogs(list);
-        }
-        return res;
-      } catch {
-        const list = getLocalBlogs();
-        const idx = list.findIndex(b => b.id === id);
-        if (idx !== -1) {
-          list[idx] = { ...list[idx], ...blogData, updatedAt: new Date().toISOString() };
-          saveLocalBlogs(list);
-          return { success: true, blog: list[idx] };
-        }
-        throw new Error('Blog not found');
+        if (res && res.blog) serverBlog = res.blog;
+      } catch (err) {}
+
+      const list = getLocalBlogs();
+      const idx = list.findIndex(b => b.id === id);
+      if (idx !== -1) {
+        list[idx] = serverBlog || { ...list[idx], ...blogData, updatedAt: new Date().toISOString() };
+        saveLocalBlogs(list);
+        return { success: true, blog: list[idx] };
       }
+      if (serverBlog) return { success: true, blog: serverBlog };
+      throw new Error('Blog not found');
     },
 
     async toggleBlogStatus(id, statusData) {
+      let serverBlog = null;
       try {
         const res = await request(`/blogs/${id}/status`, {
           method: 'PATCH',
           headers: getHeaders(),
           body: JSON.stringify(statusData)
         });
-        const list = getLocalBlogs();
-        const idx = list.findIndex(b => b.id === id);
-        if (idx !== -1 && res.blog) {
-          list[idx] = res.blog;
-          saveLocalBlogs(list);
-        }
-        return res;
-      } catch {
-        const list = getLocalBlogs();
-        const idx = list.findIndex(b => b.id === id);
-        if (idx !== -1) {
-          list[idx] = { ...list[idx], ...statusData };
-          saveLocalBlogs(list);
-          return { success: true, blog: list[idx] };
-        }
-        throw new Error('Blog not found');
+        if (res && res.blog) serverBlog = res.blog;
+      } catch (err) {}
+
+      const list = getLocalBlogs();
+      const idx = list.findIndex(b => b.id === id);
+      if (idx !== -1) {
+        list[idx] = serverBlog || { ...list[idx], ...statusData };
+        saveLocalBlogs(list);
+        return { success: true, blog: list[idx] };
       }
+      if (serverBlog) return { success: true, blog: serverBlog };
+      throw new Error('Blog not found');
     },
 
     async deleteBlog(id) {
@@ -536,32 +591,34 @@ const API = (() => {
       return { success: true };
     },
 
-    // Image Upload (< 500KB)
+    // Image Upload with Auto-Resilience
     async uploadImage(file) {
-      if (file.size > 500 * 1024) {
-        throw new Error(`File is ${(file.size / 1024).toFixed(1)} KB. Maximum allowed size is 500 KB!`);
-      }
+      // 1. Read base64 representation
+      const base64Data = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const sizeKB = parseFloat((file.size / 1024).toFixed(1));
+
+      // 2. Attempt server endpoint upload
       try {
-        const formData = new FormData();
-        formData.append('image', file);
-        return await request('/upload', {
+        const res = await request('/upload', {
           method: 'POST',
-          headers: getHeaders(true),
-          body: formData
+          headers: getHeaders(),
+          body: JSON.stringify({ image: base64Data, filename: file.name })
         });
-      } catch {
-        // Fallback: return as data URL
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = (e) => resolve({
-            success: true,
-            url: e.target.result,
-            sizeKB: (file.size / 1024).toFixed(1)
-          });
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
+        if (res && res.url) {
+          return { success: true, url: res.url, sizeKB: res.sizeKB || sizeKB };
+        }
+      } catch (err) {
+        console.warn('[uploadImage] Server upload fallback to direct data URL:', err.message);
       }
+
+      // 3. Resilient fallback to direct data URL
+      return { success: true, url: base64Data, sizeKB };
     },
 
     // Tools

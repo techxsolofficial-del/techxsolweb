@@ -18,6 +18,18 @@
       "destination": "/blog.html"
     },
     {
+      "source": "/tools/html-designer",
+      "destination": "/html-designer.html"
+    },
+    {
+      "source": "/tools/html-page-designer",
+      "destination": "/html-designer.html"
+    },
+    {
+      "source": "/designer",
+      "destination": "/html-designer.html"
+    },
+    {
       "source": "/tools/:slug*",
       "destination": "/tools.html"
     },

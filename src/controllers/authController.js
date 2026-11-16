@@ -103,6 +103,9 @@ exports.createUser = async (req, res) => {
         createdAt: new Date().toISOString()
       };
       db.memoryStore.users.push(newUser);
+      if (typeof db.saveLocalData === 'function') {
+        db.saveLocalData();
+      }
       return res.json({ success: true, user: newUser });
     }
   } catch (err) {
@@ -126,6 +129,9 @@ exports.deleteUser = async (req, res) => {
         return res.status(400).json({ success: false, error: 'Cannot delete primary admin account' });
       }
       db.memoryStore.users = db.memoryStore.users.filter(u => String(u.id).toLowerCase() !== cleanId && (u.username || '').toLowerCase() !== cleanId);
+      if (typeof db.saveLocalData === 'function') {
+        db.saveLocalData();
+      }
     }
     return res.json({ success: true, message: 'User deleted' });
   } catch (err) {

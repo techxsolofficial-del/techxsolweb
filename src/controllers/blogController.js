@@ -1,9 +1,35 @@
 /**
  * Tech X Sol - Blog Articles Controller
- * Connects to Neon PostgreSQL for real persistence or memory store fallback
+ * Connects to Neon PostgreSQL for real persistence or file-backed fallback storage
  */
 
 const db = require('../db/neon');
+
+function parseTags(rawTags) {
+  if (Array.isArray(rawTags)) return rawTags;
+  if (typeof rawTags === 'string') {
+    const trimmed = rawTags.trim();
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (Array.isArray(parsed)) return parsed;
+      } catch {}
+    }
+    return trimmed.split(',').map(t => t.trim()).filter(Boolean);
+  }
+  return [];
+}
+
+function generateCleanSlug(title) {
+  const base = (title || 'article')
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .trim()
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  const prefix = base && base.length >= 2 ? base : 'article-' + Date.now();
+  return prefix + '-' + Math.floor(Math.random() * 1000);
+}
 
 exports.getBlogs = async (req, res) => {
   const { category, featured, all, limit } = req.query;
@@ -34,7 +60,7 @@ exports.getBlogs = async (req, res) => {
       const result = await db.query(queryStr, params);
       return res.json({ success: true, blogs: result.rows });
     } else {
-      // Memory Store Fallback
+      // Memory Store Fallback (backed by local data/blogs.json)
       let list = [...db.memoryStore.blogs];
       if (all !== 'true') {
         list = list.filter(b => b.published !== false);
@@ -82,16 +108,20 @@ exports.getBlogByIdOrSlug = async (req, res) => {
 };
 
 exports.createBlog = async (req, res) => {
-  const { title, category, excerpt, content, coverImage, imageSizeKB, tags, published, featured } = req.body;
+  const { title, category, excerpt, content, coverImage, imageSizeKB, tags, published, featured, showAuthor } = req.body;
 
   if (!title || !content) {
     return res.status(400).json({ success: false, error: 'Title and content are required' });
   }
 
   const id = 'blog-' + Date.now();
-  const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + Math.floor(Math.random() * 1000);
-  const author = req.user ? req.user.name || req.user.username : 'Tech X Sol';
+  const slug = generateCleanSlug(title);
+  const author = req.user ? (req.user.name || req.user.username) : 'Tech X Sol';
   const authorRole = req.user ? req.user.role : 'admin';
+  const parsedTags = parseTags(tags);
+  const isPublished = published !== undefined ? (published === true || published === 'true') : true;
+  const isFeatured = featured !== undefined ? (featured === true || featured === 'true') : false;
+  const shouldShowAuthor = showAuthor !== undefined ? (showAuthor === true || showAuthor === 'true') : true;
 
   try {
     if (db.getIsConnected()) {
@@ -102,39 +132,44 @@ exports.createBlog = async (req, res) => {
       `;
       const values = [
         id,
-        title,
+        title.trim(),
         slug,
         category || 'Tech',
         excerpt || '',
         content,
         coverImage || null,
         imageSizeKB || 0,
-        JSON.stringify(Array.isArray(tags) ? tags : []),
-        published !== undefined ? published : true,
-        featured !== undefined ? featured : false,
+        JSON.stringify(parsedTags),
+        isPublished,
+        isFeatured,
         author,
         authorRole
       ];
       const result = await db.query(queryStr, values);
-      return res.status(201).json({ success: true, blog: result.rows[0] });
+      const created = { ...result.rows[0], showAuthor: shouldShowAuthor };
+      return res.status(201).json({ success: true, blog: created });
     } else {
       const newBlog = {
         id,
-        title,
+        title: title.trim(),
         slug,
         category: category || 'Tech',
         excerpt: excerpt || '',
         content,
         coverImage: coverImage || null,
         imageSizeKB: imageSizeKB || 0,
-        tags: Array.isArray(tags) ? tags : [],
-        published: published !== undefined ? published : true,
-        featured: featured !== undefined ? featured : false,
+        tags: parsedTags,
+        published: isPublished,
+        featured: isFeatured,
+        showAuthor: shouldShowAuthor,
         author,
         authorRole,
         createdAt: new Date().toISOString()
       };
       db.memoryStore.blogs.unshift(newBlog);
+      if (typeof db.saveLocalData === 'function') {
+        db.saveLocalData();
+      }
       return res.status(201).json({ success: true, blog: newBlog });
     }
   } catch (err) {
@@ -145,7 +180,9 @@ exports.createBlog = async (req, res) => {
 
 exports.updateBlog = async (req, res) => {
   const { id } = req.params;
-  const { title, category, excerpt, content, coverImage, imageSizeKB, tags, published, featured } = req.body;
+  const { title, category, excerpt, content, coverImage, imageSizeKB, tags, published, featured, showAuthor } = req.body;
+
+  const parsedTags = tags !== undefined ? parseTags(tags) : undefined;
 
   try {
     if (db.getIsConnected()) {
@@ -171,7 +208,7 @@ exports.updateBlog = async (req, res) => {
         content,
         coverImage,
         imageSizeKB,
-        tags ? JSON.stringify(tags) : null,
+        parsedTags ? JSON.stringify(parsedTags) : null,
         published,
         featured,
         id
@@ -180,13 +217,23 @@ exports.updateBlog = async (req, res) => {
       if (result.rows.length === 0) {
         return res.status(404).json({ success: false, error: 'Article not found' });
       }
-      return res.json({ success: true, blog: result.rows[0] });
+      const updated = { ...result.rows[0] };
+      if (showAuthor !== undefined) updated.showAuthor = showAuthor;
+      return res.json({ success: true, blog: updated });
     } else {
       const idx = db.memoryStore.blogs.findIndex(b => b.id === id);
       if (idx === -1) {
         return res.status(404).json({ success: false, error: 'Article not found' });
       }
-      db.memoryStore.blogs[idx] = { ...db.memoryStore.blogs[idx], ...req.body, updatedAt: new Date().toISOString() };
+      db.memoryStore.blogs[idx] = {
+        ...db.memoryStore.blogs[idx],
+        ...req.body,
+        ...(parsedTags !== undefined ? { tags: parsedTags } : {}),
+        updatedAt: new Date().toISOString()
+      };
+      if (typeof db.saveLocalData === 'function') {
+        db.saveLocalData();
+      }
       return res.json({ success: true, blog: db.memoryStore.blogs[idx] });
     }
   } catch (err) {
@@ -220,6 +267,9 @@ exports.toggleStatus = async (req, res) => {
       }
       if (published !== undefined) db.memoryStore.blogs[idx].published = published;
       if (featured !== undefined) db.memoryStore.blogs[idx].featured = featured;
+      if (typeof db.saveLocalData === 'function') {
+        db.saveLocalData();
+      }
       return res.json({ success: true, blog: db.memoryStore.blogs[idx] });
     }
   } catch (err) {
@@ -235,6 +285,9 @@ exports.deleteBlog = async (req, res) => {
       await db.query('DELETE FROM blogs WHERE id = $1', [id]);
     } else {
       db.memoryStore.blogs = db.memoryStore.blogs.filter(b => b.id !== id);
+      if (typeof db.saveLocalData === 'function') {
+        db.saveLocalData();
+      }
     }
     return res.json({ success: true, message: 'Article deleted successfully' });
   } catch (err) {
@@ -274,4 +327,3 @@ exports.getStats = async (req, res) => {
     return res.status(500).json({ success: false, error: err.message });
   }
 };
-

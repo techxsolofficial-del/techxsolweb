@@ -170,7 +170,7 @@ async function loadFeaturedBlogs() {
 
     container.innerHTML = blogs.map(blog => {
       const coverUrl = blog.coverImage 
-        ? (blog.coverImage.startsWith('http') || blog.coverImage.startsWith('data:') ? blog.coverImage : `${window.API.UPLOADS_BASE}${blog.coverImage}`)
+        ? (blog.coverImage.startsWith('http') || blog.coverImage.startsWith('data:') || blog.coverImage.startsWith('/') ? blog.coverImage : `${window.API.UPLOADS_BASE}${blog.coverImage}`)
         : 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80';
 
       const dateStr = new Date(blog.createdAt).toLocaleDateString('en-US', {
