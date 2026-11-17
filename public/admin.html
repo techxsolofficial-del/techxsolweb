@@ -671,6 +671,13 @@
             <button onclick="toggleAuthorDisplaySetting()" class="btn-action-secondary" id="blogsTabAuthorToggleBtn" style="font-size: 13px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px;" title="Click to toggle between Author Names and Dates Only">
               <i class="fa-solid fa-sliders" style="color: var(--accent-cyan);"></i> Footer: <strong id="blogsTabAuthorStatusText" style="color: var(--accent-cyan);">Author Names</strong>
             </button>
+            <button onclick="exportBlogsBackup()" class="btn-action-secondary" style="font-size: 13px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px;" title="Export all blogs as JSON backup file to your computer">
+              <i class="fa-solid fa-download" style="color: #10B981;"></i> Backup JSON
+            </button>
+            <button onclick="document.getElementById('importBlogsFileInput').click()" class="btn-action-secondary" style="font-size: 13px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px;" title="Restore blogs from a previously downloaded JSON backup">
+              <i class="fa-solid fa-upload" style="color: #6366F1;"></i> Restore JSON
+            </button>
+            <input type="file" id="importBlogsFileInput" accept=".json" style="display: none;" onchange="handleImportBlogsFile(event)">
             <button onclick="switchTab('create')" class="btn-action-primary" style="font-size: 13.5px; padding: 8px 16px;">
               <i class="fa-solid fa-plus"></i> New Blog
             </button>
@@ -705,6 +712,25 @@
         <div class="card-title">
           <span id="formCardHeader">Create & Publish Blog Article</span>
           <button onclick="resetBlogForm()" class="btn-action-secondary">Reset Form</button>
+        </div>
+
+        <!-- Draft Auto-Recovery Banner -->
+        <div id="draftRecoveryBanner" style="display: none; background: rgba(0, 168, 232, 0.08); border: 1px solid var(--accent-cyan); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-cyan); font-size: 18px;"></i>
+            <div>
+              <strong style="color: var(--text-main);">Unsaved Draft Detected:</strong>
+              <span id="draftFoundTitle" style="color: var(--text-muted); font-size: 13.5px; margin-left: 4px;"></span>
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" onclick="restoreSavedDraft()" class="btn-action-primary" style="padding: 6px 14px; font-size: 12.5px;">
+              <i class="fa-solid fa-rotate-left"></i> Restore Draft
+            </button>
+            <button type="button" onclick="discardSavedDraft()" class="btn-action-secondary" style="padding: 6px 12px; font-size: 12.5px;">
+              Discard
+            </button>
+          </div>
         </div>
 
         <form id="blogPostForm" onsubmit="handleBlogFormSubmit(event)">
@@ -910,6 +936,7 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       initDropzone();
+      initDraftAutoSave();
       checkAuth();
     });
 
@@ -1051,6 +1078,7 @@
       } else if (tab === 'create') {
         document.querySelector("button[onclick=\"switchTab('create')\"]").classList.add('active');
         document.getElementById('tabCreate').style.display = 'block';
+        checkExistingDraft();
       } else if (tab === 'users') {
         document.getElementById('usersTabBtn').classList.add('active');
         document.getElementById('tabUsers').style.display = 'block';
@@ -1518,6 +1546,9 @@
         }
 
         resetBlogForm();
+        try { localStorage.removeItem(DRAFT_KEY); } catch {}
+        const recoveryBanner = document.getElementById('draftRecoveryBanner');
+        if (recoveryBanner) recoveryBanner.style.display = 'none';
         switchTab('blogs');
         await loadBlogsTable();
         await loadOverviewStats();
@@ -1543,6 +1574,133 @@
       document.getElementById('formCardHeader').textContent = 'Create & Publish Blog Article';
       document.getElementById('saveBlogBtn').innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publish Blog';
       selectedFileForUpload = null;
+    }
+
+    // Auto-Save Draft System
+    const DRAFT_KEY = 'txs_admin_blog_draft';
+
+    function initDraftAutoSave() {
+      const titleInput = document.getElementById('blogTitle');
+      const contentInput = document.getElementById('blogContent');
+      const excerptInput = document.getElementById('blogExcerpt');
+
+      function saveCurrentDraft() {
+        if (!titleInput || !contentInput) return;
+        const title = titleInput.value.trim();
+        const content = contentInput.value.trim();
+        if (!title && !content) return;
+        const draft = {
+          title,
+          content,
+          excerpt: excerptInput ? excerptInput.value.trim() : '',
+          category: document.getElementById('blogCategory') ? document.getElementById('blogCategory').value : 'Tech',
+          tags: document.getElementById('blogTags') ? document.getElementById('blogTags').value : '',
+          savedAt: new Date().toISOString()
+        };
+        try {
+          localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+        } catch {}
+      }
+
+      function debouncedSave() {
+        clearTimeout(window.__draftTimer);
+        window.__draftTimer = setTimeout(saveCurrentDraft, 1200);
+      }
+
+      if (titleInput) titleInput.addEventListener('input', debouncedSave);
+      if (contentInput) contentInput.addEventListener('input', debouncedSave);
+      if (excerptInput) excerptInput.addEventListener('input', debouncedSave);
+    }
+
+    function checkExistingDraft() {
+      try {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (!raw) return;
+        const draft = JSON.parse(raw);
+        if (draft && (draft.title || draft.content)) {
+          const banner = document.getElementById('draftRecoveryBanner');
+          const titleSpan = document.getElementById('draftFoundTitle');
+          if (banner && titleSpan) {
+            titleSpan.textContent = `"${draft.title || 'Untitled Article'}" (Auto-saved ${new Date(draft.savedAt).toLocaleTimeString()})`;
+            banner.style.display = 'flex';
+          }
+        }
+      } catch {}
+    }
+
+    function restoreSavedDraft() {
+      try {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (!raw) return;
+        const draft = JSON.parse(raw);
+        if (draft.title) document.getElementById('blogTitle').value = draft.title;
+        if (draft.content) document.getElementById('blogContent').value = draft.content;
+        if (draft.excerpt && document.getElementById('blogExcerpt')) document.getElementById('blogExcerpt').value = draft.excerpt;
+        if (draft.category && document.getElementById('blogCategory')) document.getElementById('blogCategory').value = draft.category;
+        if (draft.tags && document.getElementById('blogTags')) document.getElementById('blogTags').value = draft.tags;
+        const banner = document.getElementById('draftRecoveryBanner');
+        if (banner) banner.style.display = 'none';
+      } catch {}
+    }
+
+    function discardSavedDraft() {
+      try {
+        localStorage.removeItem(DRAFT_KEY);
+        const banner = document.getElementById('draftRecoveryBanner');
+        if (banner) banner.style.display = 'none';
+      } catch {}
+    }
+
+    // Export & Import Backup Helpers
+    async function exportBlogsBackup() {
+      try {
+        const res = await window.API.getBlogs({ all: 'true' });
+        const list = res.blogs || [];
+        const jsonStr = JSON.stringify(list, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `techxsol-blogs-backup-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        alert('Failed to export blogs: ' + err.message);
+      }
+    }
+
+    async function handleImportBlogsFile(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (ev) => {
+        try {
+          const imported = JSON.parse(ev.target.result);
+          if (!Array.isArray(imported)) {
+            throw new Error('Invalid backup file. Expected an array of blog objects.');
+          }
+
+          let added = 0;
+          for (const b of imported) {
+            if (b && b.title && b.content) {
+              await window.API.createBlog(b);
+              added++;
+            }
+          }
+
+          alert(`Successfully restored ${added} article(s) from backup!`);
+          await loadBlogsTable();
+          await loadOverviewStats();
+        } catch (err) {
+          alert('Import failed: ' + err.message);
+        } finally {
+          e.target.value = '';
+        }
+      };
+      reader.readAsText(file);
     }
 
     // Inline Image Insertion in Article Body Content

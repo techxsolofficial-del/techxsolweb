@@ -14,31 +14,53 @@ const seedBlogs = require('./seedBlogs');
 let pool = null;
 let isConnected = false;
 
-// Persistent Local File Fallback Storage
-const dataDir = path.resolve(__dirname, '../../../data');
-const blogsFile = path.join(dataDir, 'blogs.json');
-const usersFile = path.join(dataDir, 'users.json');
-const settingsFile = path.join(dataDir, 'settings.json');
+// Persistent Local File Fallback Storage (supports both project data/ and serverless /tmp/data)
+const dataDir = path.resolve(__dirname, '../../data');
+const tmpDataDir = path.join('/tmp', 'data');
 
-function initLocalFiles() {
+function getActiveDataDir() {
   try {
     if (!fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
     }
-
-    if (!fs.existsSync(blogsFile)) {
-      fs.writeFileSync(blogsFile, JSON.stringify(seedBlogs, null, 2), 'utf-8');
+    return dataDir;
+  } catch {
+    try {
+      if (!fs.existsSync(tmpDataDir)) {
+        fs.mkdirSync(tmpDataDir, { recursive: true });
+      }
+      return tmpDataDir;
+    } catch {
+      return dataDir;
     }
+  }
+}
 
-    if (!fs.existsSync(usersFile)) {
-      fs.writeFileSync(usersFile, JSON.stringify([
+const blogsFile = path.join(dataDir, 'blogs.json');
+const usersFile = path.join(dataDir, 'users.json');
+const settingsFile = path.join(dataDir, 'settings.json');
+const tmpBlogsFile = path.join(tmpDataDir, 'blogs.json');
+const tmpUsersFile = path.join(tmpDataDir, 'users.json');
+const tmpSettingsFile = path.join(tmpDataDir, 'settings.json');
+
+function initLocalFiles() {
+  try {
+    const dir = getActiveDataDir();
+    const bf = path.join(dir, 'blogs.json');
+    const uf = path.join(dir, 'users.json');
+    const sf = path.join(dir, 'settings.json');
+
+    if (!fs.existsSync(bf)) {
+      fs.writeFileSync(bf, JSON.stringify(seedBlogs, null, 2), 'utf-8');
+    }
+    if (!fs.existsSync(uf)) {
+      fs.writeFileSync(uf, JSON.stringify([
         { id: 'usr-admin', username: 'admin', password: 'admin123', name: 'Super Admin', role: 'admin', active: true, createdAt: '2026-10-01T00:00:00.000Z' },
         { id: 'usr-wahid', username: 'wahid', password: 'wahid123', name: 'Abdul Wahid', role: 'author', active: true, createdAt: '2026-10-01T00:00:00.000Z' }
       ], null, 2), 'utf-8');
     }
-
-    if (!fs.existsSync(settingsFile)) {
-      fs.writeFileSync(settingsFile, JSON.stringify({ showAuthor: true }, null, 2), 'utf-8');
+    if (!fs.existsSync(sf)) {
+      fs.writeFileSync(sf, JSON.stringify({ showAuthor: true }, null, 2), 'utf-8');
     }
   } catch (err) {
     console.warn('[Storage] Notice initializing local data files:', err.message);
@@ -47,24 +69,28 @@ function initLocalFiles() {
 
 initLocalFiles();
 
-function readLocalJson(filePath, defaultVal) {
+function readLocalJson(filePath, fallbackPath, defaultVal) {
   try {
-    if (fs.existsSync(filePath)) {
+    if (fallbackPath && fs.existsSync(fallbackPath)) {
+      const content = fs.readFileSync(fallbackPath, 'utf-8');
+      return JSON.parse(content);
+    }
+  } catch {}
+  try {
+    if (filePath && fs.existsSync(filePath)) {
       const content = fs.readFileSync(filePath, 'utf-8');
       return JSON.parse(content);
     }
-  } catch (err) {
-    console.warn(`[Storage] Read error ${filePath}:`, err.message);
-  }
+  } catch {}
   return defaultVal;
 }
 
-const loadedBlogs = readLocalJson(blogsFile, seedBlogs);
-const loadedUsers = readLocalJson(usersFile, [
+const loadedBlogs = readLocalJson(blogsFile, tmpBlogsFile, seedBlogs);
+const loadedUsers = readLocalJson(usersFile, tmpUsersFile, [
   { id: 'usr-admin', username: 'admin', password: 'admin123', name: 'Super Admin', role: 'admin', active: true, createdAt: '2026-10-01T00:00:00.000Z' },
   { id: 'usr-wahid', username: 'wahid', password: 'wahid123', name: 'Abdul Wahid', role: 'author', active: true, createdAt: '2026-10-01T00:00:00.000Z' }
 ]);
-const loadedSettings = readLocalJson(settingsFile, { showAuthor: true });
+const loadedSettings = readLocalJson(settingsFile, tmpSettingsFile, { showAuthor: true });
 
 // Fallback in-memory store backed by persistent files
 const memoryStore = {
@@ -77,15 +103,26 @@ const memoryStore = {
 };
 
 function saveLocalData() {
+  const data = JSON.stringify(memoryStore.blogs, null, 2);
+  const users = JSON.stringify(memoryStore.users, null, 2);
+  const settings = JSON.stringify(memoryStore.settings, null, 2);
+
+  // Try writing to project data/ directory first
   try {
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
-    }
-    fs.writeFileSync(blogsFile, JSON.stringify(memoryStore.blogs, null, 2), 'utf-8');
-    fs.writeFileSync(usersFile, JSON.stringify(memoryStore.users, null, 2), 'utf-8');
-    fs.writeFileSync(settingsFile, JSON.stringify(memoryStore.settings, null, 2), 'utf-8');
+    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+    fs.writeFileSync(blogsFile, data, 'utf-8');
+    fs.writeFileSync(usersFile, users, 'utf-8');
+    fs.writeFileSync(settingsFile, settings, 'utf-8');
   } catch (err) {
-    console.warn('[Storage] Error saving local persistent data:', err.message);
+    // Fallback writing to /tmp/data for read-only serverless lambdas
+    try {
+      if (!fs.existsSync(tmpDataDir)) fs.mkdirSync(tmpDataDir, { recursive: true });
+      fs.writeFileSync(tmpBlogsFile, data, 'utf-8');
+      fs.writeFileSync(tmpUsersFile, users, 'utf-8');
+      fs.writeFileSync(tmpSettingsFile, settings, 'utf-8');
+    } catch (tmpErr) {
+      console.warn('[Storage] Notice on persistent storage write:', tmpErr.message);
+    }
   }
 }
 

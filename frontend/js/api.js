@@ -67,6 +67,22 @@ const API = (() => {
   // Default Featured Seed Blogs (SEO Optimized & Highly Informative)
   const DEFAULT_FEATURED_BLOGS = [
     {
+      id: 'blog-gta-6-release-date-gameplay-leaks',
+      title: 'GTA 6: Official Release Date, Vice City Map, Gameplay Leaks, PC Specs & Everything We Know So Far',
+      slug: 'gta-6-release-date-gameplay-leaks-map-guide',
+      category: 'Gaming & Technology',
+      author: 'Abdul Wahid',
+      authorRole: 'Co-Founder & Operations Director',
+      published: true,
+      featured: true,
+      coverImage: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1200&auto=format&fit=crop&q=80',
+      imageSizeKB: 245,
+      tags: ['GTA 6', 'Grand Theft Auto VI', 'Rockstar Games', 'Vice City', 'Gaming Leaks', 'PC Specs', 'Lucia and Jason'],
+      createdAt: '2026-11-17T10:00:00.000Z',
+      excerpt: 'Grand Theft Auto VI is set to redefine open-world gaming. From the neon glow of Vice City and the vast wetlands of Leonida to dual protagonists Lucia and Jason, here is your definitive, all-in-one guide to Rockstar\'s masterpiece.',
+      content: `<h2>The Most Anticipated Entertainment Launch in History</h2><p>More than a decade after Grand Theft Auto V conquered the entertainment world, Rockstar Games is preparing to unleash <strong>Grand Theft Auto VI</strong>. With over 200 million trailer views within days of release, the gaming industry is gearing up for what analysts predict will be the largest media launch in human history.</p><p>Set in the state of <strong>Leonida</strong>—Rockstar's satirical, vibrant reimagining of Florida and modern Vice City—GTA 6 isn't just another sequel. It represents an unprecedented generational leap in artificial intelligence, real-time physics, dynamic weather systems, and procedural world density.</p><div class="blog-callout"><strong>Quick Summary:</strong> GTA 6 is scheduled for launch on PlayStation 5 and Xbox Series X|S, with a PC release window anticipated following the console premiere. It features dual playable protagonists, Lucia and Jason, in a modern Bonnie & Clyde crime saga.</div><h2>The Setting: Vice City & The State of Leonida</h2><p>While GTA Vice City (2002) captured the 1980s synthwave glamour, GTA 6 brings players into the chaotic, influencer-saturated, neon-drenched reality of the 2020s. The map of Leonida includes:</p><ul><li><strong>Vice City Metro:</strong> Towering skyscrapers, high-end nightclubs, luxury marinas, and vibrant nightlife reminiscent of modern Miami.</li><li><strong>Grassrivers & Wetlands:</strong> Vast Florida Everglades equivalents filled with airboats, wildlife ecosystems, and dangerous alligators.</li><li><strong>The Keys:</strong> A stunning archipelago connected by overseas highways, offering deep-sea boating, yacht heists, and coastal smuggling.</li><li><strong>Port Gellhorn & Suburbs:</strong> Gritty industrial districts, sprawling strip malls, and forgotten trailer parks offering stark social contrast.</li></ul><h2>Dual Protagonists: The Story of Lucia & Jason</h2><p>Breaking new narrative ground, GTA 6 introduces the franchise's first female playable protagonist in the modern era: <strong>Lucia</strong>. Teaming up with her partner <strong>Jason</strong>, the narrative draws heavy inspiration from the classic American "Bonnie and Clyde" archetype.</p><p>Players will switch between both characters dynamically, navigating a web of high-stakes heists, cartel skirmishes, convenience store stickups, and personal trust dilemmas. Early leaks and trailers showcase an emotional depth and conversational spontaneity far beyond anything seen in previous open-world titles.</p><h2>Revolutionary AI & Next-Gen Physics Engine</h2><p>Rockstar's proprietary <strong>RAGE 9 Engine</strong> introduces industry-first gameplay technologies:</p><ol><li><strong>Social Media & TikTok Culture Integration:</strong> NPCs record crimes in real-time, live-stream car chases, and post viral clips that influence in-game police response times and notoriety.</li><li><strong>Atmospheric & Water Physics:</strong> Advanced volumetric clouds, hurricanes, tidal surges, and realistic underwater buoyancy systems.</li><li><strong>Interior Density:</strong> Rumors and leaked builds indicate over 70% of commercial buildings and houses feature fully accessible, detailed interiors.</li><li><strong>Evolved Police Tactical AI:</strong> Law enforcement no longer swarms blindly. Officers set up tactical cordons, deploy spike strips strategically, and employ hostage negotiation tactics.</li></ol><h2>PC Requirements & Release Expectations</h2><p>Historically, Rockstar launches on consoles first to maximize optimization before unleashing the definitive PC version. While official PC specs remain unannounced, industry consensus points to the following minimum and recommended benchmarks:</p><table style="width: 100%; border-collapse: collapse; margin: 20px 0;"><thead><tr style="background: rgba(0,168,232,0.1); border-bottom: 2px solid var(--accent-cyan);"><th style="padding: 12px; text-align: left;">Component</th><th style="padding: 12px; text-align: left;">Estimated Minimum</th><th style="padding: 12px; text-align: left;">Estimated Recommended</th></tr></thead><tbody><tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 10px;"><strong>OS</strong></td><td style="padding: 10px;">Windows 11 (64-bit)</td><td style="padding: 10px;">Windows 11 (64-bit)</td></tr><tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 10px;"><strong>Processor (CPU)</strong></td><td style="padding: 10px;">Intel Core i7-8700K / Ryzen 5 3600</td><td style="padding: 10px;">Intel Core i7-13700K / Ryzen 7 7800X3D</td></tr><tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 10px;"><strong>Graphics (GPU)</strong></td><td style="padding: 10px;">NVIDIA RTX 2070 / AMD RX 5700 XT</td><td style="padding: 10px;">NVIDIA RTX 4070 Ti / AMD RX 7900 XT</td></tr><tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 10px;"><strong>Memory (RAM)</strong></td><td style="padding: 10px;">16 GB</td><td style="padding: 10px;">32 GB High-Speed DDR5</td></tr><tr><td style="padding: 10px;"><strong>Storage</strong></td><td style="padding: 10px;">150 GB NVMe SSD Required</td><td style="padding: 10px;">200 GB High-Speed Gen4 NVMe SSD</td></tr></tbody></table><h2>Final Thoughts: A Defining Moment for Modern Gaming</h2><p>GTA 6 is more than a game—it is an interactive cultural event. As we await the next official gameplay trailer, one thing is certain: Rockstar Games is setting a standard that other developers will spend the next decade trying to reach.</p>`
+    },
+    {
       id: 'blog-ai-jobs-disruption',
       title: 'Has AI Really Killed Human Jobs? The Truth About AI Disruption Across Tech, Writing & Corporate Careers',
       slug: 'has-ai-killed-human-jobs-truth-about-ai-disruption',
@@ -164,8 +180,65 @@ const API = (() => {
     }
   ];
 
-  // Local Storage DB Fallback helpers
+  // Local Storage & IndexedDB Fallback helpers
   const LOCAL_BLOGS_KEY = 'txs_local_blogs';
+  const IDB_NAME = 'txs_database_v2';
+  const IDB_STORE = 'blogs_store';
+
+  function openIndexedDB() {
+    return new Promise((resolve) => {
+      if (typeof window === 'undefined' || !window.indexedDB) return resolve(null);
+      try {
+        const req = window.indexedDB.open(IDB_NAME, 1);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(IDB_STORE)) {
+            db.createObjectStore(IDB_STORE, { keyPath: 'id' });
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => resolve(null);
+      } catch {
+        resolve(null);
+      }
+    });
+  }
+
+  async function idbSaveBlogs(blogs) {
+    if (!Array.isArray(blogs) || blogs.length === 0) return;
+    try {
+      const db = await openIndexedDB();
+      if (!db) return;
+      const tx = db.transaction(IDB_STORE, 'readwrite');
+      const store = tx.objectStore(IDB_STORE);
+      blogs.forEach(b => {
+        if (b && b.id) {
+          try { store.put(b); } catch {}
+        }
+      });
+    } catch {}
+  }
+
+  async function idbGetBlogs() {
+    try {
+      const db = await openIndexedDB();
+      if (!db) return [];
+      return new Promise((resolve) => {
+        try {
+          const tx = db.transaction(IDB_STORE, 'readonly');
+          const store = tx.objectStore(IDB_STORE);
+          const req = store.getAll();
+          req.onsuccess = () => resolve(Array.isArray(req.result) ? req.result : []);
+          req.onerror = () => resolve([]);
+        } catch {
+          resolve([]);
+        }
+      });
+    } catch {
+      return [];
+    }
+  }
+
   function getLocalBlogs() {
     try {
       const raw = localStorage.getItem(LOCAL_BLOGS_KEY);
@@ -188,11 +261,29 @@ const API = (() => {
       return DEFAULT_FEATURED_BLOGS;
     }
   }
+
   function saveLocalBlogs(list) {
+    if (!Array.isArray(list)) return;
+    // 1. Always store the full high-resolution articles into IndexedDB (zero quota failure)
+    idbSaveBlogs(list);
+
+    // 2. Safely store into localStorage without quota errors
     try {
       localStorage.setItem(LOCAL_BLOGS_KEY, JSON.stringify(list));
     } catch (e) {
-      console.warn('Storage save error:', e);
+      console.warn('[Storage] Quota notice on localStorage, optimizing payload:', e.message);
+      try {
+        // Strip oversized base64 images from localStorage copy so that article titles, content and tags are NEVER lost!
+        const optimized = list.map(b => {
+          if (b.coverImage && b.coverImage.startsWith('data:image')) {
+            return { ...b, coverImage: '' };
+          }
+          return b;
+        });
+        localStorage.setItem(LOCAL_BLOGS_KEY, JSON.stringify(optimized));
+      } catch (err2) {
+        console.warn('[Storage] LocalStorage full, IndexedDB active:', err2.message);
+      }
     }
   }
 
@@ -406,125 +497,184 @@ const API = (() => {
 
     // Blogs with Local Storage & Fallback Persistence
     async getBlogs(params = {}) {
+      let serverBlogs = [];
       try {
         const query = new URLSearchParams(params).toString();
         const endpoint = query ? `/blogs?${query}` : '/blogs';
         const res = await request(endpoint, { method: 'GET', headers: getHeaders() });
-        if (res && res.blogs && res.blogs.length > 0) {
-          return res;
+        if (res && Array.isArray(res.blogs)) {
+          serverBlogs = res.blogs;
         }
-        let list = getLocalBlogs();
-        if (params.featured === 'true') {
-          list = list.filter(b => b.featured && b.published);
-        } else if (!params.all) {
-          list = list.filter(b => b.published !== false);
-        }
-        if (params.limit) {
-          list = list.slice(0, parseInt(params.limit, 10));
-        }
-        return { success: true, blogs: list };
-      } catch {
-        let list = getLocalBlogs();
-        if (params.featured === 'true') {
-          list = list.filter(b => b.featured && b.published);
-        } else if (!params.all) {
-          list = list.filter(b => b.published !== false);
-        }
-        if (params.limit) {
-          list = list.slice(0, parseInt(params.limit, 10));
-        }
-        return { success: true, blogs: list };
+      } catch (err) {
+        console.warn('[getBlogs] Server fetch warning:', err.message);
       }
+
+      const [idbBlogs, localBlogs] = await Promise.all([
+        idbGetBlogs().catch(() => []),
+        Promise.resolve(getLocalBlogs())
+      ]);
+
+      const blogMap = new Map();
+
+      // 1. Put server blogs first
+      serverBlogs.forEach(b => {
+        const key = b.id || b.slug;
+        if (key) blogMap.set(key, b);
+      });
+
+      // 2. Overlay / merge local blogs so newly created local blogs are ALWAYS included
+      localBlogs.forEach(b => {
+        const key = b.id || b.slug;
+        if (key) {
+          const existing = blogMap.get(key);
+          if (!existing) {
+            blogMap.set(key, b);
+          } else {
+            blogMap.set(key, { ...existing, ...b });
+          }
+        }
+      });
+
+      // 3. Overlay IndexedDB blogs (contains articles with full offline photos)
+      idbBlogs.forEach(b => {
+        const key = b.id || b.slug;
+        if (key) {
+          const existing = blogMap.get(key);
+          if (!existing) {
+            blogMap.set(key, b);
+          } else {
+            blogMap.set(key, { ...existing, ...b });
+          }
+        }
+      });
+
+      let merged = Array.from(blogMap.values());
+
+      // Silently sync unsynced local blogs to server if authenticated and server was missing them
+      if (serverBlogs.length > 0 && getToken()) {
+        const serverIds = new Set(serverBlogs.map(b => b.id));
+        const unsynced = localBlogs.filter(b => b.id && !serverIds.has(b.id) && !DEFAULT_FEATURED_BLOGS.some(d => d.id === b.id));
+        if (unsynced.length > 0) {
+          unsynced.forEach(ub => {
+            request('/blogs', {
+              method: 'POST',
+              headers: getHeaders(),
+              body: JSON.stringify(ub)
+            }).catch(() => {});
+          });
+        }
+      }
+
+      // Filter by parameters
+      if (params.featured === 'true') {
+        merged = merged.filter(b => b.featured && b.published !== false);
+      } else if (params.all !== 'true') {
+        merged = merged.filter(b => b.published !== false);
+      }
+
+      if (params.category && params.category !== 'All') {
+        merged = merged.filter(b => (b.category || '').toLowerCase() === params.category.toLowerCase());
+      }
+
+      // Sort by newest created_at first
+      merged.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+      if (params.limit) {
+        merged = merged.slice(0, parseInt(params.limit, 10));
+      }
+
+      return { success: true, blogs: merged };
     },
 
     async getBlog(idOrSlug) {
       try {
-        return await request(`/blogs/${idOrSlug}`, { method: 'GET', headers: getHeaders() });
-      } catch {
-        const list = getLocalBlogs();
-        const found = list.find(b => b.id === idOrSlug || b.slug === idOrSlug);
-        if (found) return { success: true, blog: found };
-        throw new Error('Blog not found');
-      }
+        const res = await request(`/blogs/${idOrSlug}`, { method: 'GET', headers: getHeaders() });
+        if (res && res.blog) return res;
+      } catch (err) {}
+      const list = getLocalBlogs();
+      const found = list.find(b => b.id === idOrSlug || b.slug === idOrSlug);
+      if (found) return { success: true, blog: found };
+      throw new Error('Blog not found');
     },
 
     async createBlog(blogData) {
+      let serverBlog = null;
       try {
         const res = await request('/blogs', {
           method: 'POST',
           headers: getHeaders(),
           body: JSON.stringify(blogData)
         });
-        // Also sync local
-        const list = getLocalBlogs();
-        if (res.blog) list.unshift(res.blog);
-        saveLocalBlogs(list);
-        return res;
-      } catch {
-        const list = getLocalBlogs();
-        const newBlog = {
-          id: 'blog-' + Date.now(),
-          ...blogData,
-          slug: (blogData.title || 'post').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
-          published: blogData.published !== undefined ? blogData.published : true,
-          createdAt: new Date().toISOString()
-        };
-        list.unshift(newBlog);
-        saveLocalBlogs(list);
-        return { success: true, blog: newBlog };
+        if (res && res.blog) {
+          serverBlog = res.blog;
+        }
+      } catch (err) {
+        console.warn('[createBlog] Server create warning, saving locally:', err.message);
       }
+
+      const list = getLocalBlogs();
+      const newBlog = serverBlog || {
+        id: 'blog-' + Date.now(),
+        ...blogData,
+        slug: (blogData.title || 'post')
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .trim()
+          .replace(/[\s_-]+/g, '-') + '-' + Math.floor(Math.random() * 1000),
+        published: blogData.published !== undefined ? blogData.published : true,
+        createdAt: new Date().toISOString()
+      };
+
+      // Unshift into local blogs without duplicate
+      const filtered = list.filter(b => b.id !== newBlog.id && b.slug !== newBlog.slug);
+      filtered.unshift(newBlog);
+      saveLocalBlogs(filtered);
+
+      return { success: true, blog: newBlog };
     },
 
     async updateBlog(id, blogData) {
+      let serverBlog = null;
       try {
         const res = await request(`/blogs/${id}`, {
           method: 'PUT',
           headers: getHeaders(),
           body: JSON.stringify(blogData)
         });
-        const list = getLocalBlogs();
-        const idx = list.findIndex(b => b.id === id);
-        if (idx !== -1 && res.blog) {
-          list[idx] = res.blog;
-          saveLocalBlogs(list);
-        }
-        return res;
-      } catch {
-        const list = getLocalBlogs();
-        const idx = list.findIndex(b => b.id === id);
-        if (idx !== -1) {
-          list[idx] = { ...list[idx], ...blogData, updatedAt: new Date().toISOString() };
-          saveLocalBlogs(list);
-          return { success: true, blog: list[idx] };
-        }
-        throw new Error('Blog not found');
+        if (res && res.blog) serverBlog = res.blog;
+      } catch (err) {}
+
+      const list = getLocalBlogs();
+      const idx = list.findIndex(b => b.id === id);
+      if (idx !== -1) {
+        list[idx] = serverBlog || { ...list[idx], ...blogData, updatedAt: new Date().toISOString() };
+        saveLocalBlogs(list);
+        return { success: true, blog: list[idx] };
       }
+      if (serverBlog) return { success: true, blog: serverBlog };
+      throw new Error('Blog not found');
     },
 
     async toggleBlogStatus(id, statusData) {
+      let serverBlog = null;
       try {
         const res = await request(`/blogs/${id}/status`, {
           method: 'PATCH',
           headers: getHeaders(),
           body: JSON.stringify(statusData)
         });
-        const list = getLocalBlogs();
-        const idx = list.findIndex(b => b.id === id);
-        if (idx !== -1 && res.blog) {
-          list[idx] = res.blog;
-          saveLocalBlogs(list);
-        }
-        return res;
-      } catch {
-        const list = getLocalBlogs();
-        const idx = list.findIndex(b => b.id === id);
-        if (idx !== -1) {
-          list[idx] = { ...list[idx], ...statusData };
-          saveLocalBlogs(list);
-          return { success: true, blog: list[idx] };
-        }
-        throw new Error('Blog not found');
+        if (res && res.blog) serverBlog = res.blog;
+      } catch (err) {}
+
+      const list = getLocalBlogs();
+      const idx = list.findIndex(b => b.id === id);
+      if (idx !== -1) {
+        list[idx] = serverBlog || { ...list[idx], ...statusData };
+        saveLocalBlogs(list);
+        return { success: true, blog: list[idx] };
       }
+      if (serverBlog) return { success: true, blog: serverBlog };
+      throw new Error('Blog not found');
     },
 
     async deleteBlog(id) {
@@ -536,32 +686,34 @@ const API = (() => {
       return { success: true };
     },
 
-    // Image Upload (< 500KB)
+    // Image Upload with Auto-Resilience
     async uploadImage(file) {
-      if (file.size > 500 * 1024) {
-        throw new Error(`File is ${(file.size / 1024).toFixed(1)} KB. Maximum allowed size is 500 KB!`);
-      }
+      // 1. Read base64 representation
+      const base64Data = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const sizeKB = parseFloat((file.size / 1024).toFixed(1));
+
+      // 2. Attempt server endpoint upload
       try {
-        const formData = new FormData();
-        formData.append('image', file);
-        return await request('/upload', {
+        const res = await request('/upload', {
           method: 'POST',
-          headers: getHeaders(true),
-          body: formData
+          headers: getHeaders(),
+          body: JSON.stringify({ image: base64Data, filename: file.name })
         });
-      } catch {
-        // Fallback: return as data URL
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = (e) => resolve({
-            success: true,
-            url: e.target.result,
-            sizeKB: (file.size / 1024).toFixed(1)
-          });
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
+        if (res && res.url) {
+          return { success: true, url: res.url, sizeKB: res.sizeKB || sizeKB };
+        }
+      } catch (err) {
+        console.warn('[uploadImage] Server upload fallback to direct data URL:', err.message);
       }
+
+      // 3. Resilient fallback to direct data URL
+      return { success: true, url: base64Data, sizeKB };
     },
 
     // Tools
