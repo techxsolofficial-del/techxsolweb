@@ -182,41 +182,38 @@ async function initDb() {
       );
     `);
 
-    // Ensure default admin user exists
-    const adminCheck = await client.query('SELECT * FROM users WHERE username = $1', ['admin']);
-    if (adminCheck.rows.length === 0) {
-      await client.query(
-        'INSERT INTO users (username, password, name, role) VALUES ($1, $2, $3, $4)',
-        ['admin', 'admin123', 'Super Admin', 'admin']
-      );
-    }
+    // Ensure default team users exist
+    await client.query(`
+      INSERT INTO users (username, password, name, role)
+      VALUES ('admin', 'admin123', 'Super Admin', 'admin')
+      ON CONFLICT (username) DO NOTHING;
+      INSERT INTO users (username, password, name, role)
+      VALUES ('wahid', 'wahid123', 'Abdul Wahid', 'author')
+      ON CONFLICT (username) DO NOTHING;
+    `);
 
-    // Seed default featured blogs if table is empty
-    const blogCount = await client.query('SELECT count(*) FROM blogs');
-    if (parseInt(blogCount.rows[0].count, 10) === 0) {
-      for (const blog of memoryStore.blogs) {
-        await client.query(`
-          INSERT INTO blogs (id, title, slug, category, excerpt, content, cover_image, image_size_kb, tags, published, featured, author, author_role, created_at)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
-          ON CONFLICT (id) DO NOTHING
-        `, [
-          blog.id,
-          blog.title,
-          blog.slug,
-          blog.category,
-          blog.excerpt,
-          blog.content,
-          blog.coverImage,
-          blog.imageSizeKB,
-          JSON.stringify(Array.isArray(blog.tags) ? blog.tags : []),
-          blog.published !== undefined ? blog.published : true,
-          blog.featured !== undefined ? blog.featured : false,
-          blog.author || 'Tech X Sol',
-          blog.authorRole || 'admin',
-          blog.createdAt || new Date().toISOString()
-        ]);
-      }
-      console.log('[Neon DB] Seeded articles successfully into PostgreSQL!');
+    // Ensure all seed blogs exist in database
+    for (const blog of (memoryStore.blogs || seedBlogs)) {
+      await client.query(`
+        INSERT INTO blogs (id, title, slug, category, excerpt, content, cover_image, image_size_kb, tags, published, featured, author, author_role, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+        ON CONFLICT (id) DO NOTHING
+      `, [
+        blog.id,
+        blog.title,
+        blog.slug,
+        blog.category,
+        blog.excerpt,
+        blog.content,
+        blog.coverImage,
+        blog.imageSizeKB || 0,
+        JSON.stringify(Array.isArray(blog.tags) ? blog.tags : []),
+        blog.published !== undefined ? blog.published : true,
+        blog.featured !== undefined ? blog.featured : false,
+        blog.author || 'Tech X Sol',
+        blog.authorRole || 'admin',
+        blog.createdAt || new Date().toISOString()
+      ]);
     }
 
     client.release();
